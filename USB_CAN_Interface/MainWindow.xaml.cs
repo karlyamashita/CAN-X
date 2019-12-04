@@ -46,8 +46,13 @@ namespace CAN_X_CAN_Analyzer
         const byte COMMAND_BAUD = 0x95; // data: 32bit CAN_BTC value
         const byte COMAAND_CAN_MODE = 0xA0; // data: normal=0, listen=1
 
-        const byte COMMAND_START_MESSAGES = 0xB0; // have hardware start sending messages USB data
-        const byte COMMAND_STOP_MESSAGES = 0xB1; // have hardware stop sending USB data
+        const byte COMMAND_ENABLE_MESSAGES = 0xB0; // enable hardware to send messages on USB data
+        const byte COMMAND_DISABLE_MESSAGES = 0xB1; // disable hardware from sending messages on USB data
+
+        const byte COMMAND_INFO = 0x90; // get information from hardware, fw version, BTC value, type hardware
+        const byte COMMAND_CAN_BTR = 0x91; // the CAN_BTC value from interface
+        const byte COMMAND_VERSION = 0x92;
+        const byte COMMAND_HARDWARE = 0x93; // 
 
         // const defines
         const byte CAN_STD_ID = 0x00;
@@ -59,7 +64,7 @@ namespace CAN_X_CAN_Analyzer
         // arrays, variables, objects
         public static UsbHidDevice Device;
 
-        public List<CanTxData> myCanDataListTx { get; set; }
+        public List<CanTxData> MyCanDataListTx { get; set; }
         public List<CanRxData> myCanDataListRx = new List<CanRxData>() ;
         UInt32 lineCount = 1;
 
@@ -124,17 +129,72 @@ namespace CAN_X_CAN_Analyzer
                 case COMMAND_NAK:
                     StatusBarStatus.Text = "NAK Received";
                     break;
+                case COMMAND_CAN_BTR:
+                    ShowBTC_VALUE(data);
+                    break;
+                case COMMAND_VERSION:
+                    ShowString(COMMAND_VERSION, data);
+                    break;
+                case COMMAND_HARDWARE:
+                    ShowString(COMMAND_HARDWARE, data);
+                    break;
             }        
+        }
+
+        private void ShowString(byte command, byte[] data)
+        {
+            // todo - show the text sent by the interface. Need to figure out where to show. Maybe new TextBox or Lable.
+            switch(command)
+            {
+                case COMMAND_VERSION:
+                    StatusBarStatusVersion.Text = "FW: " + GetStringFromData(data);
+                    break;
+                case COMMAND_HARDWARE:
+                    StatusBarStatusHardware.Text = "HW: " + GetStringFromData(data);
+                    break;
+            }
+        }
+
+        private string GetStringFromData(byte[] data)
+        {
+            int i = 0;
+            byte[] temp = new byte[data.Length];
+
+            while (data[i+1] != '\0') // index 1 is command
+            {
+                temp[i] = data[i + 2]; // string starts at index 2 
+                i++;
+            }
+            return Encoding.ASCII.GetString(temp); 
+        }
+
+        private void ShowBTC_VALUE(byte[] data)
+        {
+            // todo - parse the BTC_VALUE and show in TextBoxBtcValue. Then set index in the ComboBoxBaudRate
+            UInt32 btrValue = 0;
+            btrValue = (UInt32) (data[2] << 24 | data[3] << 16 | data[4] << 8 | data[5]);
+
+            TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
+
+            int i = 0;
+            foreach(var baud in baudRateList)
+            {
+                if(baud.value == TextBoxBtrValue.Text)
+                {
+                    ComboBoxBaudRate.SelectedIndex = i;
+                    return;
+                }
+                i++;
+            }
         }
 
         // add CAN messages to DataGrid
         private void AddToDataGrid(byte[] data)
         {
-            CanRxData canDataRx = new CanRxData();
-
-           
-            canDataRx.Line = lineCount++;
-
+            CanRxData canDataRx = new CanRxData
+            {
+                Line = lineCount++
+            };
 
             //data[1] is command
             if (data[2] == 0)
@@ -146,8 +206,7 @@ namespace CAN_X_CAN_Analyzer
                 canDataRx.IDE = "X";
             }
 
-            UInt32 id = 0;
-            id = (UInt32)(data[3] << 24 | data[4] << 16 | data[5] << 8 | data[6]);
+            UInt32 id = (UInt32)(data[3] << 24 | data[4] << 16 | data[5] << 8 | data[6]);
             canDataRx.ArbID = Convert.ToString(id, 16).ToUpper();
 
             // todo parse ID and compare to database. Return string description if available
@@ -212,6 +271,7 @@ namespace CAN_X_CAN_Analyzer
 
             myCanDataListRx.Add(canDataRx);
 
+            // todo - instead of updating the item source, add new row with current CAN message and refresh, if possible. Need to research.
             dataGridRx.ItemsSource = null;
             dataGridRx.ItemsSource = myCanDataListRx;
 
@@ -219,6 +279,7 @@ namespace CAN_X_CAN_Analyzer
 
             dataGridRx.Items.Refresh();
 
+            // todo - scroll to bottom 
             //dataGridRx.ScrollIntoView(myCanDataListRx[myCanDataListRx.Count - 1]);
 
         }
@@ -239,7 +300,7 @@ namespace CAN_X_CAN_Analyzer
         private void AddTxMessagesToDataGrid()
         {
             // todo - add feature to add CAN messages to Tx window and Tx Button. For now just populate DataGrid with below data
-            myCanDataListTx = new List<CanTxData>();
+            MyCanDataListTx = new List<CanTxData>();
 
             canData1.Description = "System_Power_Mode";
             canData1.Rate = 0.100;
@@ -276,21 +337,18 @@ namespace CAN_X_CAN_Analyzer
             canData6.RTR = false;
             canData6.DLC = 0;
 
-
-            myCanDataListTx.Add(canData1);
+            MyCanDataListTx.Add(canData1);
            // myCanDataListTx.Add(canData2);
-            myCanDataListTx.Add(canData4);
-            myCanDataListTx.Add(canData5);
-            myCanDataListTx.Add(canData6);
-
-
-            dataGridTx.ItemsSource = myCanDataListTx;
-
-            dataGridTx.CanUserSortColumns = false;
+            MyCanDataListTx.Add(canData4);
+            MyCanDataListTx.Add(canData5);
+            MyCanDataListTx.Add(canData6);
+        
+            dataGridTx.ItemsSource = MyCanDataListTx;
             
+            dataGridTx.CanUserSortColumns = false;          
         }
 
-        private void btnView_Click(object sender, RoutedEventArgs e)
+        private void ButtonCellTx_Click(object sender, RoutedEventArgs e)
         {
             if (!Device.IsDeviceConnected)
             {
@@ -364,16 +422,18 @@ namespace CAN_X_CAN_Analyzer
             if(!Device.IsDeviceConnected)
             {
                 RichTextBoxConnectStatus.Document.Blocks.Clear();
-                Paragraph myParagraph = new Paragraph(new Run("Device Not Attached"));
-                myParagraph.Foreground = Brushes.Black;
-                myParagraph.Background = Brushes.Gold;
-                //myParagraph.FontFamily = new FontFamily("Arial");
-                //myParagraph.FontSize = 12;
-                //myParagraph.FontWeight = FontWeights.UltraBold;
-                //myParagraph.FontStretch = FontStretches.UltraExpanded;
-                myParagraph.Padding = new Thickness(5, 1, 5, 1);
-                myParagraph.FontWeight = FontWeights.Bold;
-                myParagraph.TextAlignment = TextAlignment.Center;
+                Paragraph myParagraph = new Paragraph(new Run("Device Not Attached"))
+                {
+                    Foreground = Brushes.Black,
+                    Background = Brushes.Gold,
+                    //myParagraph.FontFamily = new FontFamily("Arial");
+                    //myParagraph.FontSize = 12;
+                    //myParagraph.FontWeight = FontWeights.UltraBold;
+                    //myParagraph.FontStretch = FontStretches.UltraExpanded;
+                    Padding = new Thickness(5, 1, 5, 1),
+                    FontWeight = FontWeights.Bold,
+                    TextAlignment = TextAlignment.Center
+                };
                 RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
             }
         }
@@ -394,15 +454,17 @@ namespace CAN_X_CAN_Analyzer
                     StatusBarStatus.Text = "";
 
                     RichTextBoxConnectStatus.Document.Blocks.Clear();
-                    Paragraph myParagraph = new Paragraph(new Run("Device Connected"));
-                    myParagraph.Foreground = Brushes.White;
-                    myParagraph.Background = Brushes.Green;
-                    myParagraph.FontWeight = FontWeights.Bold;
-                    myParagraph.Padding = new Thickness(5, 1, 5, 1);
-                    myParagraph.TextAlignment = TextAlignment.Center;
+                    Paragraph myParagraph = new Paragraph(new Run("Device Connected"))
+                    {
+                        Foreground = Brushes.White,
+                        Background = Brushes.Green,
+                        FontWeight = FontWeights.Bold,
+                        Padding = new Thickness(5, 1, 5, 1),
+                        TextAlignment = TextAlignment.Center
+                    };
                     RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
 
-                    string deviceName = Device.DevicePath;
+                    GetInfo();
 
                 }
                 else if (Device.IsDeviceConnected != true)
@@ -412,16 +474,35 @@ namespace CAN_X_CAN_Analyzer
                     StatusBarStatus.Text = "";
 
                     RichTextBoxConnectStatus.Document.Blocks.Clear();
-                    Paragraph myParagraph = new Paragraph(new Run("Device Not Connected"));               
-                    myParagraph.Foreground = Brushes.White;
-                    myParagraph.Background = Brushes.Red;
-                    myParagraph.FontWeight = FontWeights.Bold;
-                    myParagraph.Padding = new Thickness(5, 1, 5, 1);
-                    myParagraph.TextAlignment = TextAlignment.Center;
+                    Paragraph myParagraph = new Paragraph(new Run("Device Not Connected"))
+                    {
+                        Foreground = Brushes.White,
+                        Background = Brushes.Red,
+                        FontWeight = FontWeights.Bold,
+                        Padding = new Thickness(5, 1, 5, 1),
+                        TextAlignment = TextAlignment.Center
+                    };
                     RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
+
+                    ClearStatusBarStatus();
                 }
             }));
+        }
 
+        // get the connected device version and hardware type
+        private void GetInfo()
+        {
+            byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
+
+            var command = new CommandMessage(COMMAND_INFO, tmp_buf); // no data to send but need array
+            Device.SendMessage(command);
+        }
+
+        private void ClearStatusBarStatus()
+        {
+            StatusBarStatusHardware.Text = "";
+            StatusBarStatusVersion.Text = "";
+            StatusBarStatus.Text = "";
         }
 
         private void SendCanData(ref CanTxData canData)
@@ -484,10 +565,12 @@ namespace CAN_X_CAN_Analyzer
 
         private void ButtonSaveRxMessages_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFile = new SaveFileDialog();
-            saveFile.DefaultExt = ".csv";
-            saveFile.Filter = "Can Messages (.csv)|*.csv";
-            if(saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            SaveFileDialog saveFile = new SaveFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "Can Messages (.csv)|*.csv"
+            };
+            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 StringBuilder strBuilder = new StringBuilder();
 
@@ -769,7 +852,7 @@ namespace CAN_X_CAN_Analyzer
 
                     CanTxData canData = new CanTxData();
 
-                    if(myCanDataListTx[rowIndex].IDE == "S")
+                    if(MyCanDataListTx[rowIndex].IDE == "S")
                     {
                         canData.IDE = "CAN_STD_ID";
                     }
@@ -778,21 +861,31 @@ namespace CAN_X_CAN_Analyzer
                         canData.IDE = "CAN_XTD_ID";
                     }
                                    
-                    canData.ArbID = myCanDataListTx[rowIndex].ArbID;
-                    canData.DLC = myCanDataListTx[rowIndex].DLC;
-                    canData.Byte1 = myCanDataListTx[rowIndex].Byte1;
-                    canData.Byte2 = myCanDataListTx[rowIndex].Byte2;
-                    canData.Byte3 = myCanDataListTx[rowIndex].Byte3;
-                    canData.Byte4 = myCanDataListTx[rowIndex].Byte4;
-                    canData.Byte5 = myCanDataListTx[rowIndex].Byte5;
-                    canData.Byte6 = myCanDataListTx[rowIndex].Byte6;
-                    canData.Byte7 = myCanDataListTx[rowIndex].Byte7;
-                    canData.Byte8 = myCanDataListTx[rowIndex].Byte8;
+                    canData.ArbID = MyCanDataListTx[rowIndex].ArbID;
+                    canData.DLC = MyCanDataListTx[rowIndex].DLC;
+                    canData.Byte1 = MyCanDataListTx[rowIndex].Byte1;
+                    canData.Byte2 = MyCanDataListTx[rowIndex].Byte2;
+                    canData.Byte3 = MyCanDataListTx[rowIndex].Byte3;
+                    canData.Byte4 = MyCanDataListTx[rowIndex].Byte4;
+                    canData.Byte5 = MyCanDataListTx[rowIndex].Byte5;
+                    canData.Byte6 = MyCanDataListTx[rowIndex].Byte6;
+                    canData.Byte7 = MyCanDataListTx[rowIndex].Byte7;
+                    canData.Byte8 = MyCanDataListTx[rowIndex].Byte8;
 
                     SendCanData(ref canData);
                 }
 
             }
+        }
+
+        private void ButtonAddEditTxRow_Click(object sender, RoutedEventArgs e)
+        {
+            dataGridEditTxMessages.Items.Add(new CanTxData());
+        }
+
+        private void ButtonAddEditRxRow_Click(object sender, RoutedEventArgs e)
+        {
+            dataGridEditRxMessages.Items.Add(new CanRxData());
         }
     }
 }
