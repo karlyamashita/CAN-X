@@ -23,6 +23,7 @@ using System.ComponentModel;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 using System.Windows.Controls.Primitives;
 using DataGrid = System.Windows.Controls.DataGrid;
+using System.Reflection;
 
 namespace CAN_X_CAN_Analyzer
 {
@@ -68,6 +69,8 @@ namespace CAN_X_CAN_Analyzer
         public List<CanRxData> myCanDataListRx = new List<CanRxData>() ;
         UInt32 lineCount = 1;
 
+        public List<CanTxData> MyCanDataTxEditMessage { get; set; }
+
         // temporary CAN data to populate Tx DataGrid.
         CanTxData canData1 = new CanTxData();
         CanTxData canData2 = new CanTxData();
@@ -75,7 +78,6 @@ namespace CAN_X_CAN_Analyzer
         CanTxData canData4 = new CanTxData();
         CanTxData canData5 = new CanTxData();
         CanTxData canData6 = new CanTxData();
-
 
         CanRxData canDataRxTemp = new CanRxData();
 
@@ -91,7 +93,8 @@ namespace CAN_X_CAN_Analyzer
             InitUsbDevice();
             AddTxMessagesToDataGrid();
 
-            PopulateBaudRateListBox();
+            InitPopulateBaudRateListBox();
+
         }
 
         private void InitUsbDevice()
@@ -101,10 +104,11 @@ namespace CAN_X_CAN_Analyzer
             Device.OnDisConnected += DeviceOnDisConnected;
             Device.DataReceived += DeviceDataReceived;
         }
+      
 
         // delegate to receive USB data
         private void DeviceDataReceived(byte[] data)
-        {
+        {        
             MessageParse msg = new MessageParse(ParseUsbData);
             this.Dispatcher.BeginInvoke(msg, new object[] { data });
         }
@@ -112,7 +116,7 @@ namespace CAN_X_CAN_Analyzer
         // parse the data
         public void ParseUsbData(byte[] data)
         {
-            switch(data[1])
+            switch (data[1])
             {
                 case COMMAND_MESSAGE:
                     AddToDataGrid(data);
@@ -138,7 +142,7 @@ namespace CAN_X_CAN_Analyzer
                 case COMMAND_HARDWARE:
                     ShowString(COMMAND_HARDWARE, data);
                     break;
-            }        
+            }
         }
 
         private void ShowString(byte command, byte[] data)
@@ -220,18 +224,17 @@ namespace CAN_X_CAN_Analyzer
             }
             if (id == 0x10288040)
             {
-                canDataRx.Description = "Last message";
+                canDataRx.Description = "Remote Transmit";
             }
 
             //data[7] is RTR
-
             if(data[7] == 0)
             {
-                canDataRx.RTR = false;
+                canDataRx.RTR = "";
             }
             else
             {
-                canDataRx.RTR = true;
+                canDataRx.RTR = "R";
             }
 
             canDataRx.DLC = data[8]; // data[8] is DLC
@@ -269,14 +272,10 @@ namespace CAN_X_CAN_Analyzer
                 canDataRx.Byte8 = data[16].ToString("X2");
             }
 
-            myCanDataListRx.Add(canDataRx);
+            myCanDataListRx.Add(canDataRx);// add new data to list
 
             // todo - instead of updating the item source, add new row with current CAN message and refresh, if possible. Need to research.
-            dataGridRx.ItemsSource = null;
-            dataGridRx.ItemsSource = myCanDataListRx;
-
-            dataGridRx.GridLinesVisibility = DataGridGridLinesVisibility.None;
-
+            dataGridRx.ItemsSource = myCanDataListRx;   
             dataGridRx.Items.Refresh();
 
             // todo - scroll to bottom 
@@ -303,38 +302,38 @@ namespace CAN_X_CAN_Analyzer
             MyCanDataListTx = new List<CanTxData>();
 
             canData1.Description = "System_Power_Mode";
-            canData1.Rate = 0.100;
+            //canData1.Rate = 0.100;
             canData1.IDE = "X"; // CAN_STD_ID = 0, CAN_EXT_ID = 4
             canData1.ArbID = "10002040";
-            canData1.RTR = false;
+            canData1.RTR = "";
             canData1.DLC = 3;
             canData1.Byte1 = "12";
             canData1.Byte2 = "00";
             canData1.Byte3 = "00";
 
             canData4.Description = "Audio_Master_Arbitration_Command";
-            canData4.Rate = 0.100;
+            //canData4.Rate = 0.100;
             canData4.IDE = "X";
             canData4.ArbID = "1028A080";
-            canData4.RTR = false;
+            canData4.RTR = "";
             canData4.DLC = 2;
             canData4.Byte1 = "00";
             canData4.Byte2 = "00";
 
             canData5.Description = "Audio_Source_Status";
-            canData5.Rate = 0.100;
+            //canData5.Rate = 0.100;
             canData5.IDE = "X";
             canData5.ArbID = "1031C097";
-            canData5.RTR = false;
+            canData5.RTR = "";
             canData5.DLC = 2;
             canData5.Byte1 = "00";
             canData5.Byte2 = "00";
 
             canData6.Description = "VNMF_IRC_CHM";
-            canData6.Rate = 0.100;
+            //canData6.Rate = 0.100;
             canData6.IDE = "S";
             canData6.ArbID = "624";
-            canData6.RTR = false;
+            canData6.RTR = "";
             canData6.DLC = 0;
 
             MyCanDataListTx.Add(canData1);
@@ -348,7 +347,7 @@ namespace CAN_X_CAN_Analyzer
             dataGridTx.CanUserSortColumns = false;          
         }
 
-        private void ButtonCellTx_Click(object sender, RoutedEventArgs e)
+        private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
         {
             if (!Device.IsDeviceConnected)
             {
@@ -357,6 +356,9 @@ namespace CAN_X_CAN_Analyzer
             }
 
             CanTxData data = dataGridTx.SelectedItem as CanTxData;
+
+            // todo - start async task to send data
+
             CanTxData canData = new CanTxData();
             if(data.IDE == "S")
             {
@@ -379,40 +381,31 @@ namespace CAN_X_CAN_Analyzer
 
             SendCanData(ref canData);
 
-            StatusBarStatus.Text = "Tx: " + Convert.ToString(canData.ArbID);
-        }
-
-        public void ButtonTxClicked(object sender, RoutedEventArgs e)
-        {
-            var ev = e.Source as Button;
-            string str = ev.Content.ToString();
-            if (true)
+            // todo - update receive window with tx message
+            CanRxData canRxData = new CanRxData
             {
-                if (dataGridRx.ItemsSource != null)
-                {
-                    if (dataGridRx.SelectedItem == null)
-                    {
-                        StatusBarStatus.Text = "No Itms Available";
-                        return;
-                    }
+                Line = lineCount++
+            };
 
-                    var canData = dataGridRx.SelectedItem as CanRxData;
-                    try
-                    {
-                        StatusBarStatus.Text = canData.ArbID;
-                    }
-                    catch (NullReferenceException)
-                    {
-                        StatusBarStatus.Text = "No Itms Available";
-                    }
+            canRxData.Tx = true;
 
-                }
-                else
-                {
-                    StatusBarStatus.Text = "No Itms Available";
-                }
-            }
-            StatusBarStatus.Text = "Clicked!";
+            canRxData.IDE = data.IDE;
+            canRxData.ArbID = data.ArbID;
+            canRxData.DLC = data.DLC;
+            canRxData.Byte1 = data.Byte1;
+            canRxData.Byte2 = data.Byte2;
+            canRxData.Byte3 = data.Byte3;
+            canRxData.Byte4 = data.Byte4;
+            canRxData.Byte5 = data.Byte5;
+            canRxData.Byte6 = data.Byte6;
+            canRxData.Byte7 = data.Byte7;
+            canRxData.Byte8 = data.Byte8;
+
+            myCanDataListRx.Add(canRxData);
+
+            dataGridRx.ItemsSource = myCanDataListRx;
+            dataGridRx.Items.Refresh();
+
         }
 
         // button event to connect to device
@@ -463,15 +456,11 @@ namespace CAN_X_CAN_Analyzer
                         TextAlignment = TextAlignment.Center
                     };
                     RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
-
-                    GetInfo();
-
+                    GetInfo();// get the device info
                 }
                 else if (Device.IsDeviceConnected != true)
                 {
                     Console.WriteLine("Device Not Connected\n");
-
-                    StatusBarStatus.Text = "";
 
                     RichTextBoxConnectStatus.Document.Blocks.Clear();
                     Paragraph myParagraph = new Paragraph(new Run("Device Not Connected"))
@@ -483,8 +472,7 @@ namespace CAN_X_CAN_Analyzer
                         TextAlignment = TextAlignment.Center
                     };
                     RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
-
-                    ClearStatusBarStatus();
+                    ClearStatusBarStatus(); // clear the status text
                 }
             }));
         }
@@ -555,6 +543,7 @@ namespace CAN_X_CAN_Analyzer
             Device.SendMessage(command);
         }
 
+        // clears the receive window
         private void ButtonClear_Click(object sender, RoutedEventArgs e)
         {
             dataGridRx.ItemsSource = null;
@@ -563,6 +552,7 @@ namespace CAN_X_CAN_Analyzer
             lineCount = 0;
         }
 
+        // saves data to file
         private void ButtonSaveRxMessages_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFile = new SaveFileDialog
@@ -573,9 +563,8 @@ namespace CAN_X_CAN_Analyzer
             if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 StringBuilder strBuilder = new StringBuilder();
-
                 DateTime localDate = DateTime.Now;
-
+         
                 strBuilder.Append("CAN-X by Karl Yamashita. " + localDate.ToString() + "\n\n");
 
                 // build header
@@ -594,8 +583,6 @@ namespace CAN_X_CAN_Analyzer
                 strBuilder.Append("Byte8" + ", ");
                 strBuilder.Append("TimeStamp");
                 strBuilder.Append("\n");
-
-                
 
                 foreach (var item in dataGridRx.Items.OfType<CanRxData>())
                 {
@@ -636,6 +623,7 @@ namespace CAN_X_CAN_Analyzer
             }       
         }
 
+        // sends new baud rate to device
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
             if (!Device.IsDeviceConnected)
@@ -645,9 +633,7 @@ namespace CAN_X_CAN_Analyzer
             }
 
             byte[] tmp_buf = new byte[DATA_SIZE];
-
             string myString = TextBoxBtrValue.Text;
-
             UInt32 btrValue = Convert.ToUInt32(myString, 16);
 
             tmp_buf[0] = (byte)(btrValue >> 24);
@@ -660,7 +646,7 @@ namespace CAN_X_CAN_Analyzer
             Device.SendMessage(command);
         }
 
-        private void PopulateBaudRateListBox()
+        private void InitPopulateBaudRateListBox()
         {
             CAN_BaudRate baud_1000k = new CAN_BaudRate(); // 1 mbits 0x001a0002
             CAN_BaudRate baud_500k = new CAN_BaudRate(); // 500kbits 0x001a0005
@@ -714,9 +700,7 @@ namespace CAN_X_CAN_Analyzer
         private void ComboBoxBaudRate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int indexItem = 0;
-
             indexItem = ComboBoxBaudRate.SelectedIndex;
-
             TextBoxBtrValue.Text = baudRateList[indexItem].value;
         }
 
@@ -740,147 +724,12 @@ namespace CAN_X_CAN_Analyzer
             }
         }
 
-        /// <summary>
-        /// Determine the index of a DataGridRow
-        /// </summary>
-        /// <param name="row"></param>
-        /// <returns></returns>
-        private int FindRowIndex(DataGridRow row)
-        {
-            System.Windows.Controls.DataGrid dataGrid = ItemsControl.ItemsControlFromItemContainer(row) as System.Windows.Controls.DataGrid;
-
-            int index = dataGrid.ItemContainerGenerator.IndexFromContainer(row);
-
-            return index;
-        }
-
-        /// <summary>
-        /// Find the value that is bound to a DataGridCell
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="cell"></param>
-        /// <returns></returns>
-        private object ExtractBoundValue(DataGridRow row, System.Windows.Controls.DataGridCell cell)
-        {
-            // find the property that this cell's column is bound to
-            string boundPropertyName = FindBoundProperty(cell.Column);
-
-            // find the object that is realted to this row
-            object data = row.Item;
-
-            // extract the property value
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(data);
-            PropertyDescriptor property = properties[boundPropertyName];
-
-            if (property == null) return null; // null check
-
-            object value = property.GetValue(data);
-
-            return value;
-        }
-
-        /// <summary>
-        /// Find the name of the property which is bound to the given column
-        /// </summary>
-        /// <param name="col"></param>
-        /// <returns></returns>
-        private string FindBoundProperty(DataGridColumn col)
-        {
-            DataGridBoundColumn boundColumn = col as DataGridBoundColumn;
-
-            if (boundColumn == null) return ""; // null check
-
-            // find the property that this column is bound to
-            System.Windows.Data.Binding binding = boundColumn.Binding as System.Windows.Data.Binding;
-            string boundPropertyName = binding.Path.Path;
-
-            return boundPropertyName;
-        }
-
-        private void DataGridTx_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            DependencyObject dep = (DependencyObject)e.OriginalSource;
-
-            while ((dep != null) && !(dep is DataGridCell) && !(dep is DataGridColumnHeader))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            if (dep == null)
-                return;
-            /*
-            if (dep is DataGridColumnHeader)
-            {
-                DataGridColumnHeader columnHeader = dep as DataGridColumnHeader;
-
-                // find the property that this cell's column is bound to
-                string boundPropertyName = FindBoundProperty(columnHeader.Column);
-
-                int columnIndex = columnHeader.Column.DisplayIndex;
-
-                StatusBarStatus.Text = string.Format(
-                    "Header clicked [{0}] = {1}",
-                    columnIndex, boundPropertyName);
-            }
-            */
-            if (dep is DataGridCell)
-            {
-                DataGridCell cell = dep as DataGridCell;
-
-                // navigate further up the tree
-                while ((dep != null) && !(dep is DataGridRow))
-                {
-                    dep = VisualTreeHelper.GetParent(dep);
-                }
-
-                if (dep == null)
-                    return;
-
-                DataGridRow row = dep as DataGridRow;
-
-                //object value = ExtractBoundValue(row, cell);
-                //if (value == null) return; // null check
-
-                int columnIndex = cell.Column.DisplayIndex;
-                int rowIndex = FindRowIndex(row);
-
-                if (columnIndex == 3) // the Tx column
-                {
-                    StatusBarStatus.Text = string.Format("Cell clicked [{0}, {1}]", rowIndex, columnIndex);
-
-                    // todo - send CAN message at rowIndex
-
-                    CanTxData canData = new CanTxData();
-
-                    if(MyCanDataListTx[rowIndex].IDE == "S")
-                    {
-                        canData.IDE = "CAN_STD_ID";
-                    }
-                    else
-                    {
-                        canData.IDE = "CAN_XTD_ID";
-                    }
-                                   
-                    canData.ArbID = MyCanDataListTx[rowIndex].ArbID;
-                    canData.DLC = MyCanDataListTx[rowIndex].DLC;
-                    canData.Byte1 = MyCanDataListTx[rowIndex].Byte1;
-                    canData.Byte2 = MyCanDataListTx[rowIndex].Byte2;
-                    canData.Byte3 = MyCanDataListTx[rowIndex].Byte3;
-                    canData.Byte4 = MyCanDataListTx[rowIndex].Byte4;
-                    canData.Byte5 = MyCanDataListTx[rowIndex].Byte5;
-                    canData.Byte6 = MyCanDataListTx[rowIndex].Byte6;
-                    canData.Byte7 = MyCanDataListTx[rowIndex].Byte7;
-                    canData.Byte8 = MyCanDataListTx[rowIndex].Byte8;
-
-                    SendCanData(ref canData);
-                }
-
-            }
-        }
-
         private void ButtonAddEditTxRow_Click(object sender, RoutedEventArgs e)
         {
-            dataGridEditTxMessages.Items.Add(new CanTxData());
+            CanTxData canData = new CanTxData();
+            canData.Key = 1;
+            canData.ArbID = "0x10022040";
+            dataGridEditTxMessages.Items.Add(canData);
         }
 
         private void ButtonAddEditRxRow_Click(object sender, RoutedEventArgs e)

@@ -142,7 +142,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\addbutton_J7Q_icon.ico" />
+    <None Include="Resources\addbutton_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\green_button_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ic_launcher.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

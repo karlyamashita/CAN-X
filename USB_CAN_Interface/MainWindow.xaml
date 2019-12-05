@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CAN_X_CAN_Analyzer"
-        mc:Ignorable="d"
+        mc:Ignorable="d" 
         Title="CAN-X CAN bus Analyzer" WindowStartupLocation="CenterScreen" Margin="0" Height="867.5" Width="1366" Closing="Window_Closing">
+
     <Grid>
         <DockPanel>
             <StackPanel DockPanel.Dock="Top" Height="30" Margin="0">
@@ -94,8 +95,30 @@
                                 <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Time Stamp" Binding="{Binding Path='TimeStamp', Mode=OneWay}" />
 
-                                <DataGridTextColumn Header="Tx" Binding="{Binding Path='Tx', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Err" Binding="{Binding Path='Err', Mode=OneWay}" />
+                                <DataGridTemplateColumn Header="Tx" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Height="15" Width="15">
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Tx}" Value="true">
+                                                                <Setter Property="Source" Value="E:\My Documents\Visual Studio 2017\Projects\USB_CAN_Interface\USB_CAN_Interface\Resources\green_button_icon.ico" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Err" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Source="{Binding ImageErrFilePath}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
                                 <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
@@ -115,14 +138,14 @@
 
                             </DataGrid.Columns>
                         </DataGrid>
-                        <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" CanUserAddRows="False" AutoGenerateColumns="False" Margin="0,0,0,35" VerticalAlignment="Bottom" Background="White" MinHeight="150" Height="130" MouseLeftButtonUp="DataGridTx_MouseLeftButtonUp" Grid.ColumnSpan="3">
+                        <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,0,0,35" VerticalAlignment="Bottom" Background="White" MinHeight="150" Height="130" Grid.ColumnSpan="3">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description'}" />
                                 <DataGridTemplateColumn Header="TX" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Name="bthnView" Content="Send" Click="ButtonCellTx_Click"/>
+                                            <Button Name="bthnView" Content="Send" Click="ButtonTxMessage_Click"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -185,22 +208,22 @@
                             </StackPanel>
                             <Grid>
 
-                                <DataGrid x:Name="dataGridEditTxMessages" AutoGenerateColumns="False" Background="White" HorizontalAlignment="Stretch" Height="350">
+                                <DataGrid x:Name="dataGridEditTxMessages" AutoGenerateColumns="False" Background="White" IsReadOnly="false" HorizontalAlignment="Stretch" Height="350" >
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
-                                        <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID' , Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=TwoWay}" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                                 
@@ -214,7 +237,7 @@
         <StatusBar Height="25" VerticalAlignment="Bottom" Margin="0,0,0,5" Background="#FFE2E2E2">
             <StatusBarItem VerticalAlignment="Bottom" Background="#FFEEEEEE">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="0,0,20,0" MinWidth="500"/>
+                    <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="0,0,20,0" MinWidth="600"/>
                     <TextBlock x:Name="StatusBarStatusHardware" Margin="0,0,20,0" />
                     <TextBlock x:Name="StatusBarStatusVersion" Margin="0,0,20,0" />
                 </StackPanel>

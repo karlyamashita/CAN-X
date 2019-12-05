@@ -63,10 +63,30 @@ namespace USB_CAN_Interface.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon addbutton_J7Q_icon {
+        internal static System.Drawing.Icon addbutton_icon {
             get {
-                object obj = ResourceManager.GetObject("addbutton_J7Q_icon", resourceCulture);
+                object obj = ResourceManager.GetObject("addbutton_icon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon green_button_icon {
+            get {
+                object obj = ResourceManager.GetObject("green_button_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_launcher {
+            get {
+                object obj = ResourceManager.GetObject("ic_launcher", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

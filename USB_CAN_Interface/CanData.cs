@@ -1,16 +1,18 @@
-﻿namespace CAN_X_CAN_Analyzer
+﻿using System;
+
+namespace CAN_X_CAN_Analyzer
 {
     public class CanTxData
     {
         public ulong Key { get; set; }
         public ulong Count { get; set; }
         public string Description { get; set; }  
-        public bool Tx { get; set; } // tx button
+        //public bool Tx { get; set; } // tx button
         public string AutoTx { get; set; }
         public double Rate { get; set; }
         public string IDE { get; set; } // vspy3 calls it "Type"
         public string ArbID { get; set; } 
-        public bool RTR { get; set; }
+        public string RTR { get; set; }
         public int DLC { get; set; }
         //data bytes
         public string Byte1 { get; set; }
@@ -31,12 +33,14 @@
         public ulong Line { get; set; } // when scolling messages this is Line
         public ulong Count { get; set; } // this is Count when not scolling messages
         public double TimeAbs { get; set; }
-        public bool Tx { get; set; } // indicator, not button
-        public bool Err { get; set; }
+
+        public bool Tx { get; set; } // indicator, image
+        
+        public bool Err { get; set; } // indicator, image
         public string Description { get; set; }
         public string IDE { get; set; }
         public string ArbID { get; set; }
-        public bool RTR { get; set; }
+        public string RTR { get; set; }
         public int DLC { get; set; }
         //data bytes
         public string Byte1 { get; set; }
