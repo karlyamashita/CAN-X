@@ -75,7 +75,7 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                <StackPanel Orientation="Vertical" Margin="0,15,0,22" HorizontalAlignment="Center"/>
+             
             </StackPanel>
 
             <TabControl Margin="0,0,0,10">
@@ -90,10 +90,10 @@
                             <Button x:Name="ButtonClear" Content="Clear" HorizontalAlignment="Left" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" VerticalAlignment="Bottom"/>
                             <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Width="91" Margin="0" Click="ButtonSaveRxMessages_Click"/>
                         </StackPanel>
-                        <DataGrid x:Name="dataGridRx" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,30,0,190" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3">
+                        <DataGrid x:Name="dataGridRx" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,30,0,190" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Time Stamp" Binding="{Binding Path='TimeStamp', Mode=OneWay}" />
+                                <DataGridTextColumn Header="TimeAbs" Binding="{Binding Path='TimeAbs', Mode=OneWay}" />
 
                                 <DataGridTemplateColumn Header="Tx" >
                                     <DataGridTemplateColumn.CellTemplate>
@@ -180,23 +180,23 @@
                                 <Button x:Name="ButtonAddEditRxRow" Width="20" Height="20" Content="" Margin="20,0,0,0" Click="ButtonAddEditRxRow_Click" />
                             </StackPanel>
                             <Grid >
-                            <DataGrid x:Name="dataGridEditRxMessages" AutoGenerateColumns="False" Background="White" HorizontalAlignment="Stretch" Height="350" >
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
-                                    <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
-                                </DataGrid.Columns>
-                            </DataGrid>
+                                <DataGrid x:Name="dataGridEditRxMessages" AutoGenerateColumns="False" Background="White" HorizontalAlignment="Stretch" Height="350" >
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
+                                        <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </Grid>
                         </StackPanel>
                         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.ColumnSpan="4" Background="#FF0051FF" Margin="0"/>
@@ -226,7 +226,7 @@
                                         <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=TwoWay}" />
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                
+
                             </Grid>
                         </StackPanel>
                     </Grid>
@@ -240,8 +240,10 @@
                     <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="0,0,20,0" MinWidth="600"/>
                     <TextBlock x:Name="StatusBarStatusHardware" Margin="0,0,20,0" />
                     <TextBlock x:Name="StatusBarStatusVersion" Margin="0,0,20,0" />
+                    <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="15" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="50,0,20,0" Maximum="5000" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
+        <ProgressBar HorizontalAlignment="Left" Height="10" Margin="1198,973,0,-146" VerticalAlignment="Top" Width="100"/>
     </Grid>
 </Window>

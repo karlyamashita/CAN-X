@@ -32,7 +32,7 @@ namespace CAN_X_CAN_Analyzer
         public ulong Key { get; set; }
         public ulong Line { get; set; } // when scolling messages this is Line
         public ulong Count { get; set; } // this is Count when not scolling messages
-        public double TimeAbs { get; set; }
+        public string TimeAbs { get; set; }
 
         public bool Tx { get; set; } // indicator, image
         

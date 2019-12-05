@@ -65,11 +65,7 @@ namespace CAN_X_CAN_Analyzer
         // arrays, variables, objects
         public static UsbHidDevice Device;
 
-        public List<CanTxData> MyCanDataListTx { get; set; }
-        public List<CanRxData> myCanDataListRx = new List<CanRxData>() ;
         UInt32 lineCount = 1;
-
-        public List<CanTxData> MyCanDataTxEditMessage { get; set; }
 
         // temporary CAN data to populate Tx DataGrid.
         CanTxData canData1 = new CanTxData();
@@ -78,8 +74,6 @@ namespace CAN_X_CAN_Analyzer
         CanTxData canData4 = new CanTxData();
         CanTxData canData5 = new CanTxData();
         CanTxData canData6 = new CanTxData();
-
-        CanRxData canDataRxTemp = new CanRxData();
 
         List<CAN_BaudRate> baudRateList = new List<CAN_BaudRate>();
 
@@ -91,10 +85,9 @@ namespace CAN_X_CAN_Analyzer
 
             // my init routines
             InitUsbDevice();
-            AddTxMessagesToDataGrid();
+            InitAddTxMessagesToDataGrid();
 
             InitPopulateBaudRateListBox();
-
         }
 
         private void InitUsbDevice()
@@ -200,6 +193,10 @@ namespace CAN_X_CAN_Analyzer
                 Line = lineCount++
             };
 
+            DateTime now = DateTime.Now;
+
+            canDataRx.TimeAbs = now.ToString("o");
+
             //data[1] is command
             if (data[2] == 0)
             {
@@ -272,14 +269,26 @@ namespace CAN_X_CAN_Analyzer
                 canDataRx.Byte8 = data[16].ToString("X2");
             }
 
-            myCanDataListRx.Add(canDataRx);// add new data to list
+            dataGridRx.Items.Add(canDataRx); // add new row and populate with new data
 
-            // todo - instead of updating the item source, add new row with current CAN message and refresh, if possible. Need to research.
-            dataGridRx.ItemsSource = myCanDataListRx;   
-            dataGridRx.Items.Refresh();
+            // scroll to bottom
+            if (dataGridRx.Items.Count > 0)
+            {
+                var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
+                if (border != null)
+                {
+                    var scroll = border.Child as ScrollViewer;
+                    if (scroll != null) scroll.ScrollToEnd();
+                }
+            }
 
-            // todo - scroll to bottom 
-            //dataGridRx.ScrollIntoView(myCanDataListRx[myCanDataListRx.Count - 1]);
+            var count = dataGridRx.Items.Count;
+
+            ProgressBar.Value = count;
+            if(count>=10000)
+            {
+                dataGridRx.Items.RemoveAt(0);                 
+            }
 
         }
 
@@ -296,10 +305,9 @@ namespace CAN_X_CAN_Analyzer
         }
 
         //temporary, just to see what Tx Grid looks like
-        private void AddTxMessagesToDataGrid()
+        private void InitAddTxMessagesToDataGrid()
         {
             // todo - add feature to add CAN messages to Tx window and Tx Button. For now just populate DataGrid with below data
-            MyCanDataListTx = new List<CanTxData>();
 
             canData1.Description = "System_Power_Mode";
             //canData1.Rate = 0.100;
@@ -311,6 +319,8 @@ namespace CAN_X_CAN_Analyzer
             canData1.Byte2 = "00";
             canData1.Byte3 = "00";
 
+            dataGridTx.Items.Add(canData1);
+
             canData4.Description = "Audio_Master_Arbitration_Command";
             //canData4.Rate = 0.100;
             canData4.IDE = "X";
@@ -319,6 +329,8 @@ namespace CAN_X_CAN_Analyzer
             canData4.DLC = 2;
             canData4.Byte1 = "00";
             canData4.Byte2 = "00";
+
+            dataGridTx.Items.Add(canData4);
 
             canData5.Description = "Audio_Source_Status";
             //canData5.Rate = 0.100;
@@ -329,6 +341,8 @@ namespace CAN_X_CAN_Analyzer
             canData5.Byte1 = "00";
             canData5.Byte2 = "00";
 
+            dataGridTx.Items.Add(canData5);
+
             canData6.Description = "VNMF_IRC_CHM";
             //canData6.Rate = 0.100;
             canData6.IDE = "S";
@@ -336,13 +350,7 @@ namespace CAN_X_CAN_Analyzer
             canData6.RTR = "";
             canData6.DLC = 0;
 
-            MyCanDataListTx.Add(canData1);
-           // myCanDataListTx.Add(canData2);
-            MyCanDataListTx.Add(canData4);
-            MyCanDataListTx.Add(canData5);
-            MyCanDataListTx.Add(canData6);
-        
-            dataGridTx.ItemsSource = MyCanDataListTx;
+            dataGridTx.Items.Add(canData6);
             
             dataGridTx.CanUserSortColumns = false;          
         }
@@ -355,7 +363,7 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
 
-            CanTxData data = dataGridTx.SelectedItem as CanTxData;
+            CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row
 
             // todo - start async task to send data
 
@@ -401,10 +409,7 @@ namespace CAN_X_CAN_Analyzer
             canRxData.Byte7 = data.Byte7;
             canRxData.Byte8 = data.Byte8;
 
-            myCanDataListRx.Add(canRxData);
-
-            dataGridRx.ItemsSource = myCanDataListRx;
-            dataGridRx.Items.Refresh();
+            dataGridRx.Items.Add(canRxData);
 
         }
 
@@ -548,7 +553,9 @@ namespace CAN_X_CAN_Analyzer
         {
             dataGridRx.ItemsSource = null;
             dataGridRx.Items.Refresh();
-            myCanDataListRx.Clear();
+            dataGridRx.Columns.Clear();
+            ProgressBar.Value = 0;
+
             lineCount = 0;
         }
 
