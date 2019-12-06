@@ -32,6 +32,7 @@ namespace CAN_X_CAN_Analyzer
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region const defines
         // standard ASCII characters
         const byte COMMAND_SOH = 0x01;
         const byte COMMAND_STX = 0x02;
@@ -59,9 +60,22 @@ namespace CAN_X_CAN_Analyzer
         const byte CAN_STD_ID = 0x00;
         const byte CAN_EXT_ID = 0x04;
 
+        // nodes
+        const byte CAN1_NODE = 0;
+        const byte CAN2_NODE = 1;
+        const byte SWCAN1_NODE = 2;
+        const byte LSFTCAN1_NODE = 3;
+        const byte LIN1_NODe = 4;
+        const byte ETH1_NODE = 5;
+        const byte SWCAN2_NODE = 6;
+        const byte LSFTCAN2_NODE = 7;
+
+
         const int DATA_SIZE = 20;
         const int BUFF_SIZE = 64;
+        #endregion
 
+        #region variables
         // arrays, variables, objects
         public static UsbHidDevice Device;
 
@@ -75,10 +89,14 @@ namespace CAN_X_CAN_Analyzer
         CanTxData canData5 = new CanTxData();
         CanTxData canData6 = new CanTxData();
 
+        BindingList<CanTxData> listCanTxData = new BindingList<CanTxData>();
+
         List<CAN_BaudRate> baudRateList = new List<CAN_BaudRate>();
 
         public delegate void MessageParse(byte[] data);
+        #endregion
 
+        #region MainWindow
         public MainWindow()
         {
             InitializeComponent();
@@ -89,7 +107,9 @@ namespace CAN_X_CAN_Analyzer
 
             InitPopulateBaudRateListBox();
         }
+        #endregion
 
+        #region init USB device
         private void InitUsbDevice()
         {
             Device = new UsbHidDevice(0x0483, 0x5750);
@@ -97,16 +117,17 @@ namespace CAN_X_CAN_Analyzer
             Device.OnDisConnected += DeviceOnDisConnected;
             Device.DataReceived += DeviceDataReceived;
         }
-      
+        #endregion
 
-        // delegate to receive USB data
+        #region DeviceDataReceived, delegate to receive USB data
         private void DeviceDataReceived(byte[] data)
         {        
             MessageParse msg = new MessageParse(ParseUsbData);
             this.Dispatcher.BeginInvoke(msg, new object[] { data });
         }
+        #endregion
 
-        // parse the data
+        #region parse the USB data received. This is running on a thread
         public void ParseUsbData(byte[] data)
         {
             switch (data[1])
@@ -137,7 +158,9 @@ namespace CAN_X_CAN_Analyzer
                     break;
             }
         }
+        #endregion
 
+        #region get and show string from data
         private void ShowString(byte command, byte[] data)
         {
             // todo - show the text sent by the interface. Need to figure out where to show. Maybe new TextBox or Lable.
@@ -164,7 +187,9 @@ namespace CAN_X_CAN_Analyzer
             }
             return Encoding.ASCII.GetString(temp); 
         }
+        #endregion
 
+        #region parse data to show new CAN_BTC value
         private void ShowBTC_VALUE(byte[] data)
         {
             // todo - parse the BTC_VALUE and show in TextBoxBtcValue. Then set index in the ComboBoxBaudRate
@@ -184,9 +209,10 @@ namespace CAN_X_CAN_Analyzer
                 i++;
             }
         }
+        #endregion
 
-        // add CAN messages to DataGrid
-        private void AddToDataGrid(byte[] data)
+        #region add CAN messages to DataGrid
+        private void AddToDataGrid(byte[] msgData)
         {
             CanRxData canDataRx = new CanRxData
             {
@@ -194,11 +220,14 @@ namespace CAN_X_CAN_Analyzer
             };
 
             DateTime now = DateTime.Now;
-
             canDataRx.TimeAbs = now.ToString("o");
 
-            //data[1] is command
-            if (data[2] == 0)
+            byte[] data = new byte[DATA_SIZE];
+
+            Array.Copy(msgData, 1, data, 0, DATA_SIZE);
+
+            //data[0] is command
+            if (data[1] == 0)
             {
                 canDataRx.IDE = "S";
             }
@@ -207,7 +236,19 @@ namespace CAN_X_CAN_Analyzer
                 canDataRx.IDE = "X";
             }
 
-            UInt32 id = (UInt32)(data[3] << 24 | data[4] << 16 | data[5] << 8 | data[6]);
+            //data[2] is RTR
+            if (data[2] == 0)
+            {
+                canDataRx.RTR = "";
+            }
+            else
+            {
+                canDataRx.RTR = "R";
+            }
+            // data[3] is n/a
+
+            UInt32 id = (UInt32)(data[4] | data[5] << 8 | data[6] << 16 | data[7] << 24);
+
             canDataRx.ArbID = Convert.ToString(id, 16).ToUpper();
 
             // todo parse ID and compare to database. Return string description if available
@@ -224,49 +265,39 @@ namespace CAN_X_CAN_Analyzer
                 canDataRx.Description = "Remote Transmit";
             }
 
-            //data[7] is RTR
-            if(data[7] == 0)
-            {
-                canDataRx.RTR = "";
-            }
-            else
-            {
-                canDataRx.RTR = "R";
-            }
-
             canDataRx.DLC = data[8]; // data[8] is DLC
 
             if (data[8] >= 1)
             {
-                canDataRx.Byte1 = data[9].ToString("X2");
+                canDataRx.Byte1 = data[10].ToString("X2");
             }
             if (data[8] >= 2)
             {
-                canDataRx.Byte2 = data[10].ToString("X2");
+                canDataRx.Byte2 = data[11].ToString("X2");
             }
             if (data[8] >= 3)
             {
-                canDataRx.Byte3 = data[11].ToString("X2");
+                canDataRx.Byte3 = data[12].ToString("X2");
             }
             if (data[8] >= 4)
             {
-                canDataRx.Byte4 = data[12].ToString("X2");
+                canDataRx.Byte4 = data[13].ToString("X2");
             }
             if (data[8] >= 5)
             {
-                canDataRx.Byte5 = data[13].ToString("X2");
+                canDataRx.Byte5 = data[14].ToString("X2");
             }
             if (data[8] >= 6)
             {
-                canDataRx.Byte6 = data[14].ToString("X2");
+                canDataRx.Byte6 = data[15].ToString("X2");
             }
             if (data[8] >= 7)
             {
-                canDataRx.Byte7 = data[15].ToString("X2");
+                canDataRx.Byte7 = data[16].ToString("X2");
             }
             if (data[8] == 8)
             {
-                canDataRx.Byte8 = data[16].ToString("X2");
+                canDataRx.Byte8 = data[17].ToString("X2");
             }
 
             dataGridRx.Items.Add(canDataRx); // add new row and populate with new data
@@ -289,72 +320,10 @@ namespace CAN_X_CAN_Analyzer
             {
                 dataGridRx.Items.RemoveAt(0);                 
             }
-
         }
+        #endregion
 
-        // delegate when USB device is connected
-        private void DeviceOnConnected()
-        {
-            DeviceConnectionChanged();
-        }
-
-        // delegate when USB device is disconnected
-        private void DeviceOnDisConnected()
-        {
-            DeviceConnectionChanged();
-        }
-
-        //temporary, just to see what Tx Grid looks like
-        private void InitAddTxMessagesToDataGrid()
-        {
-            // todo - add feature to add CAN messages to Tx window and Tx Button. For now just populate DataGrid with below data
-
-            canData1.Description = "System_Power_Mode";
-            //canData1.Rate = 0.100;
-            canData1.IDE = "X"; // CAN_STD_ID = 0, CAN_EXT_ID = 4
-            canData1.ArbID = "10002040";
-            canData1.RTR = "";
-            canData1.DLC = 3;
-            canData1.Byte1 = "12";
-            canData1.Byte2 = "00";
-            canData1.Byte3 = "00";
-
-            dataGridTx.Items.Add(canData1);
-
-            canData4.Description = "Audio_Master_Arbitration_Command";
-            //canData4.Rate = 0.100;
-            canData4.IDE = "X";
-            canData4.ArbID = "1028A080";
-            canData4.RTR = "";
-            canData4.DLC = 2;
-            canData4.Byte1 = "00";
-            canData4.Byte2 = "00";
-
-            dataGridTx.Items.Add(canData4);
-
-            canData5.Description = "Audio_Source_Status";
-            //canData5.Rate = 0.100;
-            canData5.IDE = "X";
-            canData5.ArbID = "1031C097";
-            canData5.RTR = "";
-            canData5.DLC = 2;
-            canData5.Byte1 = "00";
-            canData5.Byte2 = "00";
-
-            dataGridTx.Items.Add(canData5);
-
-            canData6.Description = "VNMF_IRC_CHM";
-            //canData6.Rate = 0.100;
-            canData6.IDE = "S";
-            canData6.ArbID = "624";
-            canData6.RTR = "";
-            canData6.DLC = 0;
-
-            dataGridTx.Items.Add(canData6);
-            
-            dataGridTx.CanUserSortColumns = false;          
-        }
-
+        #region Button event to send CAN messages and to update receive window what was sent
         private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
         {
             if (!Device.IsDeviceConnected)
@@ -363,12 +332,14 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
 
+            DateTime now = DateTime.Now;
+
             CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row
 
             // todo - start async task to send data
 
             CanTxData canData = new CanTxData();
-            if(data.IDE == "S")
+            if (data.IDE == "S")
             {
                 canData.IDE = "CAN_STD_ID";
             }
@@ -395,6 +366,8 @@ namespace CAN_X_CAN_Analyzer
                 Line = lineCount++
             };
 
+            canRxData.TimeAbs = now.ToString("o");
+
             canRxData.Tx = true;
 
             canRxData.IDE = data.IDE;
@@ -411,13 +384,38 @@ namespace CAN_X_CAN_Analyzer
 
             dataGridRx.Items.Add(canRxData);
 
+            // scroll to bottom
+            if (dataGridRx.Items.Count > 0)
+            {
+                var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
+                if (border != null)
+                {
+                    var scroll = border.Child as ScrollViewer;
+                    if (scroll != null) scroll.ScrollToEnd();
+                }
+            }
+
+        }
+        #endregion
+
+        #region Button Connect/Disconnect, DeviceOnConnect/Disconnect 
+        // delegate when USB device is connected
+        private void DeviceOnConnected()
+        {
+            DeviceConnectionChanged();
+        }
+
+        // delegate when USB device is disconnected
+        private void DeviceOnDisConnected()
+        {
+            DeviceConnectionChanged();
         }
 
         // button event to connect to device
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
-            Device.Connect();       
-            if(!Device.IsDeviceConnected)
+            Device.Connect();
+            if (!Device.IsDeviceConnected)
             {
                 RichTextBoxConnectStatus.Document.Blocks.Clear();
                 Paragraph myParagraph = new Paragraph(new Run("Device Not Attached"))
@@ -482,7 +480,85 @@ namespace CAN_X_CAN_Analyzer
             }));
         }
 
-        // get the connected device version and hardware type
+        #endregion
+
+        #region temporary, just to see what Tx Grid looks like
+        private void InitAddTxMessagesToDataGrid()
+        {
+            // todo - add feature to add CAN messages to Tx window and Tx Button. For now just populate DataGrid with below data
+
+            canData1.Description = "System_Power_Mode";
+            //canData1.Rate = 0.100;
+            canData1.IDE = "S"; // CAN_STD_ID = 0, CAN_EXT_ID = 4
+            canData1.ArbID = "040";
+            canData1.RTR = "";
+            canData1.DLC = 8;
+            canData1.Byte1 = "01";
+            canData1.Byte2 = "02";
+            canData1.Byte3 = "03";
+            canData1.Byte3 = "04";
+            canData1.Byte3 = "05";
+            canData1.Byte3 = "06";
+            canData1.Byte3 = "07";
+            canData1.Byte3 = "08";
+
+            dataGridTx.Items.Add(canData1);
+
+            canData3.Description = "IRC";
+            canData3.IDE = "X";
+            canData3.ArbID = "10012080";
+            canData3.RTR = "";
+            canData3.DLC = 4;
+            canData3.Byte1 = "00";
+            canData3.Byte2 = "00";
+
+            dataGridTx.Items.Add(canData3);
+
+            canData4.Description = "Audio_Master_Arbitration_Command";
+            //canData4.Rate = 0.100;
+            canData4.IDE = "X";
+            canData4.ArbID = "1028A080";
+            canData4.RTR = "";
+            canData4.DLC = 2;
+            canData4.Byte1 = "00";
+            canData4.Byte2 = "00";
+
+            dataGridTx.Items.Add(canData4);
+
+            canData5.Description = "Audio_Source_Status";
+            //canData5.Rate = 0.100;
+            canData5.IDE = "X";
+            canData5.ArbID = "1031C097";
+            canData5.RTR = "";
+            canData5.DLC = 2;
+            canData5.Byte1 = "00";
+            canData5.Byte2 = "00";
+
+            dataGridTx.Items.Add(canData5);
+
+            canData2.Description = "TECH_2";
+            //canData6.Rate = 0.100;
+            canData2.IDE = "S";
+            canData2.ArbID = "101";
+            canData2.RTR = "";
+            canData2.DLC = 8;
+
+            dataGridTx.Items.Add(canData2);
+
+            canData6.Description = "VNMF_IRC_CHM";
+            //canData6.Rate = 0.100;
+            canData6.IDE = "S";
+            canData6.ArbID = "624";
+            canData6.RTR = "";
+            canData6.DLC = 0;
+
+            dataGridTx.Items.Add(canData6);
+            
+            dataGridTx.CanUserSortColumns = false;          
+        }
+        #endregion\
+
+        #region get the connected device version and hardware type
         private void GetInfo()
         {
             byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
@@ -490,14 +566,9 @@ namespace CAN_X_CAN_Analyzer
             var command = new CommandMessage(COMMAND_INFO, tmp_buf); // no data to send but need array
             Device.SendMessage(command);
         }
+        #endregion
 
-        private void ClearStatusBarStatus()
-        {
-            StatusBarStatusHardware.Text = "";
-            StatusBarStatusVersion.Text = "";
-            StatusBarStatus.Text = "";
-        }
-
+        #region SendCanData
         private void SendCanData(ref CanTxData canData)
         {
             byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
@@ -512,54 +583,64 @@ namespace CAN_X_CAN_Analyzer
                 tmp_buf[0] = CAN_EXT_ID;
             }
 
+            tmp_buf[1] = Convert.ToByte(canData.RTR); // RTR
+            // tmp_buf[2] n/a
+
             // Arb ID 29/11 bit
-            
             if (canData.IDE == "CAN_STD_ID")
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
                 extID = extID & 0x7FF;
-                tmp_buf[3] = (byte)(extID >> 8 & 0xFF);
-                tmp_buf[4] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                tmp_buf[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                tmp_buf[4] = (byte)(extID >> 8 & 0xFF); 
             }
             else
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
-                tmp_buf[1] = (byte)(extID >> 24 & 0xFF); // MSB
-                tmp_buf[2] = (byte)(extID >> 16 & 0xFF);
-                tmp_buf[3] = (byte)(extID >> 8 & 0xFF);
-                tmp_buf[4] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                tmp_buf[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                tmp_buf[4] = (byte)(extID >> 8 & 0xFF);
+                tmp_buf[5] = (byte)(extID >> 16 & 0xFF);
+                tmp_buf[6] = (byte)(extID >> 24 & 0xFF); // MSB         
             }
-            tmp_buf[5] = Convert.ToByte(canData.RTR); // RTR
-
+            
             //DLC
-            tmp_buf[6] = Convert.ToByte(canData.DLC);
+            tmp_buf[7] = Convert.ToByte(canData.DLC);
 
             // data bytes
-            tmp_buf[7] = Convert.ToByte(canData.Byte1, 16);
-            tmp_buf[8] = Convert.ToByte(canData.Byte2, 16);
-            tmp_buf[9] = Convert.ToByte(canData.Byte3, 16);
-            tmp_buf[10] = Convert.ToByte(canData.Byte4, 16);
-            tmp_buf[11] = Convert.ToByte(canData.Byte5, 16);
-            tmp_buf[12] = Convert.ToByte(canData.Byte6, 16);
-            tmp_buf[13] = Convert.ToByte(canData.Byte7, 16);
-            tmp_buf[14] = Convert.ToByte(canData.Byte8, 16);
+            tmp_buf[8] = Convert.ToByte(canData.Byte1, 16);
+            tmp_buf[9] = Convert.ToByte(canData.Byte2, 16);
+            tmp_buf[10] = Convert.ToByte(canData.Byte3, 16);
+            tmp_buf[11] = Convert.ToByte(canData.Byte4, 16);
+            tmp_buf[12] = Convert.ToByte(canData.Byte5, 16);
+            tmp_buf[13] = Convert.ToByte(canData.Byte6, 16);
+            tmp_buf[14] = Convert.ToByte(canData.Byte7, 16);
+            tmp_buf[15] = Convert.ToByte(canData.Byte8, 16);
 
             var command = new CommandMessage(COMMAND_MESSAGE, tmp_buf);
             Device.SendMessage(command);
         }
+        #endregion
 
-        // clears the receive window
+        #region clear receive window, ClearStatusBar
         private void ButtonClear_Click(object sender, RoutedEventArgs e)
         {
-            dataGridRx.ItemsSource = null;
-            dataGridRx.Items.Refresh();
-            dataGridRx.Columns.Clear();
+            while(dataGridRx.Items.Count != 0)
+            {
+                dataGridRx.Items.RemoveAt(0);
+            }
             ProgressBar.Value = 0;
-
             lineCount = 0;
         }
 
-        // saves data to file
+        private void ClearStatusBarStatus()
+        {
+            StatusBarStatusHardware.Text = "";
+            StatusBarStatusVersion.Text = "";
+            StatusBarStatus.Text = "";
+        }
+        #endregion
+
+        #region saves receive data to file
         private void ButtonSaveRxMessages_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFile = new SaveFileDialog
@@ -629,8 +710,9 @@ namespace CAN_X_CAN_Analyzer
                 }
             }       
         }
+        #endregion
 
-        // sends new baud rate to device
+        #region sends new baud rate to device. Todo - this modify CAN1, need to make another button to modify CAN2
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
             if (!Device.IsDeviceConnected)
@@ -647,12 +729,15 @@ namespace CAN_X_CAN_Analyzer
             tmp_buf[1] = (byte)(btrValue >> 16);
             tmp_buf[2] = (byte)(btrValue >> 8);
             tmp_buf[3] = (byte)(btrValue);
+            tmp_buf[4] = CAN1_NODE; // CAN1
 
             StatusBarStatus.Text = "Sending BTR Value";
             var command = new CommandMessage(COMMAND_BAUD, tmp_buf);
             Device.SendMessage(command);
         }
+        #endregion
 
+        #region baud rate init and notification change
         private void InitPopulateBaudRateListBox()
         {
             CAN_BaudRate baud_1000k = new CAN_BaudRate(); // 1 mbits 0x001a0002
@@ -710,7 +795,9 @@ namespace CAN_X_CAN_Analyzer
             indexItem = ComboBoxBaudRate.SelectedIndex;
             TextBoxBtrValue.Text = baudRateList[indexItem].value;
         }
+        #endregion
 
+        #region exit program
         private void MenuItemExit_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -730,7 +817,10 @@ namespace CAN_X_CAN_Analyzer
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
         }
+        #endregion
 
+
+        // todo - work on message editor section
         private void ButtonAddEditTxRow_Click(object sender, RoutedEventArgs e)
         {
             CanTxData canData = new CanTxData();
@@ -741,7 +831,14 @@ namespace CAN_X_CAN_Analyzer
 
         private void ButtonAddEditRxRow_Click(object sender, RoutedEventArgs e)
         {
-            dataGridEditRxMessages.Items.Add(new CanRxData());
+            CanTxData canTxData = new CanTxData();
+
+            canTxData.ArbID = "0x10022040";
+            canTxData.DLC = 2;
+            canTxData.Key = 1;
+
+            listCanTxData.Add(canTxData);
+            dataGridEditRxMessages.ItemsSource = listCanTxData;
         }
     }
 }
