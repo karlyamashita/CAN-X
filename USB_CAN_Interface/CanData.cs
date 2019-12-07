@@ -22,6 +22,8 @@ namespace CAN_X_CAN_Analyzer
         public string Byte7 { get; set; }
         public string Byte8 { get; set; }
 
+        public string Node { get; set; }
+
         public string Color { get; set; }      
     }
 
@@ -47,6 +49,8 @@ namespace CAN_X_CAN_Analyzer
         public string Byte6 { get; set; }
         public string Byte7 { get; set; }
         public string Byte8 { get; set; }
+
+        public string Node { get; set; }
 
         public int ChangeCnt { get; set; }
         public string Color { get; set; }

@@ -134,9 +134,7 @@
                                 <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
-
-
-
+                                <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
                         <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,0,0,35" VerticalAlignment="Bottom" Background="White" MinHeight="150" Height="130" Grid.ColumnSpan="3">
@@ -163,6 +161,7 @@
                                 <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
+                                <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -176,15 +175,18 @@
                                     <Grid DockPanel.Dock="Top" Margin="5">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="40"/>
-                                            <RowDefinition Height="350"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="60"/>
+                                            <RowDefinition Height="80"/>
                                         </Grid.RowDefinitions>
 
-                                        <StackPanel Orientation="Horizontal" Height="35" VerticalAlignment="Top">
+                                        <StackPanel Orientation="Horizontal" >
                                             <TextBlock Text="Receive Messages" FontWeight="Bold" />
-                                            <Button x:Name="ButtonAddEditRxRow" Width="20" Height="20" Content="" Margin="20,0,0,0" Click="ButtonAddEditRxRow_Click" />
+                                            <Button x:Name="ButtonAddEditRxRow" Width="25" Height="25" Content="+" Margin="20,0,0,0" Click="ButtonAddEditRxRow_Click" FontWeight="Bold" FontSize="18" />
+                                            <Button x:Name="ButtonDeleteEditRxRow" Width="25" Height="25" Content="-" Margin="10,0,0,0" Click="ButtonDeleteEditRxRow_Click" FontWeight="Bold" FontSize="18" />
                                         </StackPanel>
 
-                                        <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" HorizontalAlignment="Stretch" MouseLeftButtonDown="DataGridEditRxMessages_MouseLeftButtonDown" >
+                                        <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridEditRxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditRxMessages_MouseLeftButtonUp" >
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
@@ -199,13 +201,65 @@
                                                 <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
+                                                <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                                             </DataGrid.Columns>
                                         </DataGrid>
-
-
-                                    </Grid>
-                                    <Grid DockPanel.Dock="Bottom"  Background="#FFF5F3F3" Margin="5">
-                                        <TextBox Width="100" Height="20" HorizontalAlignment="Left" Margin="20,0,0,0" />
+                                        <Grid Grid.Row="2" Margin="15,0,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="250"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="Description" />
+                                                <TextBox x:Name="TextBoxRxDescription" Height="25" Margin="0" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
+                                                <Label Content="ArbID"/>
+                                                <TextBox x:Name="TextBoxRxArbID" Height="25" MaxLength="8" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged" />
+                                            </StackPanel>
+                                        </Grid>
+                                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="15,0,0,0" >
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="DLC"/>
+                                                <TextBox x:Name="TextBoxRxDLC" Width="40" Height="25" MaxLength="1" TextChanged="TextBoxEditMessageRx_TextChanged" PreviewTextInput="TextBoxRxDLC_PreviewTextInput" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE1"/>
+                                                <TextBox x:Name="TextBoxRxByte1" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE2"/>
+                                                <TextBox x:Name="TextBoxRxByte2" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE3"/>
+                                                <TextBox x:Name="TextBoxRxByte3" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE4"/>
+                                                <TextBox x:Name="TextBoxRxByte4" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE5"/>
+                                                <TextBox x:Name="TextBoxRxByte5" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE6"/>
+                                                <TextBox x:Name="TextBoxRxByte6" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE7"/>
+                                                <TextBox x:Name="TextBoxRxByte7" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="BYTE8"/>
+                                                <TextBox x:Name="TextBoxRxByte8" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                            </StackPanel>
+                                        </StackPanel>
                                     </Grid>
 
                                 </DockPanel>
@@ -243,6 +297,7 @@
                                                 <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=TwoWay}" />
                                                 <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=TwoWay}" />
                                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=TwoWay}" />
+                                                <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=TwoWay}"/>
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <Grid Grid.Row="2" Margin="15,0,0,0">
@@ -319,7 +374,7 @@
                     <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="0,0,20,0" MinWidth="600"/>
                     <TextBlock x:Name="StatusBarStatusHardware" Margin="0,0,20,0" />
                     <TextBlock x:Name="StatusBarStatusVersion" Margin="0,0,20,0" />
-                    <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="16" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="50,0,20,0" Maximum="5000" />
+                    <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="16" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="0,0,20,0" Maximum="5000" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
