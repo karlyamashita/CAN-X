@@ -27,6 +27,11 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using TextBox = System.Windows.Controls.TextBox;
+using System.Xml.Serialization;
+using System.Xml.Linq;
+using System.Xml;
+using System.Data;
+using Path = System.IO.Path;
 
 namespace CAN_X_CAN_Analyzer
 {
@@ -619,80 +624,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region saves receive data to file
-        private void ButtonSaveRxMessages_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFile = new SaveFileDialog
-            {
-                DefaultExt = ".csv",
-                Filter = "Can Messages (.csv)|*.csv"
-            };
-            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                StringBuilder strBuilder = new StringBuilder();
-                DateTime localDate = DateTime.Now;
-         
-                strBuilder.Append("CAN-X by Karl Yamashita. " + localDate.ToString() + "\n");
-                strBuilder.Append("karlyamashita@gmail.com" + "\n\n");
 
-                // build header
-                strBuilder.Append("Line" + ", ");
-                strBuilder.Append("TimeAbs" + ", ");
-                strBuilder.Append("Description" + ", ");
-                strBuilder.Append("IDE" + ", ");
-                strBuilder.Append("ArbID" + ", ");
-                strBuilder.Append("RTR" + ", ");
-                strBuilder.Append("DLC" + ", ");
-                strBuilder.Append("Byte1" + ", ");
-                strBuilder.Append("Byte2" + ", ");
-                strBuilder.Append("Byte3" + ", ");
-                strBuilder.Append("Byte4" + ", ");
-                strBuilder.Append("Byte5" + ", ");
-                strBuilder.Append("Byte6" + ", ");
-                strBuilder.Append("Byte7" + ", ");
-                strBuilder.Append("Byte8" + ", ");
-                strBuilder.Append("\n");
-
-                foreach (var item in dataGridRx.Items.OfType<CanRxData>())
-                {
-                    strBuilder.Append(item.Line + ", ");
-                    strBuilder.Append(item.TimeAbs + ", ");
-                    strBuilder.Append(item.Description + ", ");
-                    strBuilder.Append(item.IDE + ", ");
-                    strBuilder.Append("0x" + item.ArbID + ", "); // prevents Excel from using value as exponent
-                    strBuilder.Append(item.RTR + ", ");
-                    strBuilder.Append(item.DLC + ", ");
-                    strBuilder.Append(item.Byte1 + ", ");
-                    strBuilder.Append(item.Byte2 + ", ");
-                    strBuilder.Append(item.Byte3 + ", ");
-                    strBuilder.Append(item.Byte4 + ", ");
-                    strBuilder.Append(item.Byte5 + ", ");
-                    strBuilder.Append(item.Byte6 + ", ");
-                    strBuilder.Append(item.Byte7 + ", ");
-                    strBuilder.Append(item.Byte8 + ", ");
-                    strBuilder.Append("\n");
-                }
-
-                try
-                {
-                    File.WriteAllText(saveFile.FileName, strBuilder.ToString());
-                    string filename = saveFile.FileName;
-                    StatusBarStatus.Text = "Successfully saved " + filename;
-                }
-                catch (IOException)
-                {
-                    string messageBoxText = "File not accessable! File may be in use.";
-                    string dialogTitle = "File Error";
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-
-                    System.Windows.MessageBox.Show(messageBoxText, dialogTitle, button, icon);
-
-                    StatusBarStatus.Text = messageBoxText;
-                }
-            }       
-        }
-        #endregion
 
         #region sends new baud rate to device. Todo - this modify CAN1, need to make another button to modify CAN2
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
@@ -807,14 +739,13 @@ namespace CAN_X_CAN_Analyzer
            UInt32 intValue =  (UInt32) (Convert.ToInt32(str, 16));
            return intValue;
         }
-
-        // todo - work on message editor section
-
-/*
- * function: Insert a new row. Routine will go through 
- * all rows for next open key number to use.
- * 
- */
+       
+        #region add and edit messages
+        /*
+         * function: Insert a new row. Routine will go through 
+         * all rows for next open key number to use.
+         * 
+         */
         private void ButtonAddEditTxRow_Click(object sender, RoutedEventArgs e)
         {
             var matchFound = true;
@@ -905,19 +836,6 @@ namespace CAN_X_CAN_Analyzer
         {
             int hexNumber;
             e.Handled = !int.TryParse(e.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out hexNumber);
-        }
-
-        private void MenuItemSaveProject_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFile = new SaveFileDialog
-            {
-                DefaultExt = ".canx",
-                Filter = "CAN-X Project (.canx)|*.canx"
-            };
-            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-
-            }
         }
 
         private void DataGridEditRxMessages_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -1171,5 +1089,208 @@ namespace CAN_X_CAN_Analyzer
             }
             return -1;
         }
+        #endregion
+
+        #region saves receive data to file
+        private void ButtonSaveRxMessages_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "Can Messages (.csv)|*.csv"
+            };
+            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                StringBuilder strBuilder = new StringBuilder();
+                DateTime localDate = DateTime.Now;
+         
+                strBuilder.Append("CAN-X by Karl Yamashita. " + localDate.ToString() + "\n");
+                strBuilder.Append("karlyamashita@gmail.com" + "\n\n");
+
+                // build header
+                strBuilder.Append("Line" + ", ");
+                strBuilder.Append("TimeAbs" + ", ");
+                strBuilder.Append("Description" + ", ");
+                strBuilder.Append("IDE" + ", ");
+                strBuilder.Append("ArbID" + ", ");
+                strBuilder.Append("RTR" + ", ");
+                strBuilder.Append("DLC" + ", ");
+                strBuilder.Append("Byte1" + ", ");
+                strBuilder.Append("Byte2" + ", ");
+                strBuilder.Append("Byte3" + ", ");
+                strBuilder.Append("Byte4" + ", ");
+                strBuilder.Append("Byte5" + ", ");
+                strBuilder.Append("Byte6" + ", ");
+                strBuilder.Append("Byte7" + ", ");
+                strBuilder.Append("Byte8" + ", ");
+                strBuilder.Append("\n");
+
+                foreach (var item in dataGridRx.Items.OfType<CanRxData>())
+                {
+                    strBuilder.Append(item.Line + ", ");
+                    strBuilder.Append(item.TimeAbs + ", ");
+                    strBuilder.Append(item.Description + ", ");
+                    strBuilder.Append(item.IDE + ", ");
+                    strBuilder.Append("0x" + item.ArbID + ", "); // prevents Excel from using value as exponent
+                    strBuilder.Append(item.RTR + ", ");
+                    strBuilder.Append(item.DLC + ", ");
+                    strBuilder.Append(item.Byte1 + ", ");
+                    strBuilder.Append(item.Byte2 + ", ");
+                    strBuilder.Append(item.Byte3 + ", ");
+                    strBuilder.Append(item.Byte4 + ", ");
+                    strBuilder.Append(item.Byte5 + ", ");
+                    strBuilder.Append(item.Byte6 + ", ");
+                    strBuilder.Append(item.Byte7 + ", ");
+                    strBuilder.Append(item.Byte8 + ", ");
+                    strBuilder.Append("\n");
+                }
+
+                try
+                {
+                    File.WriteAllText(saveFile.FileName, strBuilder.ToString());
+                    string filename = saveFile.FileName;
+                    StatusBarStatus.Text = "Successfully saved " + filename;
+                }
+                catch (IOException)
+                {
+                    string messageBoxText = "File not accessable! File may be in use.";
+                    string dialogTitle = "File Error";
+                    MessageBoxButton button = MessageBoxButton.OK;
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+
+                    System.Windows.MessageBox.Show(messageBoxText, dialogTitle, button, icon);
+
+                    StatusBarStatus.Text = messageBoxText;
+                }
+            }       
+        }
+        #endregion
+
+        #region save project
+        // TODO - save Edit messages Tx and Rx datagrid to xml file
+        private void MenuItemSaveProject_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog
+            {
+                DefaultExt = ".canx",
+                Filter = "CAN-X Project (.canx)|*.canx"
+            };
+            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if(!File.Exists(saveFile.FileName))
+                {
+                    File.Create(saveFile.FileName).Dispose();// create the file then dispose in order to open for writing
+                    SaveProjectFiles(saveFile.FileName);
+                }
+                else
+                {
+                    SaveProjectFiles(saveFile.FileName);
+                }
+            }
+        }
+
+        private void SaveProjectFiles(string saveFile)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = true;
+
+            XmlWriter xmlWriter = XmlWriter.Create(saveFile, settings);
+
+            xmlWriter.WriteStartDocument();
+
+            // rx received messages
+            /*
+            xmlWriter.WriteStartElement("rx_messages");
+            foreach (var item in dataGridRx.Items.OfType<CanRxData>())
+            {
+                xmlWriter.WriteStartElement("rxMsg");
+                xmlWriter.WriteElementString("Line",item.Line.ToString());
+                xmlWriter.WriteElementString("TimeAbs", item.TimeAbs);
+                xmlWriter.WriteElementString("Description", item.Description);
+                xmlWriter.WriteElementString("IDE", item.IDE);
+                xmlWriter.WriteElementString("ArbID", item.ArbID);
+                xmlWriter.WriteElementString("DLC", item.DLC);
+                xmlWriter.WriteElementString("Byte1", item.Byte1);
+                xmlWriter.WriteElementString("Byte2", item.Byte2);
+                xmlWriter.WriteElementString("Byte3", item.Byte3);
+                xmlWriter.WriteElementString("Byte4", item.Byte4);
+                xmlWriter.WriteElementString("Byte5", item.Byte5);
+                xmlWriter.WriteElementString("Byte6", item.Byte6);
+                xmlWriter.WriteElementString("Byte7", item.Byte7);
+                xmlWriter.WriteElementString("Byte8", item.Byte8);
+                xmlWriter.WriteElementString("Node", item.Node);
+                xmlWriter.WriteEndElement();
+            }
+            */
+            // xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("CANX");
+            xmlWriter.WriteElementString("Created_by", "CAN-X software by Karl Yamashita on 12/07/2019. (github.com/karlyamashita/CAN-X)");
+            xmlWriter.WriteElementString("Project_Filename", Path.GetFileName(saveFile));
+
+            // edit tx messages
+            xmlWriter.WriteStartElement("edit_tx_messages");
+            foreach (var item in dataGridEditTxMessages.Items.OfType<CanTxData>())
+            {
+                xmlWriter.WriteStartElement("edit_txMsg");
+                xmlWriter.WriteElementString("Description", item.Description);
+                xmlWriter.WriteElementString("IDE", item.IDE);
+                xmlWriter.WriteElementString("ArbID", item.ArbID);
+                xmlWriter.WriteElementString("RTR", item.RTR);
+                xmlWriter.WriteElementString("DLC", item.DLC);
+                xmlWriter.WriteElementString("Byte1", item.Byte1);
+                xmlWriter.WriteElementString("Byte2", item.Byte2);
+                xmlWriter.WriteElementString("Byte3", item.Byte3);
+                xmlWriter.WriteElementString("Byte4", item.Byte4);
+                xmlWriter.WriteElementString("Byte5", item.Byte5);
+                xmlWriter.WriteElementString("Byte6", item.Byte6);
+                xmlWriter.WriteElementString("Byte7", item.Byte7);
+                xmlWriter.WriteElementString("Byte8", item.Byte8);
+                xmlWriter.WriteElementString("Node", item.Node);
+                xmlWriter.WriteEndElement();
+            }
+            // xmlWriter.WriteEndElement();
+
+            // edit rx messages
+            xmlWriter.WriteStartElement("edit_rx_messages");
+            foreach (var item in dataGridEditRxMessages.Items.OfType<CanRxData>())
+            {
+                xmlWriter.WriteStartElement("edit_rxMsg");
+                xmlWriter.WriteElementString("Description", item.Description);
+                xmlWriter.WriteElementString("IDE", item.IDE);
+                xmlWriter.WriteElementString("ArbID", item.ArbID);
+                xmlWriter.WriteElementString("DLC", item.DLC);
+                xmlWriter.WriteElementString("Byte1", item.Byte1);
+                xmlWriter.WriteElementString("Byte2", item.Byte2);
+                xmlWriter.WriteElementString("Byte3", item.Byte3);
+                xmlWriter.WriteElementString("Byte4", item.Byte4);
+                xmlWriter.WriteElementString("Byte5", item.Byte5);
+                xmlWriter.WriteElementString("Byte6", item.Byte6);
+                xmlWriter.WriteElementString("Byte7", item.Byte7);
+                xmlWriter.WriteElementString("Byte8", item.Byte8);
+                xmlWriter.WriteElementString("Node", item.Node);
+                xmlWriter.WriteEndElement();
+            }
+            xmlWriter.WriteEndElement();
+
+
+
+            xmlWriter.WriteEndDocument();
+            xmlWriter.Close();
+            StatusBarStatus.Text = "File saved successfully";
+        }
+
+        private void readXml()
+        {
+            string sampleXmlFile = "";
+            DataSet dataSet = new DataSet();
+            dataSet.ReadXml(sampleXmlFile);
+            DataView dataView = new DataView(dataSet.Tables[0]);
+            dataGridRx.ItemsSource = dataView;
+        }
+
+        #endregion
+
     }
 }

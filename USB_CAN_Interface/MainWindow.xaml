@@ -91,7 +91,11 @@
                             <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click"/>
                             <Button x:Name="ButtonLoadMessages" Content="Load Messages" Margin="10,0,0,0" />
                         </StackPanel>
+                       
+                        
                         <DataGrid x:Name="dataGridRx" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,30,0,190" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3">
+                           
+                            
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
                                 <DataGridTextColumn Header="TimeAbs" Binding="{Binding Path='TimeAbs', Mode=OneWay}" />
@@ -124,7 +128,6 @@
                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
                                 <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
                                 <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=OneWay}" />
-
                                 <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay}" />
