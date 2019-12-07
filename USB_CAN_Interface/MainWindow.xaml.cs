@@ -24,6 +24,9 @@ using DataGridCell = System.Windows.Controls.DataGridCell;
 using System.Windows.Controls.Primitives;
 using DataGrid = System.Windows.Controls.DataGrid;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Globalization;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace CAN_X_CAN_Analyzer
 {
@@ -94,6 +97,10 @@ namespace CAN_X_CAN_Analyzer
         List<CAN_BaudRate> baudRateList = new List<CAN_BaudRate>();
 
         public delegate void MessageParse(byte[] data);
+
+        int rowIndexEditTx = 0;
+
+
         #endregion
 
         #region MainWindow
@@ -212,19 +219,16 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region add CAN messages to DataGrid
-        private void AddToDataGrid(byte[] msgData)
+        private void AddToDataGrid(byte[] data)
         {
+            DateTime now = DateTime.Now;
             CanRxData canDataRx = new CanRxData
             {
                 Line = lineCount++
             };
+            canDataRx.TimeAbs = now.ToString("MM/dd/yyyy - HH:mm:ss.ffff");
 
-            DateTime now = DateTime.Now;
-            canDataRx.TimeAbs = now.ToString("o");
-
-            byte[] data = new byte[DATA_SIZE];
-
-            Array.Copy(msgData, 1, data, 0, DATA_SIZE);
+            Array.Copy(data, 1, data, 0, DATA_SIZE); // shift command to index 0
 
             //data[0] is command
             if (data[1] == 0)
@@ -237,7 +241,7 @@ namespace CAN_X_CAN_Analyzer
             }
 
             //data[2] is RTR
-            if (data[2] == 0)
+            if ((data[2] & 0x01) == 0)
             {
                 canDataRx.RTR = "";
             }
@@ -251,21 +255,16 @@ namespace CAN_X_CAN_Analyzer
 
             canDataRx.ArbID = Convert.ToString(id, 16).ToUpper();
 
-            // todo parse ID and compare to database. Return string description if available
-            if (id == 0x10242040)
+            // todo parse ID and compare to receive messages editor. Return string description if available
+            foreach(CanRxData row in dataGridEditRxMessages.Items)
             {
-                canDataRx.Description = "PowerMode";
-            }
-            if (id == 0x100)
-            {
-                canDataRx.Description = "Tech 2";
-            }
-            if (id == 0x10288040)
-            {
-                canDataRx.Description = "Remote Transmit";
+                if(row.ArbID == canDataRx.ArbID)
+                {
+                    canDataRx.Description = row.Description;
+                }
             }
 
-            canDataRx.DLC = data[8]; // data[8] is DLC
+            canDataRx.DLC = data[8].ToString(); // data[8] is DLC
 
             if (data[8] >= 1)
             {
@@ -299,7 +298,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 canDataRx.Byte8 = data[17].ToString("X2");
             }
-
+         
             dataGridRx.Items.Add(canDataRx); // add new row and populate with new data
 
             // scroll to bottom
@@ -323,7 +322,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region Button event to send CAN messages and to update receive window what was sent
+        #region Button event to send CAN messages and to update DataGrid
         private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
         {
             if (!Device.IsDeviceConnected)
@@ -366,11 +365,12 @@ namespace CAN_X_CAN_Analyzer
                 Line = lineCount++
             };
 
-            canRxData.TimeAbs = now.ToString("o");
+            canRxData.TimeAbs = now.ToString("MM/dd/yyyy - HH:mm:ss.ffff");
 
             canRxData.Tx = true;
 
             canRxData.IDE = data.IDE;
+            canRxData.Description = data.Description;
             canRxData.ArbID = data.ArbID;
             canRxData.DLC = data.DLC;
             canRxData.Byte1 = data.Byte1;
@@ -476,23 +476,23 @@ namespace CAN_X_CAN_Analyzer
                     };
                     RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
                     ClearStatusBarStatus(); // clear the status text
+                    ClearStatusSoftwareHarHardware();
                 }
             }));
         }
 
         #endregion
 
-        #region temporary, just to see what Tx Grid looks like
+        #region temporary fill EditTx Datgrid, just to see what Tx Grid looks like
         private void InitAddTxMessagesToDataGrid()
         {
             // todo - add feature to add CAN messages to Tx window and Tx Button. For now just populate DataGrid with below data
 
             canData1.Description = "System_Power_Mode";
-            //canData1.Rate = 0.100;
             canData1.IDE = "S"; // CAN_STD_ID = 0, CAN_EXT_ID = 4
             canData1.ArbID = "040";
             canData1.RTR = "";
-            canData1.DLC = 8;
+            canData1.DLC = "8";
             canData1.Byte1 = "01";
             canData1.Byte2 = "02";
             canData1.Byte3 = "03";
@@ -504,57 +504,24 @@ namespace CAN_X_CAN_Analyzer
 
             dataGridTx.Items.Add(canData1);
 
-            canData3.Description = "IRC";
-            canData3.IDE = "X";
-            canData3.ArbID = "10012080";
-            canData3.RTR = "";
-            canData3.DLC = 4;
-            canData3.Byte1 = "00";
-            canData3.Byte2 = "00";
-
-            dataGridTx.Items.Add(canData3);
-
-            canData4.Description = "Audio_Master_Arbitration_Command";
-            //canData4.Rate = 0.100;
-            canData4.IDE = "X";
-            canData4.ArbID = "1028A080";
-            canData4.RTR = "";
-            canData4.DLC = 2;
-            canData4.Byte1 = "00";
-            canData4.Byte2 = "00";
-
-            dataGridTx.Items.Add(canData4);
-
-            canData5.Description = "Audio_Source_Status";
-            //canData5.Rate = 0.100;
-            canData5.IDE = "X";
-            canData5.ArbID = "1031C097";
-            canData5.RTR = "";
-            canData5.DLC = 2;
-            canData5.Byte1 = "00";
-            canData5.Byte2 = "00";
-
-            dataGridTx.Items.Add(canData5);
-
-            canData2.Description = "TECH_2";
-            //canData6.Rate = 0.100;
-            canData2.IDE = "S";
-            canData2.ArbID = "101";
+            canData2.Description = "Amplifier";
+            canData2.IDE = "S"; // CAN_STD_ID = 0, CAN_EXT_ID = 4
+            canData2.ArbID = "244";
             canData2.RTR = "";
-            canData2.DLC = 8;
+            canData2.DLC = "3";
+            canData2.Byte1 = "01";
+            canData2.Byte2 = "44";
+            canData2.Byte3 = "FF";
 
             dataGridTx.Items.Add(canData2);
 
-            canData6.Description = "VNMF_IRC_CHM";
-            //canData6.Rate = 0.100;
-            canData6.IDE = "S";
-            canData6.ArbID = "624";
-            canData6.RTR = "";
-            canData6.DLC = 0;
+            dataGridTx.RowHeight = 20;
 
-            dataGridTx.Items.Add(canData6);
-            
-            dataGridTx.CanUserSortColumns = false;          
+            dataGridEditTxMessages.Items.Add(canData1);
+            dataGridEditTxMessages.Items.Add(canData2);
+
+            dataGridEditTxMessages.RowHeight = 20;
+       
         }
         #endregion\
 
@@ -571,7 +538,7 @@ namespace CAN_X_CAN_Analyzer
         #region SendCanData
         private void SendCanData(ref CanTxData canData)
         {
-            byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
+            byte[] tmp_buf = new byte[DATA_SIZE]; // command + (DATA_SIZE - 1) should be less than 64 bytes
 
             // CAN Type ExID = 4, StdID = 0
             if (canData.IDE == "CAN_STD_ID")
@@ -634,9 +601,13 @@ namespace CAN_X_CAN_Analyzer
 
         private void ClearStatusBarStatus()
         {
+            StatusBarStatus.Text = "";
+        }
+
+        private void ClearStatusSoftwareHarHardware()
+        {
             StatusBarStatusHardware.Text = "";
             StatusBarStatusVersion.Text = "";
-            StatusBarStatus.Text = "";
         }
         #endregion
 
@@ -687,7 +658,6 @@ namespace CAN_X_CAN_Analyzer
                     strBuilder.Append(item.Byte6 + ", ");
                     strBuilder.Append(item.Byte7 + ", ");
                     strBuilder.Append(item.Byte8 + ", ");
-                    strBuilder.Append(item.TimeStamp);
                     strBuilder.Append("\n");
                 }
 
@@ -820,25 +790,213 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
 
+        private UInt32 ConvertHexStrToInt(string str)
+        {
+           UInt32 intValue =  (UInt32) (Convert.ToInt32(str, 16));
+           return intValue;
+        }
+
         // todo - work on message editor section
+
+/*
+ * function: Insert a new row. Routine will go through 
+ * all rows for next open key number to use.
+ * 
+ */
         private void ButtonAddEditTxRow_Click(object sender, RoutedEventArgs e)
         {
-            CanTxData canData = new CanTxData();
-            canData.Key = 1;
-            canData.ArbID = "0x10022040";
-            dataGridEditTxMessages.Items.Add(canData);
+            var matchFound = true;
+            UInt32 newIndex = 0;
+            CanTxData canTxData = new CanTxData();
+
+            // check for available key number
+            while (matchFound) { 
+                matchFound = false;
+                foreach (var item in dataGridEditTxMessages.Items)
+                {
+                    var it = item as CanTxData;
+                    if (it.Key == newIndex)
+                    {
+                        matchFound = true;
+                    }
+                }
+                if (matchFound)
+                {
+                    newIndex += 1;
+                }
+                else
+                {
+                    matchFound = false;
+                }
+            }
+            canTxData.Key = newIndex;
+            dataGridEditTxMessages.Items.Add(canTxData);
+            dataGridTx.Items.Add(canTxData);
+        }
+
+        private void ButtonDeleteEditTxRow_Click(object sender, RoutedEventArgs e)
+        {
+            if(dataGridEditTxMessages.SelectedItem != null)
+            {
+                dataGridEditTxMessages.Items.RemoveAt(rowIndexEditTx);               
+            }
         }
 
         private void ButtonAddEditRxRow_Click(object sender, RoutedEventArgs e)
         {
-            CanTxData canTxData = new CanTxData();
+            CanRxData canRxData = new CanRxData();
+            canRxData.Key = (UInt32)(dataGridEditRxMessages.Items.Count + 1);
+            dataGridEditRxMessages.Items.Add(canRxData);
+        }
 
-            canTxData.ArbID = "0x10022040";
-            canTxData.DLC = 2;
-            canTxData.Key = 1;
+        private void TextBoxTx_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            int hexNumber;
+            e.Handled = !int.TryParse(e.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out hexNumber);
+        }
 
-            listCanTxData.Add(canTxData);
-            dataGridEditRxMessages.ItemsSource = listCanTxData;
+        private void MenuItemSaveProject_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog
+            {
+                DefaultExt = ".canx",
+                Filter = "CAN-X Project (.canx)|*.canx"
+            };
+            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+
+            }
+        }
+
+        private void DataGridEditRxMessages_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+           
+        }
+
+        private void DataGridEditTxMessages_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {           
+            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row
+            TextBoxTxDescription.Text = data.Description;
+            TextBoxTxArbID.Text = data.ArbID;
+            TextBoxTxDLC.Text = data.DLC;
+            TextBoxTxByte1.Text = data.Byte1;
+            TextBoxTxByte2.Text = data.Byte2;
+            TextBoxTxByte3.Text = data.Byte3;
+            TextBoxTxByte4.Text = data.Byte4;
+            TextBoxTxByte5.Text = data.Byte5;
+            TextBoxTxByte6.Text = data.Byte6;
+            TextBoxTxByte7.Text = data.Byte7;
+            TextBoxTxByte8.Text = data.Byte8;         
+        }
+
+        private void TextBoxEditMessageTx_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CanTxData canTxData = (CanTxData)dataGridEditTxMessages.SelectedItem;
+            TextBox obj = sender as TextBox;
+            string senderName = obj.Name;
+
+            //todo - figure out which text box is changing then edit the correct one below
+            switch(senderName)
+            {
+                case "TextBoxTxDescription":
+                    canTxData.Description = TextBoxTxDescription.Text;
+                    break;
+                case "TextBoxTxArbID":
+                    string tempStr = "";                  
+                    var id = GetIs29BitID(TextBoxTxArbID.Text.ToUpper(), ref tempStr);
+                   
+                    if (id == 1) {
+                        canTxData.IDE = "X";
+                        StatusBarStatus.Text = "";
+                    }
+                    else if(id == 0)
+                    {
+                        canTxData.IDE = "S";
+                        StatusBarStatus.Text = "";
+                    }
+                    else
+                    {
+                        StatusBarStatus.Text = "ArbID should be between 0x000 - 0x1FFFFFFF";
+                        break;
+                    }
+                    canTxData.ArbID = tempStr;
+                    break;
+                case "TextBoxTxDLC":
+                    canTxData.DLC = TextBoxTxDLC.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte1":
+                    canTxData.Byte1 = TextBoxTxByte1.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte2":
+                    canTxData.Byte2 = TextBoxTxByte2.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte3":
+                    canTxData.Byte3 = TextBoxTxByte3.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte4":
+                    canTxData.Byte4 = TextBoxTxByte4.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte5":
+                    canTxData.Byte5 = TextBoxTxByte5.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte6":
+                    canTxData.Byte6 = TextBoxTxByte6.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte7":
+                    canTxData.Byte7 = TextBoxTxByte7.Text.ToUpper();
+                    break;
+                case "TextBoxTxByte8":
+                    canTxData.Byte8 = TextBoxTxByte8.Text.ToUpper();
+                    break;
+
+            }
+
+            dataGridEditTxMessages.Items.Refresh();
+        }
+        // gets the current row index and saves in variable
+        private void DataGridEditTxMessages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DataGridRow dgr = null;
+
+            var visParent = VisualTreeHelper.GetParent(e.OriginalSource as FrameworkElement);
+            while (dgr == null && visParent != null)
+            {
+                dgr = visParent as DataGridRow;
+                visParent = VisualTreeHelper.GetParent(visParent);
+            }
+            if (dgr == null) { return; }
+
+            rowIndexEditTx = dgr.GetIndex();
+            StatusBarStatus.Text = rowIndexEditTx.ToString();
+        }
+
+        private void TextBoxTxDLC_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");           
+            e.Handled = regex.IsMatch(e.Text); ;
+        }
+
+
+        /*
+         * function: Checks for valid ArbID
+         * input: the ArbID
+         * output: 11bit = 0, 29bit = 1, id is greater than 0x1fffffff = -1
+         */
+        private int GetIs29BitID(string ArbID, ref string fixedID)
+        {
+            fixedID = Regex.Replace(ArbID, @"\s", "");
+
+            if (fixedID == "") return - 1;
+            UInt32 id = Convert.ToUInt32(fixedID.ToString(), 16);
+            if (id > 0x7ff && id < 0x1fffffff)
+            {
+                return 1;
+            }
+            else if (id <= 0x7FF)
+            {
+                return 0;
+            }
+            return -1;
         }
     }
 }

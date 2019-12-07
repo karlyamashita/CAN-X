@@ -5,15 +5,13 @@ namespace CAN_X_CAN_Analyzer
     public class CanTxData
     {
         public ulong Key { get; set; }
-        public ulong Count { get; set; }
         public string Description { get; set; }  
-        //public bool Tx { get; set; } // tx button
         public string AutoTx { get; set; }
-        public double Rate { get; set; }
+        public string Rate { get; set; }
         public string IDE { get; set; } // vspy3 calls it "Type"
         public string RTR { get; set; }
         public string ArbID { get; set; }         
-        public int DLC { get; set; }
+        public string DLC { get; set; }
         //data bytes
         public string Byte1 { get; set; }
         public string Byte2 { get; set; }
@@ -39,7 +37,7 @@ namespace CAN_X_CAN_Analyzer
         public string IDE { get; set; }
         public string RTR { get; set; }
         public string ArbID { get; set; }
-        public int DLC { get; set; }
+        public string DLC { get; set; }
         //data bytes
         public string Byte1 { get; set; }
         public string Byte2 { get; set; }
@@ -51,7 +49,6 @@ namespace CAN_X_CAN_Analyzer
         public string Byte8 { get; set; }
 
         public int ChangeCnt { get; set; }
-        public double TimeStamp { get; set; }
         public string Color { get; set; }
     }
 }
