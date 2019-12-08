@@ -12,19 +12,18 @@
             <StackPanel DockPanel.Dock="Top" Height="30" Margin="0">
                 <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
                     <MenuItem Header="File">
-                        <MenuItem Header="Open Project"/>
+                        <MenuItem x:Name="MenuItemOpenProject" Header="Open Project" Click="MenuItemOpenProject_Click"/>
                         <MenuItem x:Name="MenuItemSaveProject" Header="Save Project" Click="MenuItemSaveProject_Click"/>
                         <Separator/>
-                        <MenuItem Header="Preferences"/>
+                        <MenuItem x:Name="MenuItemPreferences" Header="Preferences"/>
                         <Separator/>
                         <MenuItem x:Name="MenuItemExit" Header="Exit" Click="MenuItemExit_Click"/>
                     </MenuItem>
                     <MenuItem Header="Help">
-                        <MenuItem Header="View Help"/>
-                        <MenuItem Header="About"/>
+                        <MenuItem x:Name="MenuItemHelp" Header="View Help"/>
+                        <MenuItem x:Name="MenuItemAbout" Header="About" Click="MenuItemAbout_Click"/>
                     </MenuItem>
                 </Menu>
-
             </StackPanel>
             <StackPanel DockPanel.Dock="Right" Width="192" Margin="0,0,5,5" Background="#FFEEEEEE">
                 <RichTextBox x:Name="RichTextBoxConnectStatus" Height="20" Margin="0,10,0,0" VerticalAlignment="Top" Width="155" IsEnabled="False" HorizontalAlignment="Center">
@@ -38,8 +37,6 @@
                     <Button x:Name="ButtonConnect" Content="Connect" VerticalAlignment="Top" Width="75" Margin="0,0,2,0" Click="ButtonConnect_Click" HorizontalAlignment="Right"/>
                     <Button x:Name="ButtonDisconnect" Content="Disconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="2,0,0,0" Click="ButtonDisconnect_Click"/>
                 </StackPanel>
-
-
                 <GroupBox Height="131" Header="Settings" BorderBrush="#FFABAFB2">
                     <StackPanel VerticalAlignment="Top" Height="144" Margin="0,6,0,-41">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -52,7 +49,6 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Center">
                             <CheckBox Content="Listen Only" Margin="0" VerticalAlignment="Top" IsEnabled="False" HorizontalAlignment="Left"/>
-                            <CheckBox Content="Time Stamp" Margin="5,0,0,0" VerticalAlignment="Top" IsEnabled="False" HorizontalAlignment="Left"/>
                         </StackPanel>
                         <Button x:Name="ButtonBtrValue" Content="Send BTR" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0" Click="ButtonBtrValue_Click"/>
                     </StackPanel>
@@ -63,10 +59,8 @@
                             <Label Content="Filter" />
                             <TextBox Height="23" Margin="82,10,-2,0" TextWrapping="Wrap" Text="TextBox" Width="60" HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.42"/>
                         </StackPanel>
-
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                             <Label Content="Mask">
-
                             </Label>
                             <TextBox Height="23" Margin="82,10,-2,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="97" HorizontalAlignment="Center"/>
                         </StackPanel>
@@ -75,31 +69,29 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-
             </StackPanel>
 
             <TabControl Margin="0,0,0,10">
                 <TabItem Header="Message Monitor">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="127*"/>
-                            <ColumnDefinition Width="16*"/>
-                            <ColumnDefinition Width="1012*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="3">
                             <Button x:Name="ButtonClear" Content="Clear" HorizontalAlignment="Left" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" VerticalAlignment="Bottom"/>
                             <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click"/>
                             <Button x:Name="ButtonLoadMessages" Content="Load Messages" Margin="10,0,0,0" />
+                            <Button x:Name="ButtonPauseMessages" Content="Pause" Margin="10,0,0,0" Click="ButtonPauseMessages_Click" />
+                            <Button x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" />
                         </StackPanel>
-                       
-                        
-                        <DataGrid x:Name="dataGridRx" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,30,0,190" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3">
-                           
-                            
+                        <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3" MouseLeftButtonUp="DataGridRx_MouseLeftButtonUp">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
                                 <DataGridTextColumn Header="TimeAbs" Binding="{Binding Path='TimeAbs', Mode=OneWay}" />
-
                                 <DataGridTemplateColumn Header="Tx" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -108,7 +100,7 @@
                                                     <Style TargetType="{x:Type Image}">
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Tx}" Value="true">
-                                                                <Setter Property="Source" Value="E:\My Documents\Visual Studio 2017\Projects\USB_CAN_Interface\USB_CAN_Interface\Resources\green_button_icon.ico" />
+                                                                <Setter Property="Source" Value="E:\My Documents\Visual Studio 2017\Projects\USB_CAN_Interface\USB_CAN_Interface\Resources\green_icon.png" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -120,11 +112,38 @@
                                 <DataGridTemplateColumn Header="Err" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Image Source="{Binding ImageErrFilePath}" />
+                                            <Image Height="15" Width="15">
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Err}" Value="true">
+                                                                <Setter Property="Source" Value="E:\My Documents\Visual Studio 2017\Projects\USB_CAN_Interface\USB_CAN_Interface\Resources\red_icon.png" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=OneWay}" />
+                                <DataGridTemplateColumn Header="RTR" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Height="15" Width="15">
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding RTR}" Value="true">
+                                                                <Setter Property="Source" Value="E:\My Documents\Visual Studio 2017\Projects\USB_CAN_Interface\USB_CAN_Interface\Resources\blue_icon.png" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                               
                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
                                 <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
                                 <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=OneWay}" />
@@ -140,7 +159,10 @@
                                 <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
-                        <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,0,0,35" VerticalAlignment="Bottom" Background="White" MinHeight="150" Height="130" Grid.ColumnSpan="3">
+
+                        <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0"/>
+
+                        <DataGrid x:Name="dataGridTx" Grid.Row="3" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description'}" />
@@ -167,10 +189,10 @@
                                 <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
+                        <Grid x:Name="GridSpacer" Grid.Row="4"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Message Editor">
-
                     <Grid Margin="0,0,0,20">
                         <TabControl TabStripPlacement="Bottom">
                             <TabItem Header="Receive Messages">
@@ -182,14 +204,12 @@
                                             <RowDefinition Height="60"/>
                                             <RowDefinition Height="80"/>
                                         </Grid.RowDefinitions>
-
                                         <StackPanel Orientation="Horizontal" >
                                             <TextBlock Text="Receive Messages" FontWeight="Bold" />
                                             <Button x:Name="ButtonAddEditRxRow" Width="25" Height="25" Content="+" Margin="20,0,0,0" Click="ButtonAddEditRxRow_Click" FontWeight="Bold" FontSize="18" />
                                             <Button x:Name="ButtonDeleteEditRxRow" Width="25" Height="25" Content="-" Margin="10,0,0,0" Click="ButtonDeleteEditRxRow_Click" FontWeight="Bold" FontSize="18" />
                                         </StackPanel>
-
-                                        <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridEditRxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditRxMessages_MouseLeftButtonUp" >
+                                        <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridEditRxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditRxMessages_PreviewMouseLeftButtonDown" >
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
@@ -214,6 +234,9 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="250"/>
                                                 <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="110"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Vertical">
@@ -223,6 +246,16 @@
                                             <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
                                                 <Label Content="ArbID"/>
                                                 <TextBox x:Name="TextBoxRxArbID" Height="25" MaxLength="8" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="3" Margin="20,0,0,0">
+                                                <Label Content="Node"/>
+                                                <ComboBox x:Name="ComboBoxRxNode" SelectedIndex="0" MinHeight="25" DropDownClosed="ComboBoxRxNode_DropDownClosed" >
+                                                    <ComboBoxItem Content="CAN1"/>
+                                                    <ComboBoxItem Content="CAN2"/>
+                                                    <ComboBoxItem Content="SWCAN1"/>
+                                                    <ComboBoxItem Content="LSFTCAN1"/>
+                                                    <ComboBoxItem Content="LIN1"/>
+                                                </ComboBox>
                                             </StackPanel>
                                         </Grid>
                                         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="15,0,0,0" >
@@ -264,15 +297,13 @@
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
-
                                 </DockPanel>
-
                             </TabItem>
 
 
                             <TabItem Header="Transmit Messages">
                                 <DockPanel>
-                                    <Grid DockPanel.Dock="Top">
+                                    <Grid DockPanel.Dock="Top"  Margin="5">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="40"/>
                                             <RowDefinition Height="*"/>
@@ -310,6 +341,9 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="250"/>
                                                 <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="110"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Vertical">
@@ -323,6 +357,20 @@
                                             <StackPanel Grid.Column="2" Margin="10,0,0,0">
                                                 <Label Content="Remote Transmit"/>
                                                 <CheckBox x:Name="CheckBoxRemoteTransmit" Content="RTR" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="3" Margin="20,0,0,0">
+                                                <Label Content="Node"/>
+                                                <ComboBox x:Name="ComboBoxTxNode" SelectedIndex="0" MinHeight="25" DropDownClosed="ComboBoxTxNode_DropDownClosed" >
+                                                    <ComboBoxItem Content="CAN1"/>
+                                                    <ComboBoxItem Content="CAN2"/>
+                                                    <ComboBoxItem Content="SWCAN1"/>
+                                                    <ComboBoxItem Content="LSFTCAN1"/>
+                                                    <ComboBoxItem Content="LIN1"/>
+                                                </ComboBox>
+                                            </StackPanel>
+                                            <StackPanel x:Name="StackPanelHighVoltage" Grid.Column="4" Orientation="Vertical" Margin="10,0,0,0" IsEnabled="False">
+                                                <Label Content="High Voltage"/>
+                                                <CheckBox x:Name="CheckBoxHighVoltage" Content="GMLAN" Margin="5,0,0,0"/>
                                             </StackPanel>
                                         </Grid>
                                         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="15,0,0,0" >
@@ -369,6 +417,7 @@
                         </TabControl>
                     </Grid>
                 </TabItem>
+                <TabItem Header="Settings"/>
             </TabControl>
         </DockPanel>
         <StatusBar Height="25" VerticalAlignment="Bottom" Margin="0,0,0,5" Background="#FFE2E2E2">

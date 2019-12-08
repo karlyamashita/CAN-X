@@ -32,6 +32,9 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Data;
 using Path = System.IO.Path;
+using ComboBox = System.Windows.Controls.ComboBox;
+using USB_CAN_Interface;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace CAN_X_CAN_Analyzer
 {
@@ -73,7 +76,7 @@ namespace CAN_X_CAN_Analyzer
         const byte CAN2_NODE = 1;
         const byte SWCAN1_NODE = 2;
         const byte LSFTCAN1_NODE = 3;
-        const byte LIN1_NODe = 4;
+        const byte LIN1_NODE = 4;
         const byte ETH1_NODE = 5;
         const byte SWCAN2_NODE = 6;
         const byte LSFTCAN2_NODE = 7;
@@ -106,6 +109,8 @@ namespace CAN_X_CAN_Analyzer
         int rowIndexEditTx = 0;
         int rowIndexEditRx = 0;
 
+        bool pauseMessagesFlag = false;
+        bool scrollMessagesFlag = true;
 
         #endregion
 
@@ -116,8 +121,6 @@ namespace CAN_X_CAN_Analyzer
 
             // my init routines
             InitUsbDevice();
-            InitAddTxMessagesToDataGrid();
-
             InitPopulateBaudRateListBox();
         }
         #endregion
@@ -233,7 +236,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 Line = lineCount++
             };
-            canDataRx.TimeAbs = now.ToString("MM/dd/yyyy - HH:mm:ss.ffff");
+            //canDataRx.TimeAbs = now.ToString("MM/dd/yyyy - HH:mm:ss.ffff");
+            canDataRx.TimeAbs = now.ToString("HH:mm:ss.ffff");
 
             Array.Copy(data, 1, data, 0, DATA_SIZE); // shift command to index 0
 
@@ -250,11 +254,11 @@ namespace CAN_X_CAN_Analyzer
             //data[2] is RTR
             if ((data[2] & 0x01) == 0)
             {
-                canDataRx.RTR = "";
+                canDataRx.RTR = "false";
             }
             else
             {
-                canDataRx.RTR = "R";
+                canDataRx.RTR = "true";
             }
             // data[3] is n/a
 
@@ -315,16 +319,18 @@ namespace CAN_X_CAN_Analyzer
             dataGridRx.Items.Add(canDataRx); // add new row and populate with new data
 
             // scroll to bottom
-            if (dataGridRx.Items.Count > 0)
+            if (pauseMessagesFlag == false)
             {
-                var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
-                if (border != null)
+                if (dataGridRx.Items.Count > 0)
                 {
-                    var scroll = border.Child as ScrollViewer;
-                    if (scroll != null) scroll.ScrollToEnd();
+                    var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
+                    if (border != null)
+                    {
+                        var scroll = border.Child as ScrollViewer;
+                        if (scroll != null) scroll.ScrollToEnd();
+                    }
                 }
             }
-
             var count = dataGridRx.Items.Count;
 
             ProgressBar.Value = count;
@@ -369,6 +375,7 @@ namespace CAN_X_CAN_Analyzer
             canData.Byte6 = data.Byte6;
             canData.Byte7 = data.Byte7;
             canData.Byte8 = data.Byte8;
+            canData.Node = data.Node;
 
             SendCanData(ref canData);
 
@@ -378,7 +385,8 @@ namespace CAN_X_CAN_Analyzer
                 Line = lineCount++
             };
 
-            canRxData.TimeAbs = now.ToString("MM/dd/yyyy - HH:mm:ss.ffff");
+            //canRxData.TimeAbs = now.ToString("MM/dd/yyyy - HH:mm:ss.ffff");
+            canRxData.TimeAbs = now.ToString("HH:mm:ss.ffff");
 
             canRxData.Tx = true;
 
@@ -394,17 +402,21 @@ namespace CAN_X_CAN_Analyzer
             canRxData.Byte6 = data.Byte6;
             canRxData.Byte7 = data.Byte7;
             canRxData.Byte8 = data.Byte8;
+            canRxData.Node = data.Node;
 
             dataGridRx.Items.Add(canRxData);
 
             // scroll to bottom
-            if (dataGridRx.Items.Count > 0)
+            if (pauseMessagesFlag == false)
             {
-                var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
-                if (border != null)
+                if (dataGridRx.Items.Count > 0)
                 {
-                    var scroll = border.Child as ScrollViewer;
-                    if (scroll != null) scroll.ScrollToEnd();
+                    var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
+                    if (border != null)
+                    {
+                        var scroll = border.Child as ScrollViewer;
+                        if (scroll != null) scroll.ScrollToEnd();
+                    }
                 }
             }
 
@@ -501,6 +513,7 @@ namespace CAN_X_CAN_Analyzer
         {
             // todo - add feature to add CAN messages to Tx window and Tx Button. For now just populate DataGrid with below data
 
+            canData1.Key = 0;
             canData1.Description = "System_Power_Mode";
             canData1.IDE = "S"; // CAN_STD_ID = 0, CAN_EXT_ID = 4
             canData1.ArbID = "040";
@@ -517,6 +530,7 @@ namespace CAN_X_CAN_Analyzer
 
             dataGridTx.Items.Add(canData1);
 
+            canData2.Key = 1;
             canData2.Description = "Amplifier";
             canData2.IDE = "S"; // CAN_STD_ID = 0, CAN_EXT_ID = 4
             canData2.ArbID = "244";
@@ -563,7 +577,27 @@ namespace CAN_X_CAN_Analyzer
                 tmp_buf[0] = CAN_EXT_ID;
             }
 
-            tmp_buf[1] = Convert.ToByte(canData.RTR); // RTR
+            tmp_buf[1] = Convert.ToByte(canData.RTR); // RTR, Node
+            switch(canData.Node)
+            {
+                case "CAN1":
+                    tmp_buf[1] = (byte) (tmp_buf[1] | (CAN1_NODE << 2));
+                    break;
+                case "CAN2":
+                    tmp_buf[1] = (byte)(tmp_buf[1] | (CAN2_NODE << 2));
+                    break;
+                case "SWCAN1":
+                    tmp_buf[1] = (byte)(tmp_buf[1] | (SWCAN1_NODE << 2));
+                    break;
+                case "LSFTCAN1":
+                    tmp_buf[1] = (byte)(tmp_buf[1] | (LSFTCAN1_NODE << 2));
+                    break;
+                case "LIN1":
+                    tmp_buf[1] = (byte)(tmp_buf[1] | (LIN1_NODE << 2));
+                    break;
+            }
+
+
             // tmp_buf[2] n/a
 
             // Arb ID 29/11 bit
@@ -584,17 +618,90 @@ namespace CAN_X_CAN_Analyzer
             }
             
             //DLC
-            tmp_buf[7] = Convert.ToByte(canData.DLC);
+            if(canData.DLC != "")
+            {
+                tmp_buf[7] = Convert.ToByte(canData.DLC);
+                
+            }
+            else
+            {
+                tmp_buf[7] = 0;
+            }
+
 
             // data bytes
-            tmp_buf[8] = Convert.ToByte(canData.Byte1, 16);
-            tmp_buf[9] = Convert.ToByte(canData.Byte2, 16);
-            tmp_buf[10] = Convert.ToByte(canData.Byte3, 16);
-            tmp_buf[11] = Convert.ToByte(canData.Byte4, 16);
-            tmp_buf[12] = Convert.ToByte(canData.Byte5, 16);
-            tmp_buf[13] = Convert.ToByte(canData.Byte6, 16);
-            tmp_buf[14] = Convert.ToByte(canData.Byte7, 16);
-            tmp_buf[15] = Convert.ToByte(canData.Byte8, 16);
+            if(canData.Byte1 != "")
+            {
+                tmp_buf[8] = Convert.ToByte(canData.Byte1, 16);
+            }
+            else
+            {
+                tmp_buf[8] = 0;
+            }
+
+            if(canData.Byte2 != "")
+            {
+                tmp_buf[9] = Convert.ToByte(canData.Byte2, 16);
+            }
+            else
+            {
+                tmp_buf[9] = 0;
+            }
+
+            if(canData.Byte3 != "")
+            {
+                tmp_buf[10] = Convert.ToByte(canData.Byte3, 16);
+            }
+            else
+            {
+                tmp_buf[10] = 0;
+            }
+
+            if(canData.Byte4 != "")
+            {
+                tmp_buf[11] = Convert.ToByte(canData.Byte4, 16);
+            }
+            else
+            {
+                tmp_buf[11] = 0;
+            }
+
+            if(canData.Byte5 != "")
+            {
+                tmp_buf[12] = Convert.ToByte(canData.Byte5, 16);
+            }
+            else
+            {
+                tmp_buf[12] = 0;
+            }
+
+            if(canData.Byte6 != "")
+            {
+                tmp_buf[13] = Convert.ToByte(canData.Byte6, 16);
+            }
+            else
+            {
+                tmp_buf[13] = 0;
+            }
+
+            if(canData.Byte7 != "")
+            {
+                tmp_buf[14] = Convert.ToByte(canData.Byte7, 16);
+            }
+            else
+            {
+                tmp_buf[14] = 0;
+            }
+
+            if(canData.Byte8 != "")
+            {
+                tmp_buf[15] = Convert.ToByte(canData.Byte8, 16);
+            }
+            else
+            {
+                tmp_buf[15] = 0;
+            }
+
 
             var command = new CommandMessage(COMMAND_MESSAGE, tmp_buf);
             Device.SendMessage(command);
@@ -623,8 +730,6 @@ namespace CAN_X_CAN_Analyzer
             StatusBarStatusVersion.Text = "";
         }
         #endregion
-
-
 
         #region sends new baud rate to device. Todo - this modify CAN1, need to make another button to modify CAN2
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
@@ -782,7 +887,8 @@ namespace CAN_X_CAN_Analyzer
             if(dataGridEditTxMessages.SelectedItem != null)
             {
                 // TODO - need to find solution to delete selected row, for now using index
-                dataGridEditTxMessages.Items.RemoveAt(rowIndexEditTx);               
+                dataGridEditTxMessages.Items.RemoveAt(rowIndexEditTx);
+                dataGridTx.Items.RemoveAt(rowIndexEditTx);
             }
         }
 
@@ -853,6 +959,7 @@ namespace CAN_X_CAN_Analyzer
             TextBoxRxByte6.Text = data.Byte6;
             TextBoxRxByte7.Text = data.Byte7;
             TextBoxRxByte8.Text = data.Byte8;
+            ComboBoxRxNode.SelectedIndex = GetComboBoxIndex(data.Node);
         }
 
         private void DataGridEditTxMessages_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -869,7 +976,41 @@ namespace CAN_X_CAN_Analyzer
             TextBoxTxByte5.Text = data.Byte5;
             TextBoxTxByte6.Text = data.Byte6;
             TextBoxTxByte7.Text = data.Byte7;
-            TextBoxTxByte8.Text = data.Byte8;         
+            TextBoxTxByte8.Text = data.Byte8;
+            ComboBoxTxNode.SelectedIndex = GetComboBoxIndex(data.Node);
+        }
+
+        private int GetComboBoxIndex(string name)
+        {
+            int value = 0;
+            switch(name)
+            {
+                case "CAN1":
+                    value = 0;
+                    break;
+                case "CAN2":
+                    value = 1;
+                    break;
+                case "SWCAN1":
+                    value = 2;
+                    break;
+                case "LSFTCAN1":
+                    value = 3;
+                    break;
+                case "LIN1":
+                    value = 4;
+                    break;
+                case "ETH1":
+                    value = 5;
+                    break;
+                case "SWCAN2":
+                    value = 6;
+                    break;
+                case "LSFTCAN2":
+                    value = 7;
+                    break;
+            }
+            return value;
         }
 
         // Transmit
@@ -993,31 +1134,31 @@ namespace CAN_X_CAN_Analyzer
                     }
                     canRxData.ArbID = tempStr;
                     break;
-                case "TextBoxTxDLC":
+                case "TextBoxRxDLC":
                     canRxData.DLC = TextBoxRxDLC.Text.ToUpper();
                     break;
-                case "TextBoxTxByte1":
+                case "TextBoxRxByte1":
                     canRxData.Byte1 = TextBoxRxByte1.Text.ToUpper();
                     break;
-                case "TextBoxTxByte2":
+                case "TextBoxRxByte2":
                     canRxData.Byte2 = TextBoxRxByte2.Text.ToUpper();
                     break;
-                case "TextBoxTxByte3":
+                case "TextBoxRxByte3":
                     canRxData.Byte3 = TextBoxRxByte3.Text.ToUpper();
                     break;
-                case "TextBoxTxByte4":
+                case "TextBoxRxByte4":
                     canRxData.Byte4 = TextBoxRxByte4.Text.ToUpper();
                     break;
-                case "TextBoxTxByte5":
+                case "TextBoxRxByte5":
                     canRxData.Byte5 = TextBoxRxByte5.Text.ToUpper();
                     break;
-                case "TextBoxTxByte6":
+                case "TextBoxRxByte6":
                     canRxData.Byte6 = TextBoxRxByte6.Text.ToUpper();
                     break;
-                case "TextBoxTxByte7":
+                case "TextBoxRxByte7":
                     canRxData.Byte7 = TextBoxRxByte7.Text.ToUpper();
                     break;
-                case "TextBoxTxByte8":
+                case "TextBoxRxByte8":
                     canRxData.Byte8 = TextBoxRxByte8.Text.ToUpper();
                     break;
             }
@@ -1041,6 +1182,7 @@ namespace CAN_X_CAN_Analyzer
             StatusBarStatus.Text = rowIndexEditTx.ToString();
         }
 
+        // gets the row index
         private void DataGridEditRxMessages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DataGridRow dgr = null;
@@ -1234,6 +1376,7 @@ namespace CAN_X_CAN_Analyzer
             foreach (var item in dataGridEditTxMessages.Items.OfType<CanTxData>())
             {
                 xmlWriter.WriteStartElement("edit_txMsg");
+                xmlWriter.WriteElementString("Key", item.Key.ToString());
                 xmlWriter.WriteElementString("Description", item.Description);
                 xmlWriter.WriteElementString("IDE", item.IDE);
                 xmlWriter.WriteElementString("ArbID", item.ArbID);
@@ -1257,6 +1400,7 @@ namespace CAN_X_CAN_Analyzer
             foreach (var item in dataGridEditRxMessages.Items.OfType<CanRxData>())
             {
                 xmlWriter.WriteStartElement("edit_rxMsg");
+                xmlWriter.WriteElementString("Key", item.Key.ToString());
                 xmlWriter.WriteElementString("Description", item.Description);
                 xmlWriter.WriteElementString("IDE", item.IDE);
                 xmlWriter.WriteElementString("ArbID", item.ArbID);
@@ -1274,23 +1418,383 @@ namespace CAN_X_CAN_Analyzer
             }
             xmlWriter.WriteEndElement();
 
-
-
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
             StatusBarStatus.Text = "File saved successfully";
         }
-
-        private void readXml()
-        {
-            string sampleXmlFile = "";
-            DataSet dataSet = new DataSet();
-            dataSet.ReadXml(sampleXmlFile);
-            DataView dataView = new DataView(dataSet.Tables[0]);
-            dataGridRx.ItemsSource = dataView;
-        }
-
         #endregion
 
+        #region open project
+
+        private void MenuItemOpenProject_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog()
+            {
+                DefaultExt = ".canx",
+                Filter = "CAN-X Project (.canx)|*.canx"
+            };
+            if (openFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (!File.Exists(openFile.FileName))
+                {
+                    StatusBarStatus.Text = "File does not exist!";
+                }
+                else
+                {
+                    ReadXml(openFile.FileName);
+                }
+            }
+        }
+
+        private void ReadXml(string openFile)
+        {
+            XmlReader xmlReader = XmlReader.Create(openFile);
+            CanRxData canRxData = new CanRxData();
+            CanTxData canTxData = new CanTxData();
+
+            var regex = new Regex(@"\r\n?|\n|\t", RegexOptions.Compiled);
+            string result = "";
+
+            string dataGridName = "";
+            while (xmlReader.Read())
+            {
+                // Only detect start elements.
+                if (xmlReader.IsStartElement())
+                {
+                    // Get element name and switch on it.
+                    switch (xmlReader.Name)
+                    {
+                        case "CANX":
+                            // Detect this element.
+                            Console.WriteLine("Start CANX element.");
+                            // clear the datagrids
+                            while (dataGridEditRxMessages.Items.Count != 0)
+                            {
+                                dataGridEditRxMessages.Items.RemoveAt(0);
+                            }
+                            while (dataGridEditTxMessages.Items.Count != 0)
+                            {
+                                dataGridEditTxMessages.Items.RemoveAt(0);
+                            }
+                            while (dataGridTx.Items.Count != 0)
+                            {
+                                dataGridTx.Items.RemoveAt(0);
+                            }
+                            break;
+                        case "edit_tx_messages":
+                            dataGridName = "edit_tx_messages";
+                            break;
+                        case "edit_rx_messages":
+                            dataGridName = "edit_rx_messages";
+                            break;
+                        case "edit_txMsg":
+
+                            break;
+                        case "edit_rxMsg":
+
+                            break;
+                        case "Key":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Key = Convert.ToUInt32(result);
+                            }
+                            else
+                            {
+                                canRxData.Key = Convert.ToUInt32(result);
+                            }
+                            break;
+                            break;
+                        case "Description":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Description = result;
+                            }
+                            else
+                            {
+                                canRxData.Description = result;
+                            }
+                            break;
+                        case "IDE":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.IDE = result;
+                            }
+                            else
+                            {
+                                canRxData.IDE = result;
+                            }
+                            break;
+                        case "ArbID":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.ArbID = result;
+                            }
+                            else
+                            {
+                                canRxData.ArbID = result;
+                            }
+                            break;
+                        case "RTR":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.RTR = result;
+                            }
+                            // rx doesn't have RTR
+                            break;
+                        case "DLC":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.DLC = result;
+                            }
+                            else
+                            {
+                                canRxData.DLC = result;
+                            }
+                            break;
+                        case "Byte1":
+                            xmlReader.Read();
+                            //var regex = new Regex(@"\r\n?|\n|\t", RegexOptions.Compiled);
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte1 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte1 = result;
+                            }
+                            break;
+                        case "Byte2":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte2 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte2 = result;
+                            }
+                            break;
+                        case "Byte3":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte3 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte3 = result;
+                            }
+                            break;
+                        case "Byte4":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte4 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte4 = result;
+                            }
+                            break;
+                        case "Byte5":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte5 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte5 = result;
+                            }
+                            break;
+                        case "Byte6":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte6 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte6 = result;
+                            }
+                            break;
+                        case "Byte7":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte7 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte7 = result;
+                            }
+                            break;
+                        case "Byte8":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Byte8 = result;
+                            }
+                            else
+                            {
+                                canRxData.Byte8 = result;
+                            }
+                            break;
+                        case "Node": // last element so add to datagrid and start new instance of CanRxData/CanTxData
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            if (dataGridName == "edit_tx_messages")
+                            {
+                                canTxData.Node = result;
+                                dataGridEditTxMessages.Items.Add(canTxData);
+                                dataGridTx.Items.Add(canTxData);
+                                canTxData = new CanTxData();
+                            }
+                            else
+                            {
+                                canRxData.Node = result;
+                                dataGridEditRxMessages.Items.Add(canRxData);
+                                canRxData = new CanRxData();
+                            }                          
+                            break;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonPauseMessages_Click(object sender, RoutedEventArgs e)
+        {
+            pauseMessagesFlag = !pauseMessagesFlag;
+        }
+
+        private void ButtonScrollMessages_Click(object sender, RoutedEventArgs e)
+        {
+            scrollMessagesFlag = !scrollMessagesFlag;
+        }
+
+        private void DataGridRx_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            return;
+            // Todo - open window only if Key column is clicked
+            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+
+
+
+            DataGridRow dgr = null;
+            var visParent = VisualTreeHelper.GetParent(e.OriginalSource as FrameworkElement);
+            while (dgr == null && visParent != null)
+            {
+                dgr = visParent as DataGridRow;
+                visParent = VisualTreeHelper.GetParent(visParent);
+            }
+            if (dgr == null)
+            {
+                return;
+            }
+
+
+
+
+            int columnIndex = dataGridRx.CurrentColumn.DisplayIndex;
+
+
+            StatusBarStatus.Text = "row: " + dgr.GetIndex().ToString() + " col: " + columnIndex;
+
+            if(columnIndex != 0)
+            {
+                return;
+            }
+
+            Window2CopyMsg window2 = new Window2CopyMsg();
+            window2.Show();
+        }
+
+        #region ComboBox Node selection
+        private void ComboBoxTxNode_DropDownClosed(object sender, EventArgs e)
+        {
+            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row
+            if (data == null)
+            {
+                try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
+                {
+                    StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                }
+                catch (NullReferenceException)
+                {
+
+                }
+                return;
+            }
+            ComboBox comboBox = (ComboBox)sender;
+            data.Node = comboBox.SelectionBoxItem.ToString();
+            dataGridEditTxMessages.Items.Refresh();
+
+            if (comboBox.SelectionBoxItem.ToString() == "SWCAN1" || comboBox.SelectionBoxItem.ToString() == "SWCAN2")
+            {
+                StackPanelHighVoltage.IsEnabled = true;
+            }
+            else
+            {
+                StackPanelHighVoltage.IsEnabled = false;
+                CheckBoxHighVoltage.IsChecked = false;
+            }
+        }
+
+        private void ComboBoxRxNode_DropDownClosed(object sender, EventArgs e)
+        {
+            CanRxData data = dataGridEditRxMessages.SelectedItem as CanRxData; // grabs the current selected row
+            if (data == null)
+            {
+                try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
+                {
+                    StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                }
+                catch (NullReferenceException)
+                {
+
+                }
+                return;
+            }
+            ComboBox comboBox = (ComboBox)sender;
+            data.Node = comboBox.SelectionBoxItem.ToString();
+            dataGridEditRxMessages.Items.Refresh();
+
+            if (comboBox.SelectionBoxItem.ToString() == "SWCAN1" || comboBox.SelectionBoxItem.ToString() == "SWCAN2")
+            {
+                StackPanelHighVoltage.IsEnabled = true;
+            }
+            else
+            {
+                StackPanelHighVoltage.IsEnabled = false;
+                CheckBoxHighVoltage.IsChecked = false;
+            }
+        }
+        #endregion
     }
 }
