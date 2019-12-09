@@ -118,6 +118,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -152,10 +153,9 @@
     <None Include="Resources\addbutton_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\green_button_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ic_launcher.png" />
+    <Resource Include="Resources\blue_icon.png" />
+    <Resource Include="Resources\green_icon.png" />
+    <Resource Include="Resources\red_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

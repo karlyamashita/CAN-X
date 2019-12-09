@@ -84,6 +84,8 @@ namespace CAN_X_CAN_Analyzer
 
         const int DATA_SIZE = 20;
         const int BUFF_SIZE = 64;
+
+        const int MAX_ROW_COUNT = 100000; // how many lines to receive. This is used for the progress as well
         #endregion
 
         #region variables
@@ -105,12 +107,14 @@ namespace CAN_X_CAN_Analyzer
         List<CAN_BaudRate> baudRateList = new List<CAN_BaudRate>();
 
         public delegate void MessageParse(byte[] data);
+        public delegate void SendMessage();
 
         int rowIndexEditTx = 0;
         int rowIndexEditRx = 0;
 
         bool pauseMessagesFlag = false;
         bool scrollMessagesFlag = true;
+       
 
         #endregion
 
@@ -141,6 +145,11 @@ namespace CAN_X_CAN_Analyzer
             MessageParse msg = new MessageParse(ParseUsbData);
             this.Dispatcher.BeginInvoke(msg, new object[] { data });
         }
+
+        private void SendButtonClicked()
+        {
+
+        }
         #endregion
 
         #region parse the USB data received. This is running on a thread
@@ -149,7 +158,7 @@ namespace CAN_X_CAN_Analyzer
             switch (data[1])
             {
                 case COMMAND_MESSAGE:
-                    AddToDataGrid(data);
+                    ParseDeviceCAN_Message(data);
                     break;
                 case COMMAND_BAUD:
 
@@ -205,12 +214,17 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region parse data to show new CAN_BTC value
+        #region show new CAN_BTC value
         private void ShowBTC_VALUE(byte[] data)
         {
             // todo - parse the BTC_VALUE and show in TextBoxBtcValue. Then set index in the ComboBoxBaudRate
             UInt32 btrValue = 0;
             btrValue = (UInt32) (data[2] << 24 | data[3] << 16 | data[4] << 8 | data[5]);
+
+            if((btrValue >> 31 & 0x1) == 1)
+            {
+                CheckBoxListenOnly.IsChecked = true;
+            }
 
             TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
 
@@ -227,8 +241,8 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region add CAN messages to DataGrid
-        private void AddToDataGrid(byte[] data)
+        #region Parse device CAN message
+        private void ParseDeviceCAN_Message(byte[] data)
         {
             // todo - copy data to struct to use member access instead of figureing out what index of data is.
             DateTime now = DateTime.Now;
@@ -266,7 +280,7 @@ namespace CAN_X_CAN_Analyzer
 
             canDataRx.ArbID = Convert.ToString(id, 16).ToUpper();
 
-            // todo parse ID and compare to receive messages editor. Return string description if available
+            // parse ID and compare to receive messages editor. Return string description if available
             foreach(CanRxData row in dataGridEditRxMessages.Items)
             {
                 if(row.ArbID == canDataRx.ArbID)
@@ -315,9 +329,25 @@ namespace CAN_X_CAN_Analyzer
             {
                 canDataRx.Node = "CAN1";
             }
-         
-            dataGridRx.Items.Add(canDataRx); // add new row and populate with new data
 
+            // add formatted data to data grid
+            AddToDataGrid(canDataRx); 
+
+            // update progress bar
+            var count = dataGridRx.Items.Count;
+            ProgressBar.Value = count;
+            // remove data from datagrid if we reach max amount of rows
+            if(count>= MAX_ROW_COUNT)
+            {
+                dataGridRx.Items.RemoveAt(0);                 
+            }
+        }
+        #endregion
+
+        #region Add formatted data to datagrid and scrolls
+        private void AddToDataGrid(CanRxData canRxData)
+        {
+            dataGridRx.Items.Add(canRxData);
             // scroll to bottom
             if (pauseMessagesFlag == false)
             {
@@ -331,17 +361,10 @@ namespace CAN_X_CAN_Analyzer
                     }
                 }
             }
-            var count = dataGridRx.Items.Count;
-
-            ProgressBar.Value = count;
-            if(count>=10000)
-            {
-                dataGridRx.Items.RemoveAt(0);                 
-            }
         }
         #endregion
 
-        #region Button event to send CAN messages and to update DataGrid
+        #region Button event to send CAN messages and to update DataGrid. Starts delegate
         private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
         {
             if (!Device.IsDeviceConnected)
@@ -349,77 +372,41 @@ namespace CAN_X_CAN_Analyzer
                 StatusBarStatus.Text = "Device Not Connected";
                 return;
             }
+            SendMessage msg = new SendMessage(SendTxMsgToDataGridAndCanBus);
+            this.Dispatcher.BeginInvoke(msg);
+        }
 
+        // send Tx message to device and update data grid
+        private void SendTxMsgToDataGridAndCanBus()
+        {
             DateTime now = DateTime.Now;
 
-            CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row
+            // get the current selected row data
+            CanTxData canTxdata = dataGridTx.SelectedItem as CanTxData;
+            // now update datagrid
+            SendCanData(ref canTxdata);
 
-            // todo - start async task to send data
-
-            CanTxData canData = new CanTxData();
-            if (data.IDE == "S")
-            {
-                canData.IDE = "CAN_STD_ID";
-            }
-            else
-            {
-                canData.IDE = "CAN_XTD_ID";
-            }
-            canData.ArbID = data.ArbID;
-            canData.DLC = data.DLC;
-            canData.Byte1 = data.Byte1;
-            canData.Byte2 = data.Byte2;
-            canData.Byte3 = data.Byte3;
-            canData.Byte4 = data.Byte4;
-            canData.Byte5 = data.Byte5;
-            canData.Byte6 = data.Byte6;
-            canData.Byte7 = data.Byte7;
-            canData.Byte8 = data.Byte8;
-            canData.Node = data.Node;
-
-            SendCanData(ref canData);
-
-            // todo - update receive window with tx message
-            CanRxData canRxData = new CanRxData
-            {
-                Line = lineCount++
-            };
-
-            //canRxData.TimeAbs = now.ToString("MM/dd/yyyy - HH:mm:ss.ffff");
+            // formatting canRxData with canTxData and adding line count, time
+            CanRxData canRxData = new CanRxData();
+            canRxData.Line = lineCount++;
             canRxData.TimeAbs = now.ToString("HH:mm:ss.ffff");
-
             canRxData.Tx = true;
+            canRxData.IDE = canTxdata.IDE;
+            canRxData.Description = canTxdata.Description;
+            canRxData.ArbID = canTxdata.ArbID;
+            canRxData.DLC = canTxdata.DLC;
+            canRxData.Byte1 = canTxdata.Byte1;
+            canRxData.Byte2 = canTxdata.Byte2;
+            canRxData.Byte3 = canTxdata.Byte3;
+            canRxData.Byte4 = canTxdata.Byte4;
+            canRxData.Byte5 = canTxdata.Byte5;
+            canRxData.Byte6 = canTxdata.Byte6;
+            canRxData.Byte7 = canTxdata.Byte7;
+            canRxData.Byte8 = canTxdata.Byte8;
+            canRxData.Node = canTxdata.Node;
 
-            canRxData.IDE = data.IDE;
-            canRxData.Description = data.Description;
-            canRxData.ArbID = data.ArbID;
-            canRxData.DLC = data.DLC;
-            canRxData.Byte1 = data.Byte1;
-            canRxData.Byte2 = data.Byte2;
-            canRxData.Byte3 = data.Byte3;
-            canRxData.Byte4 = data.Byte4;
-            canRxData.Byte5 = data.Byte5;
-            canRxData.Byte6 = data.Byte6;
-            canRxData.Byte7 = data.Byte7;
-            canRxData.Byte8 = data.Byte8;
-            canRxData.Node = data.Node;
-
-            dataGridRx.Items.Add(canRxData);
-
-            // scroll to bottom
-            if (pauseMessagesFlag == false)
-            {
-                if (dataGridRx.Items.Count > 0)
-                {
-                    var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
-                    if (border != null)
-                    {
-                        var scroll = border.Child as ScrollViewer;
-                        if (scroll != null) scroll.ScrollToEnd();
-                    }
-                }
-            }
-
+            // add formatted data to datagrid
+            AddToDataGrid(canRxData);         
         }
         #endregion
 
@@ -562,148 +549,121 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region SendCanData
+        #region Send CAN message to device over USB
         private void SendCanData(ref CanTxData canData)
         {
-            byte[] tmp_buf = new byte[DATA_SIZE]; // command + (DATA_SIZE - 1) should be less than 64 bytes
+            byte[] usbPacket = new byte[DATA_SIZE - 1]; // command + (DATA_SIZE - 1) should be less than 64 bytes
 
             // CAN Type ExID = 4, StdID = 0
-            if (canData.IDE == "CAN_STD_ID")
+            if (canData.IDE == "S")
             {
-                tmp_buf[0] = CAN_STD_ID;
+                usbPacket[0] = CAN_STD_ID;
             }
             else
             {
-                tmp_buf[0] = CAN_EXT_ID;
+                usbPacket[0] = CAN_EXT_ID;
             }
 
-            tmp_buf[1] = Convert.ToByte(canData.RTR); // RTR, Node
-            switch(canData.Node)
+            // RTR
+            if (canData.RTR != null && canData.RTR != "")
             {
-                case "CAN1":
-                    tmp_buf[1] = (byte) (tmp_buf[1] | (CAN1_NODE << 2));
-                    break;
-                case "CAN2":
-                    tmp_buf[1] = (byte)(tmp_buf[1] | (CAN2_NODE << 2));
-                    break;
-                case "SWCAN1":
-                    tmp_buf[1] = (byte)(tmp_buf[1] | (SWCAN1_NODE << 2));
-                    break;
-                case "LSFTCAN1":
-                    tmp_buf[1] = (byte)(tmp_buf[1] | (LSFTCAN1_NODE << 2));
-                    break;
-                case "LIN1":
-                    tmp_buf[1] = (byte)(tmp_buf[1] | (LIN1_NODE << 2));
-                    break;
+                usbPacket[1] = Convert.ToByte(canData.RTR); // RTR, Node
             }
 
+            // Node
+            if (canData.Node != null && canData.Node != "")
+            {
+                switch (canData.Node)
+                {
+                    case "CAN1":
+                        usbPacket[1] = (byte)(usbPacket[1] | (CAN1_NODE << 2));
+                        break;
+                    case "CAN2":
+                        usbPacket[1] = (byte)(usbPacket[1] | (CAN2_NODE << 2));
+                        break;
+                    case "SWCAN1":
+                        usbPacket[1] = (byte)(usbPacket[1] | (SWCAN1_NODE << 2));
+                        break;
+                    case "LSFTCAN1":
+                        usbPacket[1] = (byte)(usbPacket[1] | (LSFTCAN1_NODE << 2));
+                        break;
+                    case "LIN1":
+                        usbPacket[1] = (byte)(usbPacket[1] | (LIN1_NODE << 2));
+                        break;
+                }
+            }
+            else // set to default CAN1
+            {
+                usbPacket[1] = (byte)(usbPacket[1] | (CAN1_NODE << 2));
+            }
 
-            // tmp_buf[2] n/a
+            // tmp_buf[2] n/a. This aligns the 32 bit ArbID in the device's USB message structure
 
             // Arb ID 29/11 bit
             if (canData.IDE == "CAN_STD_ID")
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
                 extID = extID & 0x7FF;
-                tmp_buf[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
-                tmp_buf[4] = (byte)(extID >> 8 & 0xFF); 
+                usbPacket[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                usbPacket[4] = (byte)(extID >> 8 & 0xFF); 
             }
             else
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
-                tmp_buf[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
-                tmp_buf[4] = (byte)(extID >> 8 & 0xFF);
-                tmp_buf[5] = (byte)(extID >> 16 & 0xFF);
-                tmp_buf[6] = (byte)(extID >> 24 & 0xFF); // MSB         
+                usbPacket[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                usbPacket[4] = (byte)(extID >> 8 & 0xFF);
+                usbPacket[5] = (byte)(extID >> 16 & 0xFF);
+                usbPacket[6] = (byte)(extID >> 24 & 0xFF); // MSB         
             }
             
             //DLC
-            if(canData.DLC != "")
+            if(canData.DLC != null && canData.DLC != "")
             {
-                tmp_buf[7] = Convert.ToByte(canData.DLC);
-                
+                usbPacket[7] = Convert.ToByte(canData.DLC);             
             }
-            else
-            {
-                tmp_buf[7] = 0;
-            }
-
 
             // data bytes
-            if(canData.Byte1 != "")
+            if(canData.Byte1 != null && canData.Byte1 != "")
             {
-                tmp_buf[8] = Convert.ToByte(canData.Byte1, 16);
-            }
-            else
-            {
-                tmp_buf[8] = 0;
+                usbPacket[8] = Convert.ToByte(canData.Byte1, 16);
             }
 
-            if(canData.Byte2 != "")
+            if(canData.Byte2 != null && canData.Byte2 != "")
             {
-                tmp_buf[9] = Convert.ToByte(canData.Byte2, 16);
-            }
-            else
-            {
-                tmp_buf[9] = 0;
+                usbPacket[9] = Convert.ToByte(canData.Byte2, 16);
             }
 
-            if(canData.Byte3 != "")
+            if(canData.Byte3 != null && canData.Byte3 != "")
             {
-                tmp_buf[10] = Convert.ToByte(canData.Byte3, 16);
-            }
-            else
-            {
-                tmp_buf[10] = 0;
+                usbPacket[10] = Convert.ToByte(canData.Byte3, 16);
             }
 
-            if(canData.Byte4 != "")
+            if(canData.Byte4 != null && canData.Byte4 != "")
             {
-                tmp_buf[11] = Convert.ToByte(canData.Byte4, 16);
-            }
-            else
-            {
-                tmp_buf[11] = 0;
+                usbPacket[11] = Convert.ToByte(canData.Byte4, 16);
             }
 
-            if(canData.Byte5 != "")
+            if(canData.Byte5 != null && canData.Byte5 != "")
             {
-                tmp_buf[12] = Convert.ToByte(canData.Byte5, 16);
-            }
-            else
-            {
-                tmp_buf[12] = 0;
+                usbPacket[12] = Convert.ToByte(canData.Byte5, 16);
             }
 
-            if(canData.Byte6 != "")
+            if(canData.Byte6 != null && canData.Byte6 != "")
             {
-                tmp_buf[13] = Convert.ToByte(canData.Byte6, 16);
-            }
-            else
-            {
-                tmp_buf[13] = 0;
+                usbPacket[13] = Convert.ToByte(canData.Byte6, 16);
             }
 
-            if(canData.Byte7 != "")
+            if(canData.Byte7 != null && canData.Byte7 != "")
             {
-                tmp_buf[14] = Convert.ToByte(canData.Byte7, 16);
-            }
-            else
-            {
-                tmp_buf[14] = 0;
+                usbPacket[14] = Convert.ToByte(canData.Byte7, 16);
             }
 
-            if(canData.Byte8 != "")
+            if(canData.Byte8 != null && canData.Byte8 != "")
             {
-                tmp_buf[15] = Convert.ToByte(canData.Byte8, 16);
-            }
-            else
-            {
-                tmp_buf[15] = 0;
+                usbPacket[15] = Convert.ToByte(canData.Byte8, 16);
             }
 
-
-            var command = new CommandMessage(COMMAND_MESSAGE, tmp_buf);
+            var command = new CommandMessage(COMMAND_MESSAGE, usbPacket);
             Device.SendMessage(command);
         }
         #endregion
@@ -748,6 +708,11 @@ namespace CAN_X_CAN_Analyzer
             tmp_buf[1] = (byte)(btrValue >> 16);
             tmp_buf[2] = (byte)(btrValue >> 8);
             tmp_buf[3] = (byte)(btrValue);
+            if (CheckBoxListenOnly.IsChecked == true)
+            {
+                tmp_buf[0] = (byte) (tmp_buf[0] | 0x80);// bit 31 is Normal=0, Silent = 1. Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
+            }
+
             tmp_buf[4] = CAN1_NODE; // CAN1
 
             StatusBarStatus.Text = "Sending BTR Value";
@@ -837,13 +802,6 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
-
-
-        private UInt32 ConvertHexStrToInt(string str)
-        {
-           UInt32 intValue =  (UInt32) (Convert.ToInt32(str, 16));
-           return intValue;
-        }
        
         #region add and edit messages
         /*
@@ -879,7 +837,9 @@ namespace CAN_X_CAN_Analyzer
             }
             canTxData.Key = newIndex;
             dataGridEditTxMessages.Items.Add(canTxData);
-            dataGridTx.Items.Add(canTxData);
+
+            dataGridTx.Items.Add(canTxData); // the Tx dataGrid
+            dataGridTx.RowHeight = 15;
         }
 
         private void ButtonDeleteEditTxRow_Click(object sender, RoutedEventArgs e)
@@ -1425,7 +1385,6 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region open project
-
         private void MenuItemOpenProject_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog()
@@ -1435,6 +1394,8 @@ namespace CAN_X_CAN_Analyzer
             };
             if (openFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                USB_CAN_Interface.Properties.Settings.Default.lastFilePath = openFile.FileName;
+                USB_CAN_Interface.Properties.Settings.Default.Save();
                 if (!File.Exists(openFile.FileName))
                 {
                     StatusBarStatus.Text = "File does not exist!";
@@ -1504,7 +1465,6 @@ namespace CAN_X_CAN_Analyzer
                             {
                                 canRxData.Key = Convert.ToUInt32(result);
                             }
-                            break;
                             break;
                         case "Description":
                             xmlReader.Read();
@@ -1668,12 +1628,14 @@ namespace CAN_X_CAN_Analyzer
                                 canTxData.Node = result;
                                 dataGridEditTxMessages.Items.Add(canTxData);
                                 dataGridTx.Items.Add(canTxData);
+                                dataGridTx.RowHeight = 20;
                                 canTxData = new CanTxData();
                             }
                             else
                             {
                                 canRxData.Node = result;
                                 dataGridEditRxMessages.Items.Add(canRxData);
+                                dataGridRx.RowHeight = 20;
                                 canRxData = new CanRxData();
                             }                          
                             break;
@@ -1682,6 +1644,12 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+
+        private UInt32 ConvertHexStrToInt(string str)
+        {
+            UInt32 intValue = (UInt32)(Convert.ToInt32(str, 16));
+            return intValue;
+        }
 
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
         {
@@ -1796,5 +1764,17 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+
+        private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!File.Exists(USB_CAN_Interface.Properties.Settings.Default.lastFilePath))
+            {
+                return;
+            }
+            else
+            {
+                ReadXml(USB_CAN_Interface.Properties.Settings.Default.lastFilePath);
+            }
+        }
     }
 }

@@ -121,7 +121,4 @@
   <data name="addbutton_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\addbutton_icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="green_button_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\green_button_icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>
