@@ -56,8 +56,7 @@ namespace CAN_X_CAN_Analyzer
 
         // custom commands
         const byte COMMAND_MESSAGE = 0x80; // CAN message structure over USB
-        const byte COMMAND_BAUD = 0x90;
-
+       
         const byte COMMAND_ENABLE_MESSAGES = 0xB0; // enable hardware to send messages on USB data
         const byte COMMAND_DISABLE_MESSAGES = 0xB1; // disable hardware from sending messages on USB data
 
@@ -65,6 +64,7 @@ namespace CAN_X_CAN_Analyzer
         const byte COMMAND_CAN_BTR = 0x91; // the CAN_BTC value from interface
         const byte COMMAND_VERSION = 0x92;
         const byte COMMAND_HARDWARE = 0x93; // 
+        const byte COMMAND_BAUD = 0x95;
 
         // const defines
         const byte CAN_STD_ID = 0x00;
@@ -185,7 +185,7 @@ namespace CAN_X_CAN_Analyzer
         private string GetStringFromData(byte[] data)
         {
             int i = 0;
-            byte[] temp = new byte[data.Length];
+            byte[] temp = new byte[DATA_SIZE];
 
             while (data[i+1] != '\0') // index 1 is command
             {
@@ -201,7 +201,7 @@ namespace CAN_X_CAN_Analyzer
         {
             // todo - parse the BTC_VALUE and show in TextBoxBtcValue. Then set index in the ComboBoxBaudRate
             UInt32 btrValue = 0;
-            btrValue = (UInt32) (data[1] << 24 | data[2] << 16 | data[3] << 8 | data[4]);
+            btrValue = (UInt32) (data[2] << 24 | data[3] << 16 | data[4] << 8 | data[5]);
 
             if((btrValue >> 31 & 0x1) == 1)
             {
@@ -237,6 +237,8 @@ namespace CAN_X_CAN_Analyzer
             CanRxData canRxData = new CanRxData(data);
             canRxData.Line = lineCount++;
             canRxData.TimeAbs = now.ToString("HH:mm:ss.ffff"); // now we can formate date saved earlier and save in object
+            // ParseAscii
+            ParseAscii(ref canRxData);
 
             // parse ID and compare to receive messages editor. Return string description if available
             ParseForDescription(ref canRxData);
@@ -256,6 +258,47 @@ namespace CAN_X_CAN_Analyzer
 
             // update the progress bar and remove first row if we are at MAX_ROW_COUNT
             if (UpdateProgressBar()) dataGridRx.Items.RemoveAt(0);
+        }
+
+        private void ParseAscii(ref CanRxData canRxData)
+        {
+            byte[] data = new byte[8];
+            int dlcLength = (char) Convert.ToUInt16(canRxData.DLC);
+
+            if(dlcLength >= 1)
+            {
+                data[0] = Convert.ToByte(canRxData.Byte1, 16);
+            }
+            if (dlcLength >= 2)
+            {
+                data[1] = Convert.ToByte(canRxData.Byte2, 16);
+            }
+            if (dlcLength >= 3)
+            {
+                data[2] = Convert.ToByte(canRxData.Byte3, 16);
+            }
+            if (dlcLength >= 4)
+            {
+                data[3] = Convert.ToByte(canRxData.Byte4, 16);
+            }
+            if (dlcLength >= 5)
+            {
+                data[4] = Convert.ToByte(canRxData.Byte5, 16);
+            }
+            if (dlcLength >= 6)
+            {
+                data[5] = Convert.ToByte(canRxData.Byte6, 16);
+            }
+            if (dlcLength >= 7)
+            {
+                data[6] = Convert.ToByte(canRxData.Byte7, 16);
+            }
+            if (dlcLength >= 8)
+            {
+                data[7] = Convert.ToByte(canRxData.Byte8, 16);
+            }
+
+            canRxData.ASCII = Encoding.UTF8.GetString(data);
         }
 
         // goes through the Receive messages to find a ArbID match and copy description if avaialbble

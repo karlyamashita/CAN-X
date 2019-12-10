@@ -21,7 +21,7 @@
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                     <BeginStoryboard HandoffBehavior="Compose">
                         <Storyboard TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)">
-                            <ColorAnimation Duration="0:0:0.1" To="LightGreen" AutoReverse="True"/>
+                            <!--<ColorAnimation Duration="0:0:0.1" To="LightGreen" AutoReverse="True"/>-->
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
@@ -181,6 +181,7 @@
                                 <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
                                 <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
+                                <DataGridTextColumn Header="ASCII" Binding="{Binding Path='ASCII', Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
 

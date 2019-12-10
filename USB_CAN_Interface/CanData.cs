@@ -50,7 +50,7 @@ namespace CAN_X_CAN_Analyzer
         public string Byte8 { get; set; }
 
         public string Node { get; set; }
-
+        public string ASCII { get; set; }
         public string Count { get; set; }
         public string Color { get; set; }
 
