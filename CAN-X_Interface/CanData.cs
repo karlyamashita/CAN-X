@@ -8,6 +8,7 @@ namespace CAN_X_CAN_Analyzer
         public string Description { get; set; } = "";
         public bool AutoTx { get; set; } = false;
         public string Rate { get; set; } = "";
+        public double RateTimer { get; set; } = 0;
         public string IDE { get; set; } = "";
         public int RTR { get; set; } = 0;
         public string ArbID { get; set; } = "";
@@ -24,7 +25,31 @@ namespace CAN_X_CAN_Analyzer
 
         public string Node { get; set; } = "";
         public string Count { get; set; } = "1";
+        public string Notes { get; set; } = "";
         public string Color { get; set; } = "";
+
+        public CanTxData()
+        {
+
+        }
+
+        public CanTxData(CanTxData canTxData) // makes a copy
+        {
+            IDE = canTxData.IDE;
+            Description = canTxData.Description;
+            RTR = canTxData.RTR;
+            ArbID = canTxData.ArbID;
+            DLC = canTxData.DLC;
+            Byte1 = canTxData.Byte1;
+            Byte2 = canTxData.Byte2;
+            Byte3 = canTxData.Byte3;
+            Byte4 = canTxData.Byte4;
+            Byte5 = canTxData.Byte5;
+            Byte6 = canTxData.Byte6;
+            Byte7 = canTxData.Byte7;
+            Byte8 = canTxData.Byte8;
+            Node = canTxData.Node;
+        }
     }
 
     public class CanRxData
@@ -55,6 +80,7 @@ namespace CAN_X_CAN_Analyzer
         public string CountSaved { get; set; } = "1";
         public string TxCount { get; set; } = "1";
         public string TxCountSaved { get; set; } = "1";
+        public string Notes { get; set; } = "";
         public string Color { get; set; } = "";
 
         public CanRxData()
@@ -62,6 +88,7 @@ namespace CAN_X_CAN_Analyzer
 
         }
 
+        // The structure of the data from device
         public CanRxData(byte[] data)
         {
             #region CanRxData(byte[] data)

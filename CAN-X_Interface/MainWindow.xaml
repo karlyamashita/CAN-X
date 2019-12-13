@@ -108,11 +108,18 @@
                             <ToggleButton x:Name="ButtonPauseMessages" Content="Pause" Margin="10,0,0,0" Click="ButtonPauseMessages_Click" Height="20" MinWidth="70" />
                             
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" />
+                        <CheckBox x:Name="CheckBoxBlind" Margin="30,0,0,0" Content="I'm Blind" Click="CheckBoxBlind_Click" />
                         </StackPanel>
                         <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3" MouseLeftButtonUp="DataGridRx_MouseLeftButtonUp">
                             <DataGrid.Background>
                                 <ImageBrush/>
                             </DataGrid.Background>
+                            <!--<DataGrid.RowStyle>
+                                <Style TargetType="{x:Type DataGridRow}">
+                                    <Setter Property="FontSize" Value="16"/>
+                                    <Setter Property="Height" Value="25"/>
+                                </Style>
+                            </DataGrid.RowStyle>-->
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
                                 <DataGridTextColumn Header="RxCnt" Binding="{Binding Path='Count', Mode=OneWay}" />
@@ -171,7 +178,7 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
 
-                                <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
+                                <DataGridTextColumn Header="Description"  Binding="{Binding Path='Description', Mode=OneWay}" />
                                 <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
                                 <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=OneWay}" />
                                 <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
@@ -185,6 +192,7 @@
                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
                                 <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                                 <DataGridTextColumn Header="ASCII" Binding="{Binding Path='ASCII', Mode=OneWay}" />
+                                <DataGridTextColumn Header="Notes" Binding="{Binding Path='Notes', Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
 
@@ -203,10 +211,10 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="" >
+                                    <DataGridTemplateColumn Header="AutoTx" >
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <!--<CheckBox Name="CheckBoxAutoTx"/>-->
+                                                <CheckBox Name="CheckBoxAutoTx" Click="CheckBoxAutoTx_Click" IsChecked="{Binding Path='AutoTx', Mode=TwoWay}"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -224,12 +232,13 @@
                                 <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Count" Binding="{Binding Path='Count', Mode=OneWay}" />
-                            </DataGrid.Columns>
+                                </DataGrid.Columns>
                         </DataGrid>
                         </Grid>
                         <Grid x:Name="GridSpacer" Grid.Row="4" Margin="5,0,0,20">
-                            <StackPanel Orientation="Horizontal"/>
+                            <StackPanel Orientation="Horizontal">
+                                <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Height="20" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click"/>
+                            </StackPanel>
                         </Grid>
                     </Grid>
                 </TabItem>
@@ -266,6 +275,7 @@
                                                 <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
+                                                <DataGridTextColumn Header="Notes" Binding="{Binding Path='Notes', Mode=OneWay}" />
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <Grid Grid.Row="2" Margin="15,0,0,0">
@@ -282,7 +292,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Vertical">
                                                 <Label Content="Description" />
-                                                <TextBox x:Name="TextBoxRxDescription" Height="25" Margin="0" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                                <TextBox x:Name="TextBoxRxDescription" Height="25" Margin="0" MaxLength="24" TextChanged="TextBoxEditMessageRx_TextChanged"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
                                                 <Label Content="ArbID"/>
@@ -336,11 +346,14 @@
                                                 <Label Content="BYTE8"/>
                                                 <TextBox x:Name="TextBoxRxByte8" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged"/>
                                             </StackPanel>
+                                            <StackPanel Width="250" Margin="20,0,0,0">
+                                                <Label Content="Notes" />
+                                                <TextBox x:Name="TextBoxRxNotes" Height="50" TextWrapping="Wrap" MaxLength="128" TextChanged="TextBoxEditMessageRx_TextChanged" />  
+                                            </StackPanel>
                                         </StackPanel>
                                     </Grid>
                                 </DockPanel>
                             </TabItem>
-
 
                             <TabItem Header="Transmit Messages">
                                 <DockPanel>
@@ -360,6 +373,8 @@
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=TwoWay}" />
+                                                <DataGridTextColumn Header="AutoTx" Binding="{Binding Path='AutoTx', Mode=TwoWay}" />
+                                                <DataGridTextColumn Header="Rate" Binding="{Binding Path='Rate', Mode=TwoWay}" />
                                                 <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=TwoWay}" />
                                                 <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID' , Mode=TwoWay}" />
                                                 <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=TwoWay}" />
@@ -382,7 +397,7 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="250"/>
                                                 <ColumnDefinition Width="100"/>
-                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="110"/>
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="110"/>
                                                 <ColumnDefinition Width="*"/>
@@ -450,6 +465,20 @@
                                             <StackPanel Orientation="Vertical">
                                                 <Label Content="BYTE8"/>
                                                 <TextBox x:Name="TextBoxTxByte8" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                                                <Label Content="AutoTx"/>
+                                                <CheckBox x:Name="CheckBoxAutoTx" Content="Enable" Click="CheckBoxAutoTx_Click" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                                                <Label Content="Rate"/>
+                                                <ComboBox x:Name="ComboBoxTxRate" SelectedIndex="0" Width="60" DropDownClosed="ComboBoxTxRate_DropDownClosed"  >
+                                                    <ComboBoxItem Content="100"/>
+                                                    <ComboBoxItem Content="500"/>
+                                                    <ComboBoxItem Content="1000"/>
+                                                    <ComboBoxItem Content="1200"/>
+                                                    <ComboBoxItem Content="2000"/>
+                                                </ComboBox>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
