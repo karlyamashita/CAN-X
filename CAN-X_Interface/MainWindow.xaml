@@ -31,7 +31,7 @@
     
     <Grid>
         <DockPanel>
-            <StackPanel DockPanel.Dock="Top" Height="30" Margin="0">
+            <StackPanel DockPanel.Dock="Top" Height="25" Margin="0">
                 <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
                     <MenuItem Header="File">
                         <MenuItem x:Name="MenuItemOpenProject" Header="Open Project" Click="MenuItemOpenProject_Click"/>
@@ -74,7 +74,7 @@
                         <Button x:Name="ButtonBtrValue" Content="Send BTR" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0" Click="ButtonBtrValue_Click"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Filters &amp; Masks" Height="113" BorderBrush="#FFABAFB2" IsEnabled="False">
+                <!--<GroupBox Header="Filters &amp; Masks" Height="113" BorderBrush="#FFABAFB2" IsEnabled="False">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="180">
                             <Label Content="Filter" />
@@ -88,7 +88,7 @@
                             <CheckBox Content="Enable Mask &amp; Filter" />
                         </StackPanel>
                     </StackPanel>
-                </GroupBox>
+                </GroupBox>-->
             </StackPanel>
 
             <TabControl Margin="0,0,0,10">
@@ -104,7 +104,7 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="3">
                             <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20"/>
                             <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click" Height="20" MinWidth="100"/>
-                            <Button x:Name="ButtonLoadMessages" Content="Load Messages" Margin="10,0,0,0" Height="20" MinWidth="100" />
+                            <!--<Button x:Name="ButtonLoadMessages" Content="Load Messages" Margin="10,0,0,0" Height="20" MinWidth="100" />-->
                             <ToggleButton x:Name="ButtonPauseMessages" Content="Pause" Margin="10,0,0,0" Click="ButtonPauseMessages_Click" Height="20" MinWidth="70" />
                             
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" />
@@ -114,7 +114,10 @@
                                 <ImageBrush/>
                             </DataGrid.Background>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Count" Binding="{Binding Path='Count', Mode=OneWay}" />
+                                <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
+                                <DataGridTextColumn Header="RxCnt" Binding="{Binding Path='Count', Mode=OneWay}" />
+                                <DataGridTextColumn Header="TxCnt" Binding="{Binding Path='TxCount', Mode=OneWay}" />
+
                                 <DataGridTextColumn Header="TimeAbs" Binding="{Binding Path='TimeAbs', Mode=OneWay}" />
                                 <DataGridTemplateColumn Header="Tx" >
                                     <DataGridTemplateColumn.CellTemplate>
@@ -203,7 +206,7 @@
                                     <DataGridTemplateColumn Header="" >
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <CheckBox Name="CheckBoxAutoTx"/>
+                                                <!--<CheckBox Name="CheckBoxAutoTx"/>-->
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -226,10 +229,7 @@
                         </DataGrid>
                         </Grid>
                         <Grid x:Name="GridSpacer" Grid.Row="4" Margin="5,0,0,20">
-                            <StackPanel Orientation="Horizontal">
-                            <Button Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Content="Send All" /> 
-                            <Button Height="20" Content="Stop" Margin="20,0,0,0" />
-                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"/>
                         </Grid>
                     </Grid>
                 </TabItem>
@@ -458,7 +458,6 @@
                         </TabControl>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Settings"/>
             </TabControl>
         </DockPanel>
         <StatusBar Height="25" VerticalAlignment="Bottom" Margin="0,0,0,5" Background="#FFE2E2E2">
