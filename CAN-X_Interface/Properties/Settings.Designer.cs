@@ -34,5 +34,17 @@ namespace USB_CAN_Interface.Properties {
                 this["lastFilePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool imBlind {
+            get {
+                return ((bool)(this["imBlind"]));
+            }
+            set {
+                this["imBlind"] = value;
+            }
+        }
     }
 }

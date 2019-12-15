@@ -7,7 +7,7 @@ namespace CAN_X_CAN_Analyzer
         public ulong Key { get; set; } = 0;
         public string Description { get; set; } = "";
         public bool AutoTx { get; set; } = false;
-        public string Rate { get; set; } = "";
+        public string Rate { get; set; } = "0";
         public double RateTimer { get; set; } = 0;
         public string IDE { get; set; } = "";
         public int RTR { get; set; } = 0;
@@ -23,7 +23,7 @@ namespace CAN_X_CAN_Analyzer
         public string Byte7 { get; set; } = "";
         public string Byte8 { get; set; } = "";
 
-        public string Node { get; set; } = "";
+        public string Node { get; set; } = "CAN1";
         public string Count { get; set; } = "1";
         public string Notes { get; set; } = "";
         public string Color { get; set; } = "";
@@ -74,7 +74,7 @@ namespace CAN_X_CAN_Analyzer
         public string Byte7 { get; set; } = "";
         public string Byte8 { get; set; } = "";
 
-        public string Node { get; set; } = "";
+        public string Node { get; set; } = "CAN1";
         public string ASCII { get; set; } = "";
         public string Count { get; set; } = "1";
         public string CountSaved { get; set; } = "1";

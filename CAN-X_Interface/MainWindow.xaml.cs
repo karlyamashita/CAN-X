@@ -101,7 +101,6 @@ namespace CAN_X_CAN_Analyzer
 
         public delegate void MessageParse(byte[] data);
         public delegate void SendMessage();
-        public delegate void TxSendMessage(CanTxData canTxData);
 
         int rowIndexEditTx = 0;
         int rowIndexEditRx = 0;
@@ -113,6 +112,9 @@ namespace CAN_X_CAN_Analyzer
         List<CanRxData> masterDataGridRx = new List<CanRxData>();
 
         string mainWindowTitle = "";
+
+        System.Diagnostics.Stopwatch sw = null;
+        Thread thread = null;
 
         #endregion
 
@@ -963,6 +965,9 @@ namespace CAN_X_CAN_Analyzer
                 ReadXml(USB_CAN_Interface.Properties.Settings.Default.lastFilePath);
                 MainWindow1.Title = mainWindowTitle + " - " + Path.GetFileName(USB_CAN_Interface.Properties.Settings.Default.lastFilePath);
             }
+
+            CheckBoxBlind.IsChecked = USB_CAN_Interface.Properties.Settings.Default.imBlind;
+            ResizeDataGridRx();
         }
         #endregion
 
@@ -1116,6 +1121,9 @@ namespace CAN_X_CAN_Analyzer
             TextBoxTxByte7.Text = data.Byte7;
             TextBoxTxByte8.Text = data.Byte8;
             ComboBoxTxNode.SelectedIndex = GetComboBoxNodeIndex(data.Node);
+
+            CheckBoxEditTxAutoTx.IsChecked = data.AutoTx;
+
             if (CheckBoxRemoteTransmit.IsChecked == false)
             {
                 // enable just in case they were disabled by RTR checkbox
@@ -1350,7 +1358,7 @@ namespace CAN_X_CAN_Analyzer
             if (dgr == null) { return; }
 
             rowIndexEditTx = dgr.GetIndex();
-            StatusBarStatus.Text = rowIndexEditTx.ToString();
+         //   StatusBarStatus.Text = rowIndexEditTx.ToString();
         }
 
         // gets the row index
@@ -1367,7 +1375,7 @@ namespace CAN_X_CAN_Analyzer
             if (dgr == null) { return; }
 
             rowIndexEditRx = dgr.GetIndex();
-            StatusBarStatus.Text = rowIndexEditRx.ToString();
+         //   StatusBarStatus.Text = rowIndexEditRx.ToString();
         }
         #endregion
 
@@ -2096,22 +2104,71 @@ namespace CAN_X_CAN_Analyzer
                 TextBoxTxByte8.IsEnabled = true;
             }
             dataGridEditTxMessages.Items.Refresh();
+            // now update dataGridTx
+            foreach(CanTxData row in dataGridTx.Items)
+            {
+                if(row.Key == data.Key)
+                {
+                    row.RTR = data.RTR;
+                    dataGridTx.Items.Refresh();
+                }
+            }
         }
         #endregion
 
+
         private void CheckBoxBlind_Click(object sender, RoutedEventArgs e)
         {
-            if(CheckBoxBlind.IsChecked == true)
+            if (CheckBoxBlind.IsChecked == true)
             {
-                dataGridRx.FontSize = 18;
+                USB_CAN_Interface.Properties.Settings.Default.imBlind = true;
+                USB_CAN_Interface.Properties.Settings.Default.Save();
             }
             else
             {
-                dataGridRx.FontSize = 12;
+                USB_CAN_Interface.Properties.Settings.Default.imBlind = false;
+                USB_CAN_Interface.Properties.Settings.Default.Save();
+            }
+            ResizeDataGridRx();
+        }
+
+        private void ResizeDataGridRx()
+        {
+            if (CheckBoxBlind.IsChecked == true)
+            {
+                Style rowStyle = new Style();
+                rowStyle.TargetType = typeof(DataGridRow);
+                rowStyle.Setters.Add(new Setter() { Property = FontSizeProperty, Value = 20D });
+                rowStyle.Setters.Add(new Setter() { Property = HeightProperty, Value = 30D });
+                dataGridRx.RowStyle = rowStyle;
+
+                USB_CAN_Interface.Properties.Settings.Default.imBlind = true;
+                USB_CAN_Interface.Properties.Settings.Default.Save();
+            }
+            else
+            {
+                Style rowStyle = new Style();
+                rowStyle.TargetType = typeof(DataGridRow);
+                rowStyle.Setters.Add(new Setter() { Property = FontSizeProperty, Value = 12D });
+                rowStyle.Setters.Add(new Setter() { Property = HeightProperty, Value = 18D });
+                dataGridRx.RowStyle = rowStyle;
+                // resize columns
+                foreach(DataGridColumn c in dataGridRx.Columns)
+                {
+                    c.Width = 0;
+                }
+                foreach (DataGridColumn c in dataGridRx.Columns)
+                {
+                    c.Width = DataGridLength.Auto;
+                }
+                dataGridRx.UpdateLayout();
+
+                USB_CAN_Interface.Properties.Settings.Default.imBlind = false;
+                USB_CAN_Interface.Properties.Settings.Default.Save();
             }
         }
 
-        private void ComboBoxTxRate_DropDownClosed(object sender, EventArgs e)
+        private void ComboBoxEditTxRate_DropDownClosed(object sender, EventArgs e)
         {
             CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row
             if (data == null)
@@ -2131,7 +2188,124 @@ namespace CAN_X_CAN_Analyzer
             dataGridEditTxMessages.Items.Refresh();
         }
 
-        private void CheckBoxAutoTx_Click(object sender, RoutedEventArgs e)
+        private void CheckBoxAutoTx_Checked(object sender, RoutedEventArgs e)
+        {
+            CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
+
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to modify";
+                return;
+            }
+            // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
+            foreach (CanTxData row in dataGridEditTxMessages.Items)
+            {
+                if (row.Key == data.Key)
+                {
+                    if (dataEdit != null)
+                    {
+                        data.AutoTx = true;
+                        if (dataEdit.Key == row.Key)
+                        {
+                            CheckBoxEditTxAutoTx.IsChecked = true;
+                        }
+                    }
+                    row.AutoTx = true;
+                    dataGridEditTxMessages.Items.Refresh();
+                }
+            }
+        }
+
+        private void CheckBoxAutoTx_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
+
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to modify";
+                return;
+            }
+            // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
+            foreach (CanTxData row in dataGridEditTxMessages.Items)
+            {
+                if (row.Key == data.Key)
+                {
+                    data.AutoTx = false;
+                    if (dataEdit != null)
+                    {
+                        dataGridEditTxMessages.UnselectAll();
+                        CheckBoxEditTxAutoTx.IsChecked = false;
+                    }
+                    row.AutoTx = false;
+                    dataGridEditTxMessages.Items.Refresh();
+                }
+            }
+        }
+
+        private void ToggleButtonAutoTx_Click(object sender, RoutedEventArgs e)
+        {
+            if (toggleButtonAutoTx.IsChecked == true)
+            {
+                sw = new System.Diagnostics.Stopwatch();
+                thread = new Thread(TxSendThread);
+                thread.Start();
+                StatusBarStatus.Text = "Started";
+            }
+            else
+            {
+                sw.Stop();
+                thread = null;
+                StatusBarStatus.Text = "Stopped";
+            }
+        }
+
+        public void TxSendThread(object state)
+        {
+            int Tick = 10;
+            int Sleep = 1;
+            long OldElapsedMilliseconds = 0;
+            sw.Start();
+
+            while (sw.IsRunning)
+            {
+                long ElapsedMilliseconds = sw.ElapsedMilliseconds;
+                long mod = (ElapsedMilliseconds % Tick);
+                if (OldElapsedMilliseconds != ElapsedMilliseconds && (mod == 0 || ElapsedMilliseconds > Tick))
+                {
+                    CanTxData canTxData = null;
+                    foreach (CanTxData row in dataGridTx.Items)
+                    {
+                        if (row.AutoTx == true)
+                        {
+                            row.RateTimer = row.RateTimer + 1;
+                            if (row.RateTimer++ >= (Convert.ToUInt32(row.Rate) / 11))
+                            {
+                                row.RateTimer = 0;
+                                canTxData = new CanTxData(row);
+                                SendCanData(ref canTxData);
+                            }
+                        }
+                        else
+                        {
+                            row.RateTimer = 0;
+                        }
+                    }
+
+                    //-----------------Restart----------------Start
+                    OldElapsedMilliseconds = ElapsedMilliseconds;
+                    OldElapsedMilliseconds = 0;
+                    sw.Reset();
+                    sw.Start();
+
+                    System.Threading.Thread.Sleep(Sleep);
+                    //-----------------Restart----------------End
+                }
+            }
+        }
+
+        private void CheckBoxEditTxAutoTx_Checked(object sender, RoutedEventArgs e)
         {
             CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
 
@@ -2140,43 +2314,42 @@ namespace CAN_X_CAN_Analyzer
                 StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
-            data.AutoTx = (bool) CheckBoxAutoTx.IsChecked;
-            dataGridEditTxMessages.Items.Refresh();
-        }
-
-        static Timer TTimer = null;
-        private void ToggleButtonAutoTx_Click(object sender, RoutedEventArgs e)
-        {
-            if (toggleButtonAutoTx.IsChecked == true)
+            // need to update the dataGridTx
+            foreach (CanTxData row in dataGridTx.Items)
             {
-                TTimer = new Timer(new TimerCallback(TxSendThread), null, -0, 100);
-            }
-            else
-            {
-                TTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            }
-        }
-
-        public void TxSendThread(object state)
-        {
-            CanTxData canTxData = null;
-            foreach(CanTxData row in dataGridTx.Items)
-            {
-                if (row.AutoTx == true)
+                if (row.Key == data.Key)
                 {
-                    row.RateTimer = row.RateTimer + 1;
-                    if (row.RateTimer++ >= Convert.ToUInt32(row.Rate))
-                    {
-                        row.RateTimer = 0;
-                        canTxData = new CanTxData(row);
-                        SendCanData(ref canTxData);
-                    }
+                    data.AutoTx = true;
+                    row.AutoTx = true;
+
+                    dataGridEditTxMessages.Items.Refresh();
+                    dataGridTx.Items.Refresh();
                 }
-                else
+            }
+        }
+
+        private void CheckBoxEditTxAutoTx_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to modify";
+                return;
+            }
+            // need to update the dataGridTx
+            foreach (CanTxData row in dataGridTx.Items)
+            {
+                if (row.Key == data.Key)
                 {
-                    row.RateTimer = 0;
-                }               
-            }            
+                    dataGridTx.UnselectAll();
+                    data.AutoTx = false;
+                    row.AutoTx = false;
+
+                    dataGridEditTxMessages.Items.Refresh();
+                    dataGridTx.Items.Refresh();
+                }
+            }
         }
     }
 }

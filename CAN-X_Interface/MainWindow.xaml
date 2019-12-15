@@ -110,16 +110,16 @@
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" />
                         <CheckBox x:Name="CheckBoxBlind" Margin="30,0,0,0" Content="I'm Blind" Click="CheckBoxBlind_Click" />
                         </StackPanel>
-                        <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3" MouseLeftButtonUp="DataGridRx_MouseLeftButtonUp">
+                        <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MouseLeftButtonUp="DataGridRx_MouseLeftButtonUp">
                             <DataGrid.Background>
                                 <ImageBrush/>
                             </DataGrid.Background>
-                            <!--<DataGrid.RowStyle>
+                            <DataGrid.RowStyle>
                                 <Style TargetType="{x:Type DataGridRow}">
-                                    <Setter Property="FontSize" Value="16"/>
-                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="Height" Value="18"/>
                                 </Style>
-                            </DataGrid.RowStyle>-->
+                            </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
                                 <DataGridTextColumn Header="RxCnt" Binding="{Binding Path='Count', Mode=OneWay}" />
@@ -214,7 +214,7 @@
                                     <DataGridTemplateColumn Header="AutoTx" >
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <CheckBox Name="CheckBoxAutoTx" Click="CheckBoxAutoTx_Click" IsChecked="{Binding Path='AutoTx', Mode=TwoWay}"/>
+                                                <CheckBox Name="CheckBoxAutoTx" IsChecked="{Binding Path='AutoTx', Mode=TwoWay}" Checked="CheckBoxAutoTx_Checked" Unchecked="CheckBoxAutoTx_Unchecked"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -468,11 +468,12 @@
                                             </StackPanel>
                                             <StackPanel Orientation="Vertical" Margin="15,0,0,0">
                                                 <Label Content="AutoTx"/>
-                                                <CheckBox x:Name="CheckBoxAutoTx" Content="Enable" Click="CheckBoxAutoTx_Click" />
+                                                <CheckBox x:Name="CheckBoxEditTxAutoTx" Content="Enable" Checked="CheckBoxEditTxAutoTx_Checked" Unchecked="CheckBoxEditTxAutoTx_Unchecked" />
                                             </StackPanel>
                                             <StackPanel Orientation="Vertical" Margin="15,0,0,0">
                                                 <Label Content="Rate"/>
-                                                <ComboBox x:Name="ComboBoxTxRate" SelectedIndex="0" Width="60" DropDownClosed="ComboBoxTxRate_DropDownClosed"  >
+                                                <ComboBox x:Name="ComboBoxEditTxRate" SelectedIndex="0" Width="60" DropDownClosed="ComboBoxEditTxRate_DropDownClosed"  >
+                                                    <ComboBoxItem Content="0"/>
                                                     <ComboBoxItem Content="100"/>
                                                     <ComboBoxItem Content="500"/>
                                                     <ComboBoxItem Content="1000"/>
