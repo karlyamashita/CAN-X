@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "CAN-X_Setup", "CAN-X_Setup\CAN-X_Setup.aiproj", "{37B59616-B17D-4F44-8398-2607F3A61F56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		All|Default = All|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37B59616-B17D-4F44-8398-2607F3A61F56}.All|Default.ActiveCfg = DefaultBuild
+		{37B59616-B17D-4F44-8398-2607F3A61F56}.All|Default.Build.0 = DefaultBuild
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {104F13D7-7A8D-4441-A192-161D271DE124}
+	EndGlobalSection
+EndGlobal

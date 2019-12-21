@@ -1,0 +1,12 @@
+﻿<Window x:Name="Window2" x:Class="USB_CAN_Interface.Window2CopyMsg"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:USB_CAN_Interface"
+        mc:Ignorable="d"
+        Title="Window2CopyMsg" Height="300" Width="200" LostFocus="Window2_LostFocus" Deactivated="Window2_Deactivated">
+    <Grid>
+        
+    </Grid>
+</Window>
