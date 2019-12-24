@@ -500,7 +500,7 @@
                                             </StackPanel>
                                             <StackPanel Orientation="Vertical" Margin="15,0,0,0">
                                                 <Label Content="Rate"/>
-                                                <ComboBox x:Name="ComboBoxEditTxRate" SelectedIndex="0" Width="60" DropDownClosed="ComboBoxEditTxRate_DropDownClosed"  />
+                                                <ComboBox x:Name="ComboBoxEditTxRate" SelectedIndex="0" Width="60"  IsEditable="True" TextBoxBase.TextChanged="OnComboBoxTxRateTextChanged" />
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>

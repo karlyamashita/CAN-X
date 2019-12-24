@@ -1906,6 +1906,16 @@ namespace CAN_X_CAN_Analyzer
             ComboBox comboBox = (ComboBox)sender;
             data.Node = comboBox.SelectionBoxItem.ToString();
             dataGridEditTxMessages.Items.Refresh();
+            // update dataGridTx
+            foreach (CanTxData canTxData in dataGridTx.Items)
+            {
+                if (data.Key == canTxData.Key)
+                {
+                    canTxData.Node = comboBox.SelectionBoxItem.ToString();
+                    dataGridTx.Items.Refresh();
+                    break;
+                }
+            }
 
             if (comboBox.SelectionBoxItem.ToString() == "SWCAN1" || comboBox.SelectionBoxItem.ToString() == "SWCAN2")
             {
@@ -2151,28 +2161,6 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region ComboBoxEditTxRate dropdownclosed
-        private void ComboBoxEditTxRate_DropDownClosed(object sender, EventArgs e)
-        {
-            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row
-            if (data == null)
-            {
-                try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
-                {
-                    StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
-                }
-                catch (NullReferenceException)
-                {
-
-                }
-                return;
-            }
-            ComboBox comboBox = (ComboBox)sender;
-            data.Rate = comboBox.SelectionBoxItem.ToString();
-            dataGridEditTxMessages.Items.Refresh();
-        }
-        #endregion
-
         #region CheckBoxEditTxAutoTx checked
         private void CheckBoxEditTxAutoTx_Checked(object sender, RoutedEventArgs e)
         {
@@ -2275,6 +2263,37 @@ namespace CAN_X_CAN_Analyzer
                     }
                     row.AutoTx = false;
                     dataGridEditTxMessages.Items.Refresh();
+                }
+            }
+        }
+        #endregion
+
+        #region OnComboBoxTxRateTextChanged
+        private void OnComboBoxTxRateTextChanged(object sender, EventArgs e)
+        {
+            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row
+            if (data == null)
+            {
+                try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
+                {
+                    StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                }
+                catch (NullReferenceException)
+                {
+
+                }
+                return;
+            }
+            data.Rate = ComboBoxEditTxRate.Text;
+            dataGridEditTxMessages.Items.Refresh();
+            // update dataGridTx
+            foreach (CanTxData canTxData in dataGridTx.Items)
+            {
+                if (data.Key == canTxData.Key)
+                {
+                    canTxData.Rate = ComboBoxEditTxRate.Text;
+                    dataGridTx.Items.Refresh();
+                    break;
                 }
             }
         }
