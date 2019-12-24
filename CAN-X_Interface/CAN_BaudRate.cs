@@ -21,7 +21,7 @@ namespace CAN_X_CAN_Analyzer
 
         public CAN_BaudRate(string freq)
         {
-            if(freq == "48mHz") {
+            if(freq == "APB1_48mHz") {
                  baud_1000k = new BaudStructure("1000k", "0x001C0002");
                  baud_500k = new BaudStructure("500k", "0x001C0005");
                  baud_250k = new BaudStructure("250k", "0x001C000B");
@@ -31,16 +31,27 @@ namespace CAN_X_CAN_Analyzer
                  baud_50k = new BaudStructure("50k", "0x001C003B");
                  baud_33_333k = new BaudStructure("33.333k", "0x001C0059");
             }
-            else if(freq == "42mHz") 
+            else if(freq == "APB1_42mHz") 
             {
-                 baud_1000k = new BaudStructure("1000k", "0x001a0002");
-                 baud_500k = new BaudStructure("500k", "0x001a0005");
-                 baud_250k = new BaudStructure("250k", "0x001a000b");
-                 baud_125k = new BaudStructure("125k", "0x001a0017");
-                 baud_100k = new BaudStructure("100k", "0x001a001d");
-                 baud_83_333k = new BaudStructure("83.333k", "0x001a0023");
-                 baud_50k = new BaudStructure("50k", "0x001a003b");
-                 baud_33_333k = new BaudStructure("33.333k", "0x001a0059");
+                 baud_1000k = new BaudStructure("1000k", "0x001A0002");
+                 baud_500k = new BaudStructure("500k", "0x001A0005");
+                 baud_250k = new BaudStructure("250k", "0x001A000B");
+                 baud_125k = new BaudStructure("125k", "0x001A0017");
+                 baud_100k = new BaudStructure("100k", "0x001A001D");
+                 baud_83_333k = new BaudStructure("83.333k", "0x001A0023");
+                 baud_50k = new BaudStructure("50k", "0x001A003B");
+                 baud_33_333k = new BaudStructure("33.333k", "0x001A0059");
+            }
+            else if(freq == "APB1_36mHz")
+            {
+                baud_1000k = new BaudStructure("1000k", "0x001E0001");
+                baud_500k = new BaudStructure("500k", "0x001E0003");
+                baud_250k = new BaudStructure("250k", "0x001C0008");
+                baud_125k = new BaudStructure("125k", "0x001C0011");
+                baud_100k = new BaudStructure("100k", " 0x001B0017");
+                baud_83_333k = new BaudStructure("83.333k", "0x001C001A");
+                baud_50k = new BaudStructure("50k", "0x001C002C");
+                baud_33_333k = new BaudStructure("33.333k", "0x001B0047");
             }
 
             baudList.Add(baud_1000k);

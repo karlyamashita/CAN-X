@@ -36,5 +36,12 @@ namespace CAN_X_CAN_Analyzer
             Binary,
             Decimal,
         }
+
+        public enum APB1_Freq
+        {
+            APB1_48mHz,
+            APB1_42mHz,
+            APB1_36mHz
+        }
     }
 }

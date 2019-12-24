@@ -8,9 +8,6 @@
         Title="CAN-X CAN bus Analyzer - (BETA)" WindowStartupLocation="CenterScreen" Margin="0" Height="735.5" Width="1186" Closing="Window_Closing" Loaded="MainWindow1_Loaded">
 
     <Window.Resources>
-
-
-        
         <Style TargetType="{x:Type TextBlock}" x:Key="MyStyle">
             <Setter Property="Background">
                 <Setter.Value>
@@ -27,6 +24,24 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
+
+        <ControlTemplate x:Key="RoundedButtonTemplate" TargetType="{x:Type Button}">
+            <Border x:Name="border" 
+                    CornerRadius="10" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="RoundedToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
+            <Border x:Name="border" 
+                    CornerRadius="10" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+        </ControlTemplate>
     </Window.Resources>
     
     <Grid>
@@ -50,8 +65,8 @@
                     </FlowDocument>
                 </RichTextBox>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,25" HorizontalAlignment="Center">
-                    <Button x:Name="ButtonConnect" Content="Connect" VerticalAlignment="Top" Width="75" Margin="0,0,2,0" Click="ButtonConnect_Click" HorizontalAlignment="Right"/>
-                    <Button x:Name="ButtonDisconnect" Content="Disconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="2,0,0,0" Click="ButtonDisconnect_Click"/>
+                    <Button x:Name="ButtonConnect" Content="Connect" VerticalAlignment="Top" Width="75" Margin="0,0,2,0" Click="ButtonConnect_Click" HorizontalAlignment="Right" Template="{StaticResource RoundedButtonTemplate}"/>
+                    <Button x:Name="ButtonDisconnect" Content="Disconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="2,0,0,0" Click="ButtonDisconnect_Click" Template="{StaticResource RoundedButtonTemplate}"/>
                 </StackPanel>
                 <GroupBox Height="150" Header="Node Settings" BorderBrush="#FFABAFB2">
                     <StackPanel VerticalAlignment="Top" Height="144" Margin="0,6,0,-41">
@@ -71,7 +86,7 @@
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Center">
                             <CheckBox x:Name="CheckBoxListenOnly" Content="Listen Only" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CheckBoxListenOnly_Click"/>
                         </StackPanel>
-                        <Button x:Name="ButtonBtrValue" Content="Send BTR" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0" Click="ButtonBtrValue_Click"/>
+                        <Button x:Name="ButtonBtrValue" Content="Send BTR" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0" Click="ButtonBtrValue_Click" Template="{StaticResource RoundedButtonTemplate}"/>
                     </StackPanel>
                 </GroupBox>
                 <!--<GroupBox Header="Filters &amp; Masks" Height="113" BorderBrush="#FFABAFB2" IsEnabled="False">
@@ -91,7 +106,32 @@
                 </GroupBox>-->
             </StackPanel>
 
-            <TabControl Margin="0,0,0,10">
+            <TabControl Margin="0,0,0,10" >
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="Border" BorderThickness="1,1,1,1" BorderBrush="Black" CornerRadius="15,5,0,0" Margin="0,0">
+                                        <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="LightSkyBlue" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Setter TargetName="Border" Property="Background" Value="#FFD1D1D1" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
                 <TabItem Header="Message Monitor">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -102,12 +142,12 @@
                             <RowDefinition Height="60"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="3">
-                            <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20"/>
-                            <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click" Height="20" MinWidth="100"/>
+                            <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20" Template="{StaticResource RoundedButtonTemplate}"/>
+                            <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click" Height="20" MinWidth="100" Template="{StaticResource RoundedButtonTemplate}"/>
                             <!--<Button x:Name="ButtonLoadMessages" Content="Load Messages" Margin="10,0,0,0" Height="20" MinWidth="100" />-->
-                            <ToggleButton x:Name="ButtonPauseMessages" Content="Pause" Margin="10,0,0,0" Click="ButtonPauseMessages_Click" Height="20" MinWidth="70" />
-                            
-                            <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" />
+                            <ToggleButton x:Name="ButtonPauseMessages" Content="Pause" Margin="10,0,0,0" Click="ButtonPauseMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
+
+                            <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         <CheckBox x:Name="CheckBoxBlind" Margin="30,0,0,0" Content="I'm Blind" Click="CheckBoxBlind_Click" />
                         </StackPanel>
                         <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MouseLeftButtonUp="DataGridRx_MouseLeftButtonUp">
@@ -237,7 +277,7 @@
                         </Grid>
                         <Grid x:Name="GridSpacer" Grid.Row="4" Margin="5,0,0,20">
                             <StackPanel Orientation="Horizontal">
-                                <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Height="20" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click"/>
+                                <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Height="20" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                             </StackPanel>
                         </Grid>
                     </Grid>

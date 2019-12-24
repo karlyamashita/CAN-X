@@ -71,17 +71,6 @@ namespace CAN_X_CAN_Analyzer
         const byte CAN_STD_ID = 0x00;
         const byte CAN_EXT_ID = 0x04;
 
-        // nodes
-        const byte CAN1_NODE = 0;
-        const byte CAN2_NODE = 1;
-        const byte SWCAN1_NODE = 2;
-        const byte LSFTCAN1_NODE = 3;
-        const byte LIN1_NODE = 4;
-        const byte ETH1_NODE = 5;
-        const byte SWCAN2_NODE = 6;
-        const byte LSFTCAN2_NODE = 7;
-
-
         const int DATA_SIZE = 17;
         const bool NEW_DATA_FLAG = true;
 
@@ -124,7 +113,6 @@ namespace CAN_X_CAN_Analyzer
 
             // my init routines
             InitUsbDevice();
-            InitPopulateBaudRateListBox();
         }
         #endregion
 
@@ -425,8 +413,6 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
     
-        // dataGridRx.Dispatcher.BeginInvoke(new Action(() => dataGridRx.Items.Refresh()), System.Windows.Threading.DispatcherPriority.Background);
-
         #region Add formatted data to datagrid
         private void AddToDataGrid(CanRxData canRxData, bool transmitFlag, bool scrollFlag, bool newData)
         {
@@ -847,7 +833,7 @@ namespace CAN_X_CAN_Analyzer
                 tmp_buf[0] = (byte)(tmp_buf[0] | 0x80);// bit 31 is Normal=0, Silent = 1. Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
             }
 
-            tmp_buf[4] = CAN1_NODE; // CAN1
+            tmp_buf[4] = 0; // CAN1
 
             StatusBarStatus.Text = "Sending BTR Value";
             var command = new CommandMessage(COMMAND_BAUD, tmp_buf);
@@ -859,7 +845,7 @@ namespace CAN_X_CAN_Analyzer
         private void InitPopulateBaudRateListBox()
         {
             // todo - allow use to select frequency to adjust CAN_BTR value for that frequency
-            CAN_BaudRate can_baudRate = new CAN_BaudRate("48mHz");
+            CAN_BaudRate can_baudRate = new CAN_BaudRate("APB1_48mHz");
 
             foreach (var item in can_baudRate.baudList)
             {
@@ -867,8 +853,7 @@ namespace CAN_X_CAN_Analyzer
             }
             ComboBoxBaudRate.SelectedIndex = 1;
 
-            ComboBoxAPB1.Items.Add("48mHz");
-            ComboBoxAPB1.Items.Add("42mHz");
+            ComboBoxAPB1.ItemsSource = Enum.GetNames(typeof(EnumDefines.APB1_Freq));
             ComboBoxAPB1.SelectedIndex = 0;
         }
 
@@ -952,6 +937,8 @@ namespace CAN_X_CAN_Analyzer
 
             CheckBoxBlind.IsChecked = USB_CAN_Interface.Properties.Settings.Default.imBlind;
             ResizeDataGridRx();
+
+            InitPopulateBaudRateListBox();
 
             ComboBoxRxNode.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
             ComboBoxTxNode.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
@@ -1117,6 +1104,8 @@ namespace CAN_X_CAN_Analyzer
             TextBoxTxByte8.Text = data.Byte8;
             ComboBoxTxNode.SelectedIndex = GetComboBoxNodeIndex(data.Node);
 
+            ComboBoxEditTxRate.SelectedIndex = GetComboBoxTxRateIndex(data.Rate);
+
             CheckBoxEditTxAutoTx.IsChecked = data.AutoTx;
 
             if (CheckBoxRemoteTransmit.IsChecked == false)
@@ -1148,36 +1137,32 @@ namespace CAN_X_CAN_Analyzer
 
         private int GetComboBoxNodeIndex(string name)
         {
-            int value = 0;
-            switch (name)
+            int i = 0;
+            foreach (var en in Enum.GetNames(typeof(EnumDefines.Nodes)))
             {
-                case "CAN1":
-                    value = 0;
-                    break;
-                case "CAN2":
-                    value = 1;
-                    break;
-                case "SWCAN1":
-                    value = 2;
-                    break;
-                case "LSFTCAN1":
-                    value = 3;
-                    break;
-                case "LIN1":
-                    value = 4;
-                    break;
-                case "ETH1":
-                    value = 5;
-                    break;
-                case "SWCAN2":
-                    value = 6;
-                    break;
-                case "LSFTCAN2":
-                    value = 7;
-                    break;
+                if (en == name)
+                {
+                    return i;
+                }
+                i++;
             }
-            return value;
+            return i;
         }
+
+        private int GetComboBoxTxRateIndex(string name)
+        {
+            int i = 0;
+            foreach (var en in Enum.GetNames(typeof(EnumDefines.TxRate)))
+            {
+                if(en.Replace("_","") == name)
+                {
+                    return i;
+                }
+                i++;
+            }
+            return i;
+        }
+
         #endregion
 
         #region On Transmit text change from TextBox will update dataGridTx
@@ -2111,7 +2096,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-
+        #region CheckBoxBlind
         private void CheckBoxBlind_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBoxBlind.IsChecked == true)
@@ -2126,7 +2111,9 @@ namespace CAN_X_CAN_Analyzer
             }
             ResizeDataGridRx();
         }
+        #endregion
 
+        #region Resize DataGridRx
         private void ResizeDataGridRx()
         {
             if (CheckBoxBlind.IsChecked == true)
@@ -2162,7 +2149,9 @@ namespace CAN_X_CAN_Analyzer
                 USB_CAN_Interface.Properties.Settings.Default.Save();
             }
         }
+        #endregion
 
+        #region ComboBoxEditTxRate dropdownclosed
         private void ComboBoxEditTxRate_DropDownClosed(object sender, EventArgs e)
         {
             CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row
@@ -2182,7 +2171,58 @@ namespace CAN_X_CAN_Analyzer
             data.Rate = comboBox.SelectionBoxItem.ToString();
             dataGridEditTxMessages.Items.Refresh();
         }
+        #endregion
 
+        #region CheckBoxEditTxAutoTx checked
+        private void CheckBoxEditTxAutoTx_Checked(object sender, RoutedEventArgs e)
+        {
+            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to modify";
+                return;
+            }
+            // need to update the dataGridTx
+            foreach (CanTxData row in dataGridTx.Items)
+            {
+                if (row.Key == data.Key)
+                {
+                    data.AutoTx = true;
+                    row.AutoTx = true;
+
+                    dataGridEditTxMessages.Items.Refresh();
+                    dataGridTx.Items.Refresh();
+                }
+            }
+        }
+
+        private void CheckBoxEditTxAutoTx_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to modify";
+                return;
+            }
+            // need to update the dataGridTx
+            foreach (CanTxData row in dataGridTx.Items)
+            {
+                if (row.Key == data.Key)
+                {
+                    dataGridTx.UnselectAll();
+                    data.AutoTx = false;
+                    row.AutoTx = false;
+
+                    dataGridEditTxMessages.Items.Refresh();
+                    dataGridTx.Items.Refresh();
+                }
+            }
+        }
+        #endregion
+
+        #region CheckBoxAutoTx Checked
         private void CheckBoxAutoTx_Checked(object sender, RoutedEventArgs e)
         {
             CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
@@ -2238,7 +2278,9 @@ namespace CAN_X_CAN_Analyzer
                 }
             }
         }
+        #endregion
 
+        #region ToggleButtonAutoTx click
         private void ToggleButtonAutoTx_Click(object sender, RoutedEventArgs e)
         {
             if (toggleButtonAutoTx.IsChecked == true)
@@ -2299,53 +2341,7 @@ namespace CAN_X_CAN_Analyzer
                 }
             }
         }
-
-        private void CheckBoxEditTxAutoTx_Checked(object sender, RoutedEventArgs e)
-        {
-            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
-
-            if (data == null)
-            {
-                StatusBarStatus.Text = "Please select an ArbID to modify";
-                return;
-            }
-            // need to update the dataGridTx
-            foreach (CanTxData row in dataGridTx.Items)
-            {
-                if (row.Key == data.Key)
-                {
-                    data.AutoTx = true;
-                    row.AutoTx = true;
-
-                    dataGridEditTxMessages.Items.Refresh();
-                    dataGridTx.Items.Refresh();
-                }
-            }
-        }
-
-        private void CheckBoxEditTxAutoTx_Unchecked(object sender, RoutedEventArgs e)
-        {
-            CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
-
-            if (data == null)
-            {
-                StatusBarStatus.Text = "Please select an ArbID to modify";
-                return;
-            }
-            // need to update the dataGridTx
-            foreach (CanTxData row in dataGridTx.Items)
-            {
-                if (row.Key == data.Key)
-                {
-                    dataGridTx.UnselectAll();
-                    data.AutoTx = false;
-                    row.AutoTx = false;
-
-                    dataGridEditTxMessages.Items.Refresh();
-                    dataGridTx.Items.Refresh();
-                }
-            }
-        }
+        #endregion
     }
 }
 
