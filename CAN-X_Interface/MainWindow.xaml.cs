@@ -102,7 +102,7 @@ namespace CAN_X_CAN_Analyzer
         string mainWindowTitle = "";
 
         System.Diagnostics.Stopwatch sw = null;
-        Thread thread = null;
+        Thread threadAutoTx = null;
 
         #endregion
 
@@ -950,6 +950,8 @@ namespace CAN_X_CAN_Analyzer
                 txRateList.Add(en.Replace("_", ""));
             }
             ComboBoxEditTxRate.ItemsSource = txRateList;
+
+            sw = new System.Diagnostics.Stopwatch();
         }
         #endregion
 
@@ -2304,16 +2306,20 @@ namespace CAN_X_CAN_Analyzer
         {
             if (toggleButtonAutoTx.IsChecked == true)
             {
-                sw = new System.Diagnostics.Stopwatch();
-                thread = new Thread(TxSendThread);
-                thread.Start();
-                StatusBarStatus.Text = "Started";
+                if (threadAutoTx == null)
+                {
+                    threadAutoTx = new Thread(TxSendThread);
+                    threadAutoTx.Start();
+                    sw.Start();
+                }                
+            //    StatusBarStatus.Text = "Started";
             }
             else
-            {
+            {                
+                threadAutoTx.Abort();
+                threadAutoTx = null;
                 sw.Stop();
-                thread = null;
-                StatusBarStatus.Text = "Stopped";
+            //    StatusBarStatus.Text = "Stopped";
             }
         }
 
@@ -2322,7 +2328,7 @@ namespace CAN_X_CAN_Analyzer
             int Tick = 10;
             int Sleep = 1;
             long OldElapsedMilliseconds = 0;
-            sw.Start();
+            CanTxData canTxData = null;
 
             while (sw.IsRunning)
             {
@@ -2330,13 +2336,11 @@ namespace CAN_X_CAN_Analyzer
                 long mod = (ElapsedMilliseconds % Tick);
                 if (OldElapsedMilliseconds != ElapsedMilliseconds && (mod == 0 || ElapsedMilliseconds > Tick))
                 {
-                    CanTxData canTxData = null;
                     foreach (CanTxData row in dataGridTx.Items)
                     {
                         if (row.AutoTx == true)
                         {
-                            row.RateTimer = row.RateTimer + 1;
-                            if (row.RateTimer++ >= (Convert.ToUInt32(row.Rate) / 11))
+                            if (++row.RateTimer >= (Convert.ToUInt32(row.Rate) /10))
                             {
                                 row.RateTimer = 0;
                                 canTxData = new CanTxData(row);
@@ -2348,13 +2352,11 @@ namespace CAN_X_CAN_Analyzer
                             row.RateTimer = 0;
                         }
                     }
-
                     //-----------------Restart----------------Start
                     OldElapsedMilliseconds = ElapsedMilliseconds;
                     OldElapsedMilliseconds = 0;
                     sw.Reset();
                     sw.Start();
-
                     System.Threading.Thread.Sleep(Sleep);
                     //-----------------Restart----------------End
                 }

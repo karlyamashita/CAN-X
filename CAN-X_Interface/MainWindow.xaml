@@ -511,14 +511,36 @@
                 </TabItem>
             </TabControl>
         </DockPanel>
-        <StatusBar Height="25" VerticalAlignment="Bottom" Margin="0,0,0,5" Background="#FFE2E2E2">
-            <StatusBarItem VerticalAlignment="Bottom" Background="#FFEEEEEE">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="10,0,20,0" MinWidth="600"/>
-                    <TextBlock x:Name="StatusBarStatusHardware" Margin="0,0,20,0" />
-                    <TextBlock x:Name="StatusBarStatusVersion" Margin="0,0,20,0" />
-                    <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="16" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="0" Maximum="5000" />
-                </StackPanel>
+        <StatusBar Height="25" VerticalAlignment="Bottom" Margin="0,0,10,0" Background="#FFE2E2E2">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="300" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem >
+                <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="10,0,0,0" MinWidth="600" Height="25"/>
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2">
+                <TextBlock x:Name="StatusBarStatusHardware" Margin="0,0,20,0" />
+            </StatusBarItem>
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4">
+                <TextBlock x:Name="StatusBarStatusVersion" Margin="0,0,20,0" />
+            </StatusBarItem>
+            <Separator Grid.Column="5" />
+            <StatusBarItem Grid.Column="6">
+                <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="20" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="0" Maximum="5000" />
             </StatusBarItem>
         </StatusBar>
     </Grid>
