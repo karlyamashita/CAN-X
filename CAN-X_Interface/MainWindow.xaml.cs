@@ -952,6 +952,10 @@ namespace CAN_X_CAN_Analyzer
             ComboBoxEditTxRate.ItemsSource = txRateList;
 
             sw = new System.Diagnostics.Stopwatch();
+
+            CheckBoxAscii.IsChecked = USB_CAN_Interface.Properties.Settings.Default.ascii;
+            CheckBoxNotes.IsChecked = USB_CAN_Interface.Properties.Settings.Default.notes;
+
         }
         #endregion
 
@@ -1971,27 +1975,6 @@ namespace CAN_X_CAN_Analyzer
         private void ButtonScrollMessages_Click(object sender, RoutedEventArgs e)
         {
             scrollMessagesFlag = (bool)ButtonScrollMessages.IsChecked;
-            // todo - if not scrolling the we need to save the datagrid, then clear the screen,
-            // then update the saved data to back to grid calling AddToNoScrollDataGrid()
-
-            isTransmitMessage = false;
-
-            // now we can clear the datagrid
-            if (false)
-            {
-                while (dataGridRx.Items.Count != 0)
-                {
-                    dataGridRx.Items.RemoveAt(0);
-                }
-                // now add saved data back
-                foreach (CanRxData row in masterDataGridRx)
-                {
-                    AddToDataGrid(row, isTransmitMessage, scrollMessagesFlag, !NEW_DATA_FLAG);
-                }
-
-            }
-
-
         }
         #endregion
 
@@ -2306,6 +2289,13 @@ namespace CAN_X_CAN_Analyzer
         {
             if (toggleButtonAutoTx.IsChecked == true)
             {
+                if (!Device.IsDeviceConnected)
+                {
+                    StatusBarStatus.Text = "Device Not Connected";
+                    toggleButtonAutoTx.IsChecked = false;
+                    return;
+                }
+
                 if (threadAutoTx == null)
                 {
                     threadAutoTx = new Thread(TxSendThread);
@@ -2330,7 +2320,7 @@ namespace CAN_X_CAN_Analyzer
             long OldElapsedMilliseconds = 0;
             CanTxData canTxData = null;
 
-            while (sw.IsRunning)
+            while (sw.IsRunning && Device.IsDeviceConnected)
             {
                 long ElapsedMilliseconds = sw.ElapsedMilliseconds;
                 long mod = (ElapsedMilliseconds % Tick);
@@ -2363,6 +2353,62 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+
+        private void CheckBoxAscii_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckBoxAscii.IsChecked == true)
+            {
+                dataGridRx.Columns[20].Visibility = Visibility.Visible;
+            }
+            else
+            {
+                dataGridRx.Columns[20].Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void CheckBoxNotes_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckBoxNotes.IsChecked == true)
+            {
+                dataGridRx.Columns[21].Visibility = Visibility.Visible;
+            }
+            else
+            {
+                dataGridRx.Columns[21].Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+           // StatusBarStatus.Text = "Save to Rx";
+            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to save";
+                return;
+            }
+            // copy selected message to new object
+            CanRxData canRxData = new CanRxData(data);
+            // add to datagrid
+            dataGridEditRxMessages.Items.Add(canRxData);
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            // StatusBarStatus.Text = "Save to Tx";
+            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to save";
+                return;
+            }
+            // copy selected message to new object
+            CanTxData canTxData = new CanTxData(data);
+            // add to datagrid
+            dataGridEditTxMessages.Items.Add(canTxData);
+        }
+
+        // Context Menu ???
     }
 }
 

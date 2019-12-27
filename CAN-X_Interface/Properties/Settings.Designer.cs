@@ -46,5 +46,29 @@ namespace USB_CAN_Interface.Properties {
                 this["imBlind"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ascii {
+            get {
+                return ((bool)(this["ascii"]));
+            }
+            set {
+                this["ascii"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool notes {
+            get {
+                return ((bool)(this["notes"]));
+            }
+            set {
+                this["notes"] = value;
+            }
+        }
     }
 }

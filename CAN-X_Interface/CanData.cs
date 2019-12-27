@@ -50,6 +50,23 @@ namespace CAN_X_CAN_Analyzer
             Byte8 = canTxData.Byte8;
             Node = canTxData.Node;
         }
+
+        public CanTxData(CanRxData canRxData)
+        {
+            IDE = canRxData.IDE;
+            Description = canRxData.Description;
+            ArbID = canRxData.ArbID;
+            DLC = canRxData.DLC;
+            Byte1 = canRxData.Byte1;
+            Byte2 = canRxData.Byte2;
+            Byte3 = canRxData.Byte3;
+            Byte4 = canRxData.Byte4;
+            Byte5 = canRxData.Byte5;
+            Byte6 = canRxData.Byte6;
+            Byte7 = canRxData.Byte7;
+            Byte8 = canRxData.Byte8;
+            Node = canRxData.Node;
+        }
     }
 
     public class CanRxData
