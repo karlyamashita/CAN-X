@@ -65,6 +65,7 @@ namespace CAN_X_CAN_Analyzer
         const byte COMMAND_CAN_BTR = 0x91; // the CAN_BTC value from interface
         const byte COMMAND_VERSION = 0x92;
         const byte COMMAND_HARDWARE = 0x93; // 
+        const byte COMMAND_FREQUENCY = 0x94; // the APB1 Frequency
         const byte COMMAND_BAUD = 0x95;
 
         // const defines
@@ -160,6 +161,9 @@ namespace CAN_X_CAN_Analyzer
                     break;
                 case COMMAND_HARDWARE:
                     ShowString(COMMAND_HARDWARE, data);
+                    break;
+                case COMMAND_FREQUENCY:
+                    ParseABP1_Frequency(data);
                     break;
             }
         }
@@ -380,6 +384,49 @@ namespace CAN_X_CAN_Analyzer
             }
 
             canRxData.ASCII = Encoding.UTF8.GetString(data);
+        }
+        #endregion
+
+        #region Parse APB1 Frequency
+        private void ParseABP1_Frequency(byte[] data)
+        {
+            int i = 0;
+            byte[] temp = new byte[DATA_SIZE];
+
+            while (data[i + 1] != '\0') // index 1 is command
+            {
+                temp[i] = data[i + 2]; // string starts at index 2 
+                i++;
+            }
+            string apb1Freq = Encoding.ASCII.GetString(temp);
+
+            apb1Freq = apb1Freq.Trim('\0');
+
+            switch (apb1Freq)
+            {
+                case "APB1_36mHz":
+                    StatusBarStatus.Text = "36mHz";
+                    break;
+                case "APB1_42mHz":
+                    StatusBarStatus.Text = "42mHz";
+                    break;
+                case "APB1_48mHz":
+                    StatusBarStatus.Text = "48mHz";
+                    break;
+                default:
+
+                    break;
+            }
+
+            i = 0;
+            foreach(var en in Enum.GetNames(typeof(EnumDefines.APB1_Freq))){
+                if(en == apb1Freq)
+                {
+                    ComboBoxAPB1.SelectedIndex = i;
+                    break;
+                }
+                i++;
+            }
         }
         #endregion
 
