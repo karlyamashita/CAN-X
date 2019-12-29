@@ -75,7 +75,7 @@ namespace CAN_X_CAN_Analyzer
         const int DATA_SIZE = 17;
         const bool NEW_DATA_FLAG = true;
 
-        const int MAX_ROW_COUNT = 100000; // how many lines to receive. This is used for the progress as well
+        const int MAX_ROW_COUNT = 10000; // how many lines to receive. This is used for the progress as well
         #endregion
 
         #region variables
@@ -401,7 +401,7 @@ namespace CAN_X_CAN_Analyzer
             string apb1Freq = Encoding.ASCII.GetString(temp);
 
             apb1Freq = apb1Freq.Trim('\0');
-
+            /*
             switch (apb1Freq)
             {
                 case "APB1_36mHz":
@@ -417,7 +417,7 @@ namespace CAN_X_CAN_Analyzer
 
                     break;
             }
-
+            */
             i = 0;
             foreach(var en in Enum.GetNames(typeof(EnumDefines.APB1_Freq))){
                 if(en == apb1Freq)
@@ -451,11 +451,16 @@ namespace CAN_X_CAN_Analyzer
             // update progress bar
             int count = masterDataGridRx.Count;
             ProgressBar.Value = count;
+
+            TextBoxBufferPercentage.Text = count.ToString() + "/" + MAX_ROW_COUNT.ToString();
+
             // remove data from datagrid if we reach max amount of rows
             if (count >= MAX_ROW_COUNT)
             {
+                ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
                 return true;
             }
+            ProgressBar.Foreground = new SolidColorBrush(Colors.PaleGreen);
             return false;
         }
         #endregion
@@ -888,7 +893,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region baud rate init and notification change
+        #region ComboBox BTR, Node, init
         private void InitPopulateBaudRateListBox()
         {
             // todo - allow use to select frequency to adjust CAN_BTR value for that frequency
@@ -965,18 +970,19 @@ namespace CAN_X_CAN_Analyzer
             }
             TextBoxBtrValue.Text = "0x" + btrNumber.ToString("X8");
         }
+
+        private void ComboBoxNodeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
         #endregion
 
         #region main Window loaded
         private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
         {
-            MainWindow1.Title = "CAN-X CAN bus Analyzer by Karl Yamashita - (BETA)";
-            mainWindowTitle = MainWindow1.Title;
-            if (!File.Exists(USB_CAN_Interface.Properties.Settings.Default.lastFilePath))
-            {
-                return;
-            }
-            else
+            MainWindow1.Title = USB_CAN_Interface.Properties.Settings.Default.titleWindow;
+            mainWindowTitle = MainWindow1.Title; // make a copy
+            if (File.Exists(USB_CAN_Interface.Properties.Settings.Default.lastFilePath))
             {
                 ReadXml(USB_CAN_Interface.Properties.Settings.Default.lastFilePath);
                 MainWindow1.Title = mainWindowTitle + " - " + Path.GetFileName(USB_CAN_Interface.Properties.Settings.Default.lastFilePath);
@@ -1000,8 +1006,13 @@ namespace CAN_X_CAN_Analyzer
 
             sw = new System.Diagnostics.Stopwatch();
 
+            // get checkbox states
             CheckBoxAscii.IsChecked = USB_CAN_Interface.Properties.Settings.Default.ascii;
             CheckBoxNotes.IsChecked = USB_CAN_Interface.Properties.Settings.Default.notes;
+            // now format datagrid if needed
+            FormatDataGridColumns();
+
+            ProgressBar.Maximum = MAX_ROW_COUNT;
 
         }
         #endregion
@@ -1040,6 +1051,7 @@ namespace CAN_X_CAN_Analyzer
             UInt32 newIndex = 0;
             CanTxData canTxData = new CanTxData();
 
+            // TODO - need to revist this. Forgot about Key order could be sorted out of order.
             // check for available key number
             while (matchFound)
             {
@@ -2025,49 +2037,6 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region misc stuff
-        // todo - misc stuf to do below here
-        private UInt32 ConvertHexStrToInt(string str)
-        {
-            UInt32 intValue = (UInt32)(Convert.ToInt32(str, 16));
-            return intValue;
-        }
-
-        private void DataGridRx_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
-            // Todo - open window only if Key column is clicked
-            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
-
-
-            DataGridRow dgr = null;
-            var visParent = VisualTreeHelper.GetParent(e.OriginalSource as FrameworkElement);
-            while (dgr == null && visParent != null)
-            {
-                dgr = visParent as DataGridRow;
-                visParent = VisualTreeHelper.GetParent(visParent);
-            }
-            if (dgr == null)
-            {
-                return;
-            }
-
-
-            int columnIndex = dataGridRx.CurrentColumn.DisplayIndex;
-
-
-            StatusBarStatus.Text = "row: " + dgr.GetIndex().ToString() + " col: " + columnIndex;
-
-            if (columnIndex != 0)
-            {
-                return;
-            }
-
-            Window2CopyMsg window2 = new Window2CopyMsg();
-            window2.Show();
-        }
-        #endregion
-
         #region Checkbox RTR click event
         private void CheckBoxRemoteTransmit_Click(object sender, RoutedEventArgs e)
         {
@@ -2135,23 +2104,6 @@ namespace CAN_X_CAN_Analyzer
                     dataGridTx.Items.Refresh();
                 }
             }
-        }
-        #endregion
-
-        #region CheckBoxBlind
-        private void CheckBoxBlind_Click(object sender, RoutedEventArgs e)
-        {
-            if (CheckBoxBlind.IsChecked == true)
-            {
-                USB_CAN_Interface.Properties.Settings.Default.imBlind = true;
-                USB_CAN_Interface.Properties.Settings.Default.Save();
-            }
-            else
-            {
-                USB_CAN_Interface.Properties.Settings.Default.imBlind = false;
-                USB_CAN_Interface.Properties.Settings.Default.Save();
-            }
-            ResizeDataGridRx();
         }
         #endregion
 
@@ -2401,7 +2353,89 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
+        #region MenuItemSave
+        private void MenuItemSaveRx_Click_1(object sender, RoutedEventArgs e)
+        {
+            // StatusBarStatus.Text = "Save to Rx";
+            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to save";
+                return;
+            }
+
+            // find next key number to use
+            ulong highKey = 0;
+            foreach (CanRxData item in dataGridEditRxMessages.Items)
+            {
+                if (item.Key > highKey)
+                {
+                    highKey = item.Key;
+                }
+            }
+
+            // copy selected message to new object
+            CanRxData canRxData = new CanRxData(data);
+            // assign new Key number
+            canRxData.Key = highKey + 1;
+            // add to datagrid
+            dataGridEditRxMessages.Items.Add(canRxData);
+        }
+
+        private void MenuItemSaveTx_Click(object sender, RoutedEventArgs e)
+        {
+            // StatusBarStatus.Text = "Save to Tx";
+            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            if (data == null)
+            {
+                StatusBarStatus.Text = "Please select an ArbID to save";
+                return;
+            }
+
+            // find next key number to use
+            ulong highKey = 0;
+            foreach(CanTxData item in dataGridEditTxMessages.Items)
+            {
+                if(item.Key > highKey)
+                {
+                    highKey = item.Key;
+                }
+            }
+
+            // copy selected message to new object
+            CanTxData canTxData = new CanTxData(data);
+            // assign new key number
+            canTxData.Key = highKey + 1;
+            // add to message editor Tx datagrid
+            dataGridEditTxMessages.Items.Add(canTxData);
+            // add to main Tx datagrid
+            dataGridTx.Items.Add(canTxData);
+        }
+        #endregion
+
+        #region CheckBox Blind, Ascii and Notes
+        private void CheckBoxBlind_Click(object sender, RoutedEventArgs e)
+        {
+            USB_CAN_Interface.Properties.Settings.Default.imBlind = (bool)CheckBoxBlind.IsChecked;
+            USB_CAN_Interface.Properties.Settings.Default.Save();
+            ResizeDataGridRx();
+        }
+
         private void CheckBoxAscii_Click(object sender, RoutedEventArgs e)
+        {
+            USB_CAN_Interface.Properties.Settings.Default.ascii = (bool) CheckBoxAscii.IsChecked;
+            USB_CAN_Interface.Properties.Settings.Default.Save();
+            FormatDataGridColumns();
+        }
+
+        private void CheckBoxNotes_Click(object sender, RoutedEventArgs e)
+        {
+            USB_CAN_Interface.Properties.Settings.Default.notes = (bool)CheckBoxNotes.IsChecked;
+            USB_CAN_Interface.Properties.Settings.Default.Save();
+            FormatDataGridColumns();
+        }
+
+        private void FormatDataGridColumns()
         {
             if (CheckBoxAscii.IsChecked == true)
             {
@@ -2411,10 +2445,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 dataGridRx.Columns[20].Visibility = Visibility.Hidden;
             }
-        }
 
-        private void CheckBoxNotes_Click(object sender, RoutedEventArgs e)
-        {
             if (CheckBoxNotes.IsChecked == true)
             {
                 dataGridRx.Columns[21].Visibility = Visibility.Visible;
@@ -2424,38 +2455,7 @@ namespace CAN_X_CAN_Analyzer
                 dataGridRx.Columns[21].Visibility = Visibility.Hidden;
             }
         }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-           // StatusBarStatus.Text = "Save to Rx";
-            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
-            if (data == null)
-            {
-                StatusBarStatus.Text = "Please select an ArbID to save";
-                return;
-            }
-            // copy selected message to new object
-            CanRxData canRxData = new CanRxData(data);
-            // add to datagrid
-            dataGridEditRxMessages.Items.Add(canRxData);
-        }
-
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
-        {
-            // StatusBarStatus.Text = "Save to Tx";
-            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
-            if (data == null)
-            {
-                StatusBarStatus.Text = "Please select an ArbID to save";
-                return;
-            }
-            // copy selected message to new object
-            CanTxData canTxData = new CanTxData(data);
-            // add to datagrid
-            dataGridEditTxMessages.Items.Add(canTxData);
-        }
-
-        // Context Menu ???
+        #endregion
     }
 }
 

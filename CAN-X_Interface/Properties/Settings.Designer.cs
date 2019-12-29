@@ -70,5 +70,17 @@ namespace USB_CAN_Interface.Properties {
                 this["notes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CAN-X (Beta)")]
+        public string titleWindow {
+            get {
+                return ((string)(this["titleWindow"]));
+            }
+            set {
+                this["titleWindow"] = value;
+            }
+        }
     }
 }

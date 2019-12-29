@@ -12,12 +12,15 @@ namespace CAN_X_CAN_Analyzer
         {
             CAN1,
             CAN2,
-            SWCAN1,
-            LSFTCAN1,
+            CANFD1,
+            CANFD2,
+            ETH1,            
             LIN1,
-            ETH1,
+            LIN2,
+            LSFTCAN1,          
+            LSFTCAN2,
+            SWCAN1,
             SWCAN2,
-            LSFTCAN2
         }
 
         public enum TxRate

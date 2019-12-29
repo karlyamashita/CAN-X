@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CAN_X_CAN_Analyzer"
         mc:Ignorable="d" 
-        Title="CAN-X CAN bus Analyzer - (BETA)" WindowStartupLocation="CenterScreen" Margin="0" Height="735.5" Width="1186" Closing="Window_Closing" Loaded="MainWindow1_Loaded">
+        Title="CAN-X CAN bus Analyzer - (BETA)" WindowStartupLocation="CenterScreen" Margin="0" Height="735.5" Width="1186" Closing="Window_Closing" Loaded="MainWindow1_Loaded" ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}" x:Key="MyStyle">
@@ -112,8 +112,14 @@
                     <Button x:Name="ButtonConnect" Content="Connect" VerticalAlignment="Top" Width="75" Margin="0,0,2,0" Click="ButtonConnect_Click" HorizontalAlignment="Right" Template="{StaticResource RoundedButtonTemplate}"/>
                     <Button x:Name="ButtonDisconnect" Content="Disconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="2,0,0,0" Click="ButtonDisconnect_Click" Template="{StaticResource RoundedButtonTemplate}"/>
                 </StackPanel>
-                <GroupBox Height="150" Header="Node Settings" BorderBrush="#FFABAFB2">
-                    <StackPanel VerticalAlignment="Top" Height="144" Margin="0,6,0,-41">
+                <GroupBox Height="200" Header="Node Settings" BorderBrush="#FFABAFB2" Margin="0,0,0,10">
+                    <StackPanel Height="165" Margin="0,6,0,0">
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Label Content="Node"/>
+                            <ComboBox x:Name="ComboBoxNodeSettings" HorizontalAlignment="Left" Margin="0,0,0,5" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxNodeSettings_SelectionChanged" SelectedIndex="0"/>
+                        </StackPanel>
+                        
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Label Content="APB1 Clock" />
                             <ComboBox x:Name="ComboBoxAPB1" HorizontalAlignment="Left" Margin="0,0,0,5" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" />
@@ -196,13 +202,13 @@
 
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
-                        <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  MouseLeftButtonUp="DataGridRx_MouseLeftButtonUp">
+                        <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Save to Rx" Click="MenuItem_Click"/>
-                                    <MenuItem Header="Save to Rx with data" IsEnabled="False"/>
-                                    <MenuItem Header="Save to Tx" Click="MenuItem_Click_1"/>
-                                    <MenuItem Header="Save to Tx with data" IsEnabled="False"/>
+                                    <MenuItem x:Name="MenuItemSaveRx" Header="Save to Rx" Click="MenuItemSaveRx_Click_1"/>
+                                    <MenuItem x:Name="MenuItemSaveRxWithData" Header="Save to Rx with data" IsEnabled="False"/>
+                                    <MenuItem x:Name="MenuItemSaveTx" Header="Save to Tx" Click="MenuItemSaveTx_Click"/>
+                                    <MenuItem x:Name="MenuItemSaveTxWithData" Header="Save to Tx with data" IsEnabled="False"/>
                                 </ContextMenu>
                             </DataGrid.ContextMenu>
                             <DataGrid.Background>
@@ -386,7 +392,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Vertical">
                                                 <Label Content="Description" />
-                                                <TextBox x:Name="TextBoxRxDescription" Height="25" Margin="0" MaxLength="24" TextChanged="TextBoxEditMessageRx_TextChanged"/>
+                                                <TextBox x:Name="TextBoxRxDescription" Height="25" Margin="0" MaxLength="32" TextChanged="TextBoxEditMessageRx_TextChanged"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
                                                 <Label Content="ArbID"/>
@@ -492,7 +498,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Vertical">
                                                 <Label Content="Description" />
-                                                <TextBox x:Name="TextBoxTxDescription" Height="25" Margin="0" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                                                <TextBox x:Name="TextBoxTxDescription" MaxLength="32" Height="25" Margin="0" TextChanged="TextBoxEditMessageTx_TextChanged"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
                                                 <Label Content="ArbID"/>
@@ -595,6 +601,9 @@
             <Separator Grid.Column="5" />
             <StatusBarItem Grid.Column="6">
                 <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="20" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="0" Maximum="5000" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="6">
+                <TextBox x:Name="TextBoxBufferPercentage" Background="{x:Null}" TextAlignment="Center" MinWidth="300"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>
