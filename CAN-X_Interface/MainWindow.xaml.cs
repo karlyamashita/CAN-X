@@ -506,6 +506,7 @@ namespace CAN_X_CAN_Analyzer
                                 canRxDataNew.Tx = canRxData.Tx;
                                 canRxDataNew.IDE = canRxData.IDE;
                                 canRxDataNew.ArbID = canRxData.ArbID;
+                                canRxDataNew.RTR = canRxData.RTR;
 
                                 canRxDataNew.DLC = canRxData.DLC;
                                 canRxDataNew.Byte1 = canRxData.Byte1;
@@ -562,6 +563,7 @@ namespace CAN_X_CAN_Analyzer
                                 canRxDataNew.Tx = canRxData.Tx;
                                 canRxDataNew.IDE = canRxData.IDE;
                                 canRxDataNew.ArbID = canRxData.ArbID;
+                                canRxDataNew.RTR = canRxData.RTR;
 
                                 canRxDataNew.DLC = canRxData.DLC;
                                 canRxDataNew.Byte1 = canRxData.Byte1;
@@ -615,6 +617,7 @@ namespace CAN_X_CAN_Analyzer
                             row.Tx = canRxData.Tx;
                             row.IDE = canRxData.IDE;
                             row.ArbID = canRxData.ArbID;
+                            row.RTR = canRxData.RTR;
 
                             row.DLC = canRxData.DLC;
                             row.Byte1 = canRxData.Byte1;
@@ -741,7 +744,7 @@ namespace CAN_X_CAN_Analyzer
             }
 
             // RTR
-            usbPacket[1] = (byte)canData.RTR; // RTR, Node
+            usbPacket[1] = canData.RTR == true ? (byte) 1: (byte) 0; // RTR, Node
 
             // Node
             byte i = 0;
@@ -1789,7 +1792,7 @@ namespace CAN_X_CAN_Analyzer
                             result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
                             if (dataGridName == "edit_tx_messages")
                             {
-                                canTxData.RTR = Convert.ToInt32(result);
+                                canTxData.RTR = result == "True";
                             }
                             // rx doesn't have RTR
                             break;
@@ -2048,9 +2051,9 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
 
-            data.RTR = Convert.ToInt32(CheckBoxRemoteTransmit.IsChecked);
+            data.RTR = (bool) CheckBoxRemoteTransmit.IsChecked;
 
-            if (data.RTR == 1)
+            if (data.RTR == true)
             {
                 data.DLC = "0";
                 data.Byte1 = "";

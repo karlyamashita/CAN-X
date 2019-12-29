@@ -10,7 +10,7 @@ namespace CAN_X_CAN_Analyzer
         public string Rate { get; set; } = "0";
         public double RateTimer { get; set; } = 0;
         public string IDE { get; set; } = "";
-        public int RTR { get; set; } = 0;
+        public bool RTR { get; set; } = false;
         public string ArbID { get; set; } = "";
         public string DLC { get; set; } = "";
         //data bytes
@@ -78,7 +78,7 @@ namespace CAN_X_CAN_Analyzer
         public bool Err { get; set; } = false;
         public string Description { get; set; } = "";
         public string IDE { get; set; } = "";
-        public int RTR { get; set; } = 0;
+        public bool RTR { get; set; } = false;
         public string ArbID { get; set; } = "";
         public string DLC { get; set; } = "";
         //data bytes
@@ -119,7 +119,8 @@ namespace CAN_X_CAN_Analyzer
             }
             
             // RTR
-            RTR = data[2] & 0x01; // bit0
+            
+            RTR = (data[2] & 0x01) == 1 ? true: false; // bit0
             
             // Node
             int nodeNumber = data[3] & 0x0F;

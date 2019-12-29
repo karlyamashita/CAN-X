@@ -155,6 +155,11 @@
                     </StackPanel>
                 </GroupBox>-->
                 <CheckBox x:Name="CheckBoxBlind" Content="I'm Blind" Click="CheckBoxBlind_Click" />
+                   <StackPanel Orientation="Horizontal">
+                    <RadioButton Content="Hex" GroupName="DataType" IsChecked="True" />
+                    <RadioButton Content="Binary" GroupName="DataType" IsEnabled="False" />
+                    <RadioButton GroupName="DataType" Content="Decimal" IsEnabled="False" />
+                </StackPanel>
                 <CheckBox x:Name="CheckBoxAscii" Content="ASCII" Click="CheckBoxAscii_Click" />
                 <CheckBox x:Name="CheckBoxNotes" Content="Notes" Click="CheckBoxNotes_Click" />
             </StackPanel>
