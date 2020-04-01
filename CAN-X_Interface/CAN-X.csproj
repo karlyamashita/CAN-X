@@ -153,12 +153,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\addbutton_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\blue_icon.png" />
     <Resource Include="Resources\green_icon.png" />
     <Resource Include="Resources\red_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-plus-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-minus-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\disconnect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\connect.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CAN_X_CAN_Analyzer"
         mc:Ignorable="d" 
-        Title="CAN-X CAN bus Analyzer - (BETA)" WindowStartupLocation="CenterScreen" Margin="0" Height="735.5" Width="1186" Closing="Window_Closing" Loaded="MainWindow1_Loaded" ResizeMode="CanResizeWithGrip">
+        Title="CAN-X" WindowStartupLocation="CenterScreen" Margin="0" Height="735.5" Width="1186" Closing="Window_Closing" Loaded="MainWindow1_Loaded" ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}" x:Key="MyStyle">
@@ -109,34 +109,38 @@
                     </FlowDocument>
                 </RichTextBox>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,25" HorizontalAlignment="Center">
-                    <Button x:Name="ButtonConnect" Content="Connect" VerticalAlignment="Top" Width="75" Margin="0,0,2,0" Click="ButtonConnect_Click" HorizontalAlignment="Right" Template="{StaticResource RoundedButtonTemplate}"/>
-                    <Button x:Name="ButtonDisconnect" Content="Disconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="2,0,0,0" Click="ButtonDisconnect_Click" Template="{StaticResource RoundedButtonTemplate}"/>
+                    <Button x:Name="ButtonConnect"  VerticalAlignment="Top" Width="75" Margin="0,0,2,0" Click="ButtonConnect_Click" HorizontalAlignment="Right" Template="{StaticResource RoundedButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <Image Source="Resources/connect.png" Width="25" />
+                    </Button>
+                    <Button x:Name="ButtonDisconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="2,0,0,0" Click="ButtonDisconnect_Click" Template="{StaticResource RoundedButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <Image Source="Resources/disconnect.png" Width="25" />
+                    </Button>
                 </StackPanel>
                 <GroupBox Height="200" Header="Node Settings" BorderBrush="#FFABAFB2" Margin="0,0,0,10">
                     <StackPanel Height="165" Margin="0,6,0,0">
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Label Content="Node"/>
-                            <ComboBox x:Name="ComboBoxNodeSettings" HorizontalAlignment="Left" Margin="0,0,0,5" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxNodeSettings_SelectionChanged" SelectedIndex="0"/>
+                            <ComboBox x:Name="ComboBoxNodeSettings" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxNodeSettings_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right"/>
                         </StackPanel>
                         
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Label Content="APB1 Clock" />
-                            <ComboBox x:Name="ComboBoxAPB1" HorizontalAlignment="Left" Margin="0,0,0,5" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" />
+                            <ComboBox x:Name="ComboBoxAPB1" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right" />
                         </StackPanel>
                         
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Label Content="Baud Rate" />
-                            <ComboBox x:Name="ComboBoxBaudRate" HorizontalAlignment="Center" Margin="0,0,0,5" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBoxBaudRate_SelectionChanged"/>
+                            <Label Content="Baud Rate (Kbit/s)" />
+                            <ComboBox x:Name="ComboBoxBaudRate" Margin="0" VerticalAlignment="Top" SelectionChanged="ComboBoxBaudRate_SelectionChanged" Width="75" HorizontalAlignment="Right"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Label Content="BTR Reg" />
-                            <TextBox x:Name="TextBoxBtrValue" MaxLength="10" Height="23" Margin="0,0,0,5" TextWrapping="Wrap" Text="0x001A001D" VerticalAlignment="Top" Width="120" HorizontalAlignment="Center"/>
+                            <TextBox x:Name="TextBoxBtrValue" MaxLength="10" Height="23" Margin="0" TextWrapping="Wrap" Text="0x001A001D" VerticalAlignment="Top" Width="120" HorizontalAlignment="Right"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Center">
                             <CheckBox x:Name="CheckBoxListenOnly" Content="Listen Only" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CheckBoxListenOnly_Click"/>
                         </StackPanel>
-                        <Button x:Name="ButtonBtrValue" Content="Send BTR" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0" Click="ButtonBtrValue_Click" Template="{StaticResource RoundedButtonTemplate}"/>
+                        <Button x:Name="ButtonBtrValue" Content="Send BTR" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,10,0,0" Click="ButtonBtrValue_Click" Template="{StaticResource RoundedButtonTemplate}"/>
                     </StackPanel>
                 </GroupBox>
                 <!--<GroupBox Header="Filters &amp; Masks" Height="113" BorderBrush="#FFABAFB2" IsEnabled="False">
@@ -201,7 +205,18 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="3">
                             <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20" Template="{StaticResource RoundedButtonTemplate}"/>
-                            <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click" Height="20" MinWidth="100" Template="{StaticResource RoundedButtonTemplate}"/>
+                            <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click" Height="20" MinWidth="100" Template="{StaticResource RoundedButtonTemplate}">
+                                <Button.ToolTip>
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold" FontSize="14">
+                                          Save Messages
+                                        </TextBlock>
+                                        <TextBlock>
+                                          Save messages to a CSV file
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Button.ToolTip>
+                            </Button>
                             <!--<Button x:Name="ButtonLoadMessages" Content="Load Messages" Margin="10,0,0,0" Height="20" MinWidth="100" />-->
                             <ToggleButton x:Name="ButtonPauseMessages" Content="Pause" Margin="10,0,0,0" Click="ButtonPauseMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
 
@@ -342,7 +357,18 @@
                         </Grid>
                         <Grid x:Name="GridSpacer" Grid.Row="4" Margin="5,0,0,20">
                             <StackPanel Orientation="Horizontal">
-                                <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Height="20" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}"/>
+                                <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Height="20" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}">
+                                    <ToggleButton.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock FontWeight="Bold" FontSize="14">
+                                               Auto Transmit
+                                            </TextBlock>
+                                            <TextBlock>
+                                               Automatically transmit messages in list that are checked
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </ToggleButton.ToolTip>
+                                </ToggleButton>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -360,9 +386,36 @@
                                             <RowDefinition Height="80"/>
                                         </Grid.RowDefinitions>
                                         <StackPanel Orientation="Horizontal" >
+                                            <StackPanel.Background>
+                                                <ImageBrush/>
+                                            </StackPanel.Background>
                                             <TextBlock Text="Receive Messages" FontWeight="Bold" />
-                                            <Button x:Name="ButtonAddEditRxRow" Width="25" Height="25" Content="+" Margin="20,0,0,0" Click="ButtonAddEditRxRow_Click" FontWeight="Bold" FontSize="18" />
-                                            <Button x:Name="ButtonDeleteEditRxRow" Width="25" Height="25" Content="-" Margin="10,0,0,0" Click="ButtonDeleteEditRxRow_Click" FontWeight="Bold" FontSize="18" />
+                                            <Button x:Name="ButtonAddEditRxRow" Width="25" Height="25" Margin="20,0,0,0" Click="ButtonAddEditRxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                                                <Image Source="Resources/icons8-plus-64.png"/>
+                                                <Button.ToolTip>
+                                                    <StackPanel>
+                                                    <TextBlock FontWeight="Bold" FontSize="14">
+                                                        Add Message
+                                                    </TextBlock>
+                                                        <TextBlock>
+                                                            Adds a new message row
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                            </Button>
+                                            <Button x:Name="ButtonDeleteEditRxRow" Width="25" Height="25" Margin="5,0,0,0" Click="ButtonDeleteEditRxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                                                <Button.ToolTip>
+                                                    <StackPanel>
+                                                    <TextBlock FontWeight="Bold" FontSize="14">
+                                                        Delete Message
+                                                    </TextBlock>
+                                                    <TextBlock>
+                                                        Select an ArbID to Delete
+                                                    </TextBlock>
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                                <Image Source="Resources/icons8-minus-64.png" />
+                                            </Button>
                                         </StackPanel>
                                         <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridEditRxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditRxMessages_PreviewMouseLeftButtonDown" >
                                             <DataGrid.Columns>
@@ -465,8 +518,32 @@
                                         </Grid.RowDefinitions>
                                         <StackPanel Orientation="Horizontal" >
                                             <TextBlock Text="Transmit Messages" FontWeight="Bold" />
-                                            <Button x:Name="ButtonAddEditTxRow" Width="25" Height="25" Content="+" Margin="20,0,0,0" Click="ButtonAddEditTxRow_Click" FontSize="18" FontWeight="Bold"/>
-                                            <Button x:Name="ButtonDeleteEditTxRow" Width="25" Height="25" Content="-" Margin="10,0,0,0" Click="ButtonDeleteEditTxRow_Click" FontWeight="Bold" FontSize="18" />
+                                            <Button x:Name="ButtonAddEditTxRow" Width="25" Height="25"  Margin="20,0,0,0" Click="ButtonAddEditTxRow_Click" FontSize="18" FontWeight="Bold" Background="{x:Null}" BorderBrush="{x:Null}">
+                                                <Image Source="Resources/icons8-plus-64.png" />
+                                                <Button.ToolTip>
+                                                    <StackPanel>
+                                                        <TextBlock FontWeight="Bold" FontSize="14">
+                                                        Add Message
+                                                        </TextBlock>
+                                                        <TextBlock>
+                                                            Adds a new message row
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                            </Button>
+                                            <Button x:Name="ButtonDeleteEditTxRow" Width="25" Height="25"  Margin="5,0,0,0" Click="ButtonDeleteEditTxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                                                <Image Source="Resources/icons8-minus-64.png" />
+                                                <Button.ToolTip>
+                                                    <StackPanel>
+                                                        <TextBlock FontWeight="Bold" FontSize="14">
+                                                        Delete Message
+                                                        </TextBlock>
+                                                        <TextBlock>
+                                                        Select an ArbID to Delete
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                            </Button>
                                         </StackPanel>
                                         <DataGrid x:Name="dataGridEditTxMessages" Grid.Row="1" Background="White" IsReadOnly="True" MouseLeftButtonUp="DataGridEditTxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditTxMessages_PreviewMouseLeftButtonDown" >
                                             <DataGrid.Columns>
@@ -608,7 +685,7 @@
                 <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="20" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="0" Maximum="5000" />
             </StatusBarItem>
             <StatusBarItem Grid.Column="6">
-                <TextBox x:Name="TextBoxBufferPercentage" Background="{x:Null}" TextAlignment="Center" MinWidth="300"/>
+                <TextBlock x:Name="TextBoxBufferPercentage" Background="{x:Null}" MinWidth="300" MinHeight="20" TextAlignment="Center"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>
