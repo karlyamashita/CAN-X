@@ -36,13 +36,15 @@ using ComboBox = System.Windows.Controls.ComboBox;
 using USB_CAN_Interface;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using Timer = System.Threading.Timer;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace CAN_X_CAN_Analyzer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         #region const defines
         // standard ASCII characters
@@ -84,11 +86,7 @@ namespace CAN_X_CAN_Analyzer
 
         UInt32 lineCount = 1;
 
-        BindingList<CanTxData> listCanTxData = new BindingList<CanTxData>();
-
-        List<CAN_BaudRate> baudRateList = new List<CAN_BaudRate>();
-
-        public delegate void MessageParse(byte[] data);
+        public delegate void MessageParse(ref byte[] data);
         public delegate void SendMessage();
 
         int rowIndexEditTx = 0;
@@ -114,8 +112,34 @@ namespace CAN_X_CAN_Analyzer
 
             // my init routines
             InitUsbDevice();
+
+            dataGridRx.DataContext = this;
+
+            Values = new ObservableCollection<CanRxData>();
         }
         #endregion
+
+        private ObservableCollection<CanRxData> _values;
+
+        public ObservableCollection<CanRxData> Values
+        {
+            get { return _values; }
+            set
+            {
+                if (_values == value)
+                    return;
+
+                _values = value;
+                OnPropertyChanged("Values");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propName));
+        }
 
         #region init USB device
         private void InitUsbDevice()
@@ -140,12 +164,12 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region parse the USB data received. This is running on a thread
-        public void ParseUsbData(byte[] data)
+        public void ParseUsbData(ref byte[] data)
         {
             switch (data[1])
             {
                 case COMMAND_MESSAGE:
-                    ParseDeviceCAN_Message(data);
+                    ParseDeviceCAN_Message(ref data);
                     break;
                 case COMMAND_ACK:
                     StatusBarStatus.Text = "ACK Received";
@@ -314,7 +338,7 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region Parse device CAN message
-        private void ParseDeviceCAN_Message(byte[] data)
+        private void ParseDeviceCAN_Message(ref byte[] data)
         {
             // get the date now!
             DateTime now = DateTime.Now;
@@ -509,14 +533,38 @@ namespace CAN_X_CAN_Analyzer
                                 canRxDataNew.RTR = canRxData.RTR;
 
                                 canRxDataNew.DLC = canRxData.DLC;
-                                canRxDataNew.Byte1 = canRxData.Byte1;
-                                canRxDataNew.Byte2 = canRxData.Byte2;
-                                canRxDataNew.Byte3 = canRxData.Byte3;
-                                canRxDataNew.Byte4 = canRxData.Byte4;
-                                canRxDataNew.Byte5 = canRxData.Byte5;
-                                canRxDataNew.Byte6 = canRxData.Byte6;
-                                canRxDataNew.Byte7 = canRxData.Byte7;
-                                canRxDataNew.Byte8 = canRxData.Byte8;
+                                if(!String.Equals(canRxDataNew.Byte1, canRxData.Byte1))
+                                {
+                                    canRxDataNew.Byte1 = canRxData.Byte1;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte2, canRxData.Byte2))
+                                {
+                                    canRxDataNew.Byte2 = canRxData.Byte2;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte3, canRxData.Byte3))
+                                {
+                                    canRxDataNew.Byte3 = canRxData.Byte3;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte4, canRxData.Byte4))
+                                {
+                                    canRxDataNew.Byte4 = canRxData.Byte4;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte5, canRxData.Byte5))
+                                {
+                                    canRxDataNew.Byte5 = canRxData.Byte5;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte6, canRxData.Byte6))
+                                {
+                                    canRxDataNew.Byte6 = canRxData.Byte6;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte7, canRxData.Byte7))
+                                {
+                                    canRxDataNew.Byte7 = canRxData.Byte7;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte8, canRxData.Byte8))
+                                {
+                                    canRxDataNew.Byte8 = canRxData.Byte8;
+                                }
 
                                 canRxDataNew.Node = canRxData.Node;
 
@@ -566,14 +614,38 @@ namespace CAN_X_CAN_Analyzer
                                 canRxDataNew.RTR = canRxData.RTR;
 
                                 canRxDataNew.DLC = canRxData.DLC;
-                                canRxDataNew.Byte1 = canRxData.Byte1;
-                                canRxDataNew.Byte2 = canRxData.Byte2;
-                                canRxDataNew.Byte3 = canRxData.Byte3;
-                                canRxDataNew.Byte4 = canRxData.Byte4;
-                                canRxDataNew.Byte5 = canRxData.Byte5;
-                                canRxDataNew.Byte6 = canRxData.Byte6;
-                                canRxDataNew.Byte7 = canRxData.Byte7;
-                                canRxDataNew.Byte8 = canRxData.Byte8;
+                                if (!String.Equals(canRxDataNew.Byte1, canRxData.Byte1))
+                                {
+                                    canRxDataNew.Byte1 = canRxData.Byte1;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte2, canRxData.Byte2))
+                                {
+                                    canRxDataNew.Byte2 = canRxData.Byte2;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte3, canRxData.Byte3))
+                                {
+                                    canRxDataNew.Byte3 = canRxData.Byte3;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte4, canRxData.Byte4))
+                                {
+                                    canRxDataNew.Byte4 = canRxData.Byte4;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte5, canRxData.Byte5))
+                                {
+                                    canRxDataNew.Byte5 = canRxData.Byte5;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte6, canRxData.Byte6))
+                                {
+                                    canRxDataNew.Byte6 = canRxData.Byte6;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte7, canRxData.Byte7))
+                                {
+                                    canRxDataNew.Byte7 = canRxData.Byte7;
+                                }
+                                if (!String.Equals(canRxDataNew.Byte8, canRxData.Byte8))
+                                {
+                                    canRxDataNew.Byte8 = canRxData.Byte8;
+                                }
 
                                 canRxDataNew.Node = canRxData.Node;
 
@@ -596,7 +668,9 @@ namespace CAN_X_CAN_Analyzer
                 }
                 else
                 {
-                    foreach (CanRxData row in dataGridRx.Items)
+                    //foreach (CanRxData row in dataGridRx.Items)
+
+                    foreach (CanRxData row in Values)
                     {
                         if (row.ArbID == canRxData.ArbID)
                         {
@@ -620,14 +694,38 @@ namespace CAN_X_CAN_Analyzer
                             row.RTR = canRxData.RTR;
 
                             row.DLC = canRxData.DLC;
-                            row.Byte1 = canRxData.Byte1;
-                            row.Byte2 = canRxData.Byte2;
-                            row.Byte3 = canRxData.Byte3;
-                            row.Byte4 = canRxData.Byte4;
-                            row.Byte5 = canRxData.Byte5;
-                            row.Byte6 = canRxData.Byte6;
-                            row.Byte7 = canRxData.Byte7;
-                            row.Byte8 = canRxData.Byte8;
+                            if (!String.Equals(row.Byte1, canRxData.Byte1))
+                            {
+                                row.Byte1 = canRxData.Byte1;
+                            }
+                            if (!String.Equals(row.Byte2, canRxData.Byte2))
+                            {
+                                row.Byte2 = canRxData.Byte2;
+                            }
+                            if (!String.Equals(row.Byte3, canRxData.Byte3))
+                            {
+                                row.Byte3 = canRxData.Byte3;
+                            }
+                            if (!String.Equals(row.Byte4, canRxData.Byte4))
+                            {
+                                row.Byte4 = canRxData.Byte4;
+                            }
+                            if (!String.Equals(row.Byte5, canRxData.Byte5))
+                            {
+                                row.Byte5 = canRxData.Byte5;
+                            }
+                            if (!String.Equals(row.Byte6, canRxData.Byte6))
+                            {
+                                row.Byte6 = canRxData.Byte6;
+                            }
+                            if (!String.Equals(row.Byte7, canRxData.Byte7))
+                            {
+                                row.Byte7 = canRxData.Byte7;
+                            }
+                            if (!String.Equals(row.Byte8, canRxData.Byte8))
+                            {
+                                row.Byte8 = canRxData.Byte8;
+                            }
 
                             row.Node = canRxData.Node;
 
@@ -653,7 +751,7 @@ namespace CAN_X_CAN_Analyzer
                     else
                     {
                         masterDataGridRx.Add(canRxData); // matchFound
-                        dataGridRx.Items.Refresh();
+                     //   dataGridRx.Items.Refresh();
                     }
                 }
                 else
@@ -661,8 +759,12 @@ namespace CAN_X_CAN_Analyzer
                     masterDataGridRx.Reverse();// back to original order
                     masterDataGridRx.Add(canRxData);
 
-                    dataGridRx.ClearValue(ItemsControl.ItemsSourceProperty);
-                    dataGridRx.Items.Add(canRxData);
+                    Values.Add(canRxData);
+
+                    Debug.WriteLine(Values.Count);
+
+                 //   dataGridRx.ClearValue(ItemsControl.ItemsSourceProperty);
+                 //   dataGridRx.Items.Add(canRxData);
                 }
             }
  
@@ -835,6 +937,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 dataGridRx.Items.RemoveAt(0);
             }
+            Values.Clear();
             while (masterDataGridRx.Count != 0)
             {
                 masterDataGridRx.RemoveAt(0);
@@ -2459,6 +2562,23 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+
+        private void Test_Click(object sender, RoutedEventArgs e)
+        {
+            CanRxData canRxData = new CanRxData();
+
+            canRxData.Byte1 = "AA";
+            canRxData.Byte2 = "BB";
+            canRxData.Byte3 = "CC";
+
+            Values.Add(canRxData);
+
+            Debug.WriteLine("count: " + Values.Count);
+            foreach (CanRxData canrx in Values)
+            {
+                Debug.WriteLine("{0} {1} {2}", canrx.Byte1, canrx.Byte2, canrx.Byte3);
+            }         
+        }
     }
 }
 

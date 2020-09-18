@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace CAN_X_CAN_Analyzer
 {
@@ -14,8 +15,33 @@ namespace CAN_X_CAN_Analyzer
         public string ArbID { get; set; } = "";
         public string DLC { get; set; } = "";
         //data bytes
-        public string Byte1 { get; set; } = "";
-        public string Byte2 { get; set; } = "";
+
+        private string byte1 = "";
+        public string Byte1 
+        {
+            get 
+            {
+                return byte1; 
+            }
+            set
+            {
+                byte1 = value;
+            }          
+        }
+
+        private string byte2 = "";
+        public string Byte2
+        {
+            get
+            {
+                return byte2;
+            }
+            set
+            {
+                byte2 = value;
+            }
+        }
+
         public string Byte3 { get; set; } = "";
         public string Byte4 { get; set; } = "";
         public string Byte5 { get; set; } = "";
@@ -69,33 +95,216 @@ namespace CAN_X_CAN_Analyzer
         }
     }
 
-    public class CanRxData
+    public class CanRxData : INotifyPropertyChanged
     {
         public ulong Key { get; set; } = 0;
-        public ulong Line { get; set; } = 0;
-        public string TimeAbs { get; set; } = "";
+
+        private UInt32 line = 0;
+        public UInt32 Line
+        {
+            get
+            {
+                return line;
+            }
+            set
+            {
+                if (line == value) return;
+                line = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Line"));
+            }
+        }
+
+        private string timeAbs = "";
+        public string TimeAbs
+        {
+            get
+            {
+                return timeAbs;
+            }
+            set
+            {
+                if (timeAbs == value) return;
+                timeAbs = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("TimeAbs"));
+            }
+        }
         public bool Tx { get; set; } = false;
         public bool Err { get; set; } = false;
         public string Description { get; set; } = "";
         public string IDE { get; set; } = "";
         public bool RTR { get; set; } = false;
         public string ArbID { get; set; } = "";
-        public string DLC { get; set; } = "";
+
+        private string dlc = "";
+        public string DLC
+        {
+            get
+            {
+                return dlc;
+            }
+            set
+            {
+                if (dlc == value) return;
+                dlc = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("DLC"));
+            }
+        }
         //data bytes
-        public string Byte1 { get; set; } = "";
-        public string Byte2 { get; set; } = "";
-        public string Byte3 { get; set; } = "";
-        public string Byte4 { get; set; } = "";
-        public string Byte5 { get; set; } = "";
-        public string Byte6 { get; set; } = "";
-        public string Byte7 { get; set; } = "";
-        public string Byte8 { get; set; } = "";
+
+        private string byte1 = "";
+        public string Byte1
+        {
+            get
+            {
+                return byte1;
+            }
+            set
+            {
+                if (byte1 == value) return;
+                byte1 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte1"));
+            }
+        }
+
+        private string byte2 = "";
+        public string Byte2
+        {
+            get
+            {
+                return byte2;
+            }
+            set
+            {
+                if (byte2 == value) return;
+                byte2 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte2"));
+            }
+        }
+
+        private string byte3 = "";
+        public string Byte3
+        {
+            get
+            {
+                return byte3;
+            }
+            set
+            {
+                if (byte3 == value) return;
+                byte3 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte3"));
+            }
+        }
+
+        private string byte4 = "";
+        public string Byte4
+        {
+            get
+            {
+                return byte4;
+            }
+            set
+            {
+                if (byte4 == value) return;
+                byte4 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte4"));
+            }
+        }
+
+        private string byte5 = "";
+        public string Byte5
+        {
+            get
+            {
+                return byte5;
+            }
+            set
+            {
+                if (byte5 == value) return;
+                byte5 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte5"));
+            }
+        }
+
+        private string byte6 = "";
+        public string Byte6
+        {
+            get
+            {
+                return byte6;
+            }
+            set
+            {
+                if (byte6 == value) return;
+                byte6 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte6"));
+            }
+        }
+
+        private string byte7 = "";
+        public string Byte7
+        {
+            get
+            {
+                return byte7;
+            }
+            set
+            {
+                if (byte7 == value) return;
+                byte7 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte7"));
+            }
+        }
+
+        private string byte8 = "";
+        public string Byte8
+        {
+            get
+            {
+                return byte8;
+            }
+            set
+            {
+                if (byte8 == value) return;
+                byte8 = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Byte8"));
+            }
+        }
+
 
         public string Node { get; set; } = "CAN1";
         public string ASCII { get; set; } = "";
-        public string Count { get; set; } = "1";
+
+        private string _Count = "1";
+        public string Count
+        {
+            get
+            {
+                return _Count;
+            }
+            set
+            {
+                if (_Count == value) return;
+                _Count = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            }
+        }
         public string CountSaved { get; set; } = "1";
-        public string TxCount { get; set; } = "1";
+
+        private string _TxCount = "1";
+        public string TxCount
+        {
+            get
+            {
+                return _TxCount;
+            }
+            set
+            {
+                if (_TxCount == value) return;
+                _TxCount = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("TxCount"));
+            }
+        }
         public string TxCountSaved { get; set; } = "1";
         public string Notes { get; set; } = "";
         public string Color { get; set; } = "";
@@ -215,6 +424,15 @@ namespace CAN_X_CAN_Analyzer
             Byte8 = canRxData.Byte8;
             Node = canRxData.Node;
             Count = canRxData.Count;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, e);
+            }
         }
     }
 }

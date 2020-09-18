@@ -18,7 +18,7 @@
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                     <BeginStoryboard HandoffBehavior="Compose">
                         <Storyboard TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)">
-                            <!--<ColorAnimation Duration="0:0:0.1" To="LightGreen" AutoReverse="True"/>-->
+                            <ColorAnimation Duration="0:0:0.3" To="LightGreen" AutoReverse="True"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
@@ -222,7 +222,7 @@
 
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
-                        <DataGrid x:Name="dataGridRx" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <DataGrid x:Name="dataGridRx" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem x:Name="MenuItemSaveRx" Header="Save to Rx" Click="MenuItemSaveRx_Click_1"/>
@@ -241,11 +241,11 @@
                                 </Style>
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Line" Binding="{Binding Path='Line', Mode=OneWay}" />
-                                <DataGridTextColumn Header="RxCnt" Binding="{Binding Path='Count', Mode=OneWay}" />
-                                <DataGridTextColumn Header="TxCnt" Binding="{Binding Path='TxCount', Mode=OneWay}" />
+                                <DataGridTextColumn Header="Line" Binding="{Binding Line, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                                <DataGridTextColumn Header="RxCnt" Binding="{Binding Count, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                                <DataGridTextColumn Header="TxCnt" Binding="{Binding TxCount, Mode=OneWay, NotifyOnTargetUpdated=True}" />
 
-                                <DataGridTextColumn Header="TimeAbs" Binding="{Binding Path='TimeAbs', Mode=OneWay}" />
+                                <DataGridTextColumn Header="TimeAbs" Binding="{Binding TimeAbs, Mode=OneWay, NotifyOnTargetUpdated=True}" />
                                 <DataGridTemplateColumn Header="Tx" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -298,21 +298,21 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
 
-                                <DataGridTextColumn Header="Description"  Binding="{Binding Path='Description', Mode=OneWay}" />
-                                <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
-                                <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=OneWay}" />
-                                <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                                <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
-                                <DataGridTextColumn Header="ASCII" Binding="{Binding Path='ASCII', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Notes" Binding="{Binding Path='Notes', Mode=OneWay}" />
+                                <DataGridTextColumn Header="Description"  Binding="{Binding Description, Mode=OneWay}" />
+                                <DataGridTextColumn Header="IDE" Binding="{Binding IDE, Mode=OneWay}" />
+                                <DataGridTextColumn Header="ArbID" Binding="{Binding ArbID, Mode=OneWay}" />
+                                <DataGridTextColumn Header="DLC" Binding="{Binding DLC, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                                <DataGridTextColumn Header="Byte1" Binding="{Binding Byte1, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Byte2" Binding="{Binding Byte2, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Byte3" Binding="{Binding Byte3, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Byte4" Binding="{Binding Byte4, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Byte5" Binding="{Binding Byte5, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Byte6" Binding="{Binding Byte6, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Byte7" Binding="{Binding Byte7, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Byte8" Binding="{Binding Byte8, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                                <DataGridTextColumn Header="Node" Binding="{Binding Node, Mode=OneWay}" />
+                                <DataGridTextColumn Header="ASCII" Binding="{Binding ASCII, Mode=OneWay}" />
+                                <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
 
@@ -320,7 +320,7 @@
 
                         <Grid Grid.Row="3">
 
-                        <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
+                            <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description'}" />
@@ -369,6 +369,9 @@
                                         </StackPanel>
                                     </ToggleButton.ToolTip>
                                 </ToggleButton>
+                                <Button x:Name="Test" Width="50" Height="25" Margin="50,0" Click="Test_Click">
+                                    
+                                </Button>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -394,9 +397,9 @@
                                                 <Image Source="Resources/icons8-plus-64.png"/>
                                                 <Button.ToolTip>
                                                     <StackPanel>
-                                                    <TextBlock FontWeight="Bold" FontSize="14">
+                                                        <TextBlock FontWeight="Bold" FontSize="14">
                                                         Add Message
-                                                    </TextBlock>
+                                                        </TextBlock>
                                                         <TextBlock>
                                                             Adds a new message row
                                                         </TextBlock>
@@ -406,12 +409,12 @@
                                             <Button x:Name="ButtonDeleteEditRxRow" Width="25" Height="25" Margin="5,0,0,0" Click="ButtonDeleteEditRxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
                                                 <Button.ToolTip>
                                                     <StackPanel>
-                                                    <TextBlock FontWeight="Bold" FontSize="14">
+                                                        <TextBlock FontWeight="Bold" FontSize="14">
                                                         Delete Message
-                                                    </TextBlock>
-                                                    <TextBlock>
+                                                        </TextBlock>
+                                                        <TextBlock>
                                                         Select an ArbID to Delete
-                                                    </TextBlock>
+                                                        </TextBlock>
                                                     </StackPanel>
                                                 </Button.ToolTip>
                                                 <Image Source="Resources/icons8-minus-64.png" />
@@ -500,7 +503,7 @@
                                             </StackPanel>
                                             <StackPanel Width="250" Margin="20,0,0,0">
                                                 <Label Content="Notes" />
-                                                <TextBox x:Name="TextBoxRxNotes" Height="50" TextWrapping="Wrap" MaxLength="128" TextChanged="TextBoxEditMessageRx_TextChanged" />  
+                                                <TextBox x:Name="TextBoxRxNotes" Height="50" TextWrapping="Wrap" MaxLength="128" TextChanged="TextBoxEditMessageRx_TextChanged" />
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
