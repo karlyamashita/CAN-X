@@ -140,18 +140,6 @@ namespace CAN_X_CAN_Analyzer
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
 
-        #region DeviceDataReceived, delegate to receive USB data
-        private void DeviceDataReceived(byte[] data)
-        {
-            byte[] newBytes = new byte[DATA_SIZE];
-
-            Array.Copy(data, newBytes, DATA_SIZE - 1);
-
-            MessageParse msg = new MessageParse(ParseUsbData);
-            this.Dispatcher.BeginInvoke(msg, new object[] { data });
-        }
-        #endregion
-
         #region parse the USB data received. This is running on a thread
         public void ParseUsbData(ref byte[] data)
         {
@@ -258,48 +246,6 @@ namespace CAN_X_CAN_Analyzer
         private void ComPortManager_DataReceived(object sender, byte[] data)
         {
             ParseDeviceCAN_Message(ref data);
-        }
-
-        private void DeviceConnectionChanged()
-        {
-            RichTextBoxConnectStatus.Dispatcher.BeginInvoke(new Action(delegate ()
-            {
-                if (Device.IsDeviceConnected)
-                {
-                    Console.WriteLine("Device Connected\n");
-
-                    StatusBarStatus.Text = "";
-
-                    RichTextBoxConnectStatus.Document.Blocks.Clear();
-                    Paragraph myParagraph = new Paragraph(new Run("Device Connected"))
-                    {
-                        Foreground = Brushes.White,
-                        Background = Brushes.Green,
-                        FontWeight = FontWeights.Bold,
-                        Padding = new Thickness(5, 1, 5, 1),
-                        TextAlignment = TextAlignment.Center
-                    };
-                    RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
-                    GetInfo();// get the device info
-                }
-                else if (Device.IsDeviceConnected != true)
-                {
-                    Console.WriteLine("Device Not Connected\n");
-
-                    RichTextBoxConnectStatus.Document.Blocks.Clear();
-                    Paragraph myParagraph = new Paragraph(new Run("Device Not Connected"))
-                    {
-                        Foreground = Brushes.White,
-                        Background = Brushes.Red,
-                        FontWeight = FontWeights.Bold,
-                        Padding = new Thickness(5, 1, 5, 1),
-                        TextAlignment = TextAlignment.Center
-                    };
-                    RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
-                    ClearStatusBarStatus(); // clear the status text
-                    ClearStatusSoftwareHarHardware();
-                }
-            }));
         }
 
         #endregion
