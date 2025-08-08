@@ -134,12 +134,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\UsbHid\UsbHid.csproj">
-      <Project>{83bc9702-4192-4654-b359-14cbd71d656e}</Project>
-      <Name>UsbHid</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="CAN-X_icon.ico" />
   </ItemGroup>
   <ItemGroup>
