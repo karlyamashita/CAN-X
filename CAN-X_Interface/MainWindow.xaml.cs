@@ -103,15 +103,14 @@ namespace CAN_X_CAN_Analyzer
         System.Diagnostics.Stopwatch sw = null;
         Thread threadAutoTx = null;
 
+        COM_PortDrv comPort;
+
         #endregion
 
         #region MainWindow
         public MainWindow()
         {
             InitializeComponent();
-
-            // my init routines
-            InitUsbDevice();
 
             dataGridRx.DataContext = this;
 
@@ -140,16 +139,6 @@ namespace CAN_X_CAN_Analyzer
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
-
-        #region init USB device
-        private void InitUsbDevice()
-        {
-            Device = new UsbHidDevice(0x0483, 0x5750);
-            Device.OnConnected += DeviceOnConnected;
-            Device.OnDisConnected += DeviceOnDisConnected;
-            Device.DataReceived += DeviceDataReceived;
-        }
-        #endregion
 
         #region DeviceDataReceived, delegate to receive USB data
         private void DeviceDataReceived(byte[] data)
@@ -193,30 +182,41 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region Button Connect/Disconnect, DeviceOnConnect/Disconnect 
-        // delegate when USB device is connected
-        private void DeviceOnConnected()
-        {
-            DeviceConnectionChanged();
-        }
-
-        // delegate when USB device is disconnected
-        private void DeviceOnDisConnected()
-        {
-            DeviceConnectionChanged();
-        }
-
+        #region Button Connect/Disconnect
         // button event to connect to device
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
-            Device.Connect();
-            if (!Device.IsDeviceConnected)
+            comPort = new COM_PortDrv("COM5"); // Replace with your port name and baud rate
+            comPort.DataReceived += ComPortManager_DataReceived;
+            try
             {
+                comPort.Open();
+
+                Console.WriteLine(comPort.portName + " is Opened");
+
                 RichTextBoxConnectStatus.Document.Blocks.Clear();
-                Paragraph myParagraph = new Paragraph(new Run("Device Not Attached"))
+                Paragraph myParagraph = new Paragraph(new Run(comPort.portName + " is Opened"))
                 {
                     Foreground = Brushes.Black,
-                    Background = Brushes.Gold,
+                    Background = Brushes.LightGreen,
+                    //myParagraph.FontFamily = new FontFamily("Arial");
+                    //myParagraph.FontSize = 12;
+                    //myParagraph.FontWeight = FontWeights.UltraBold;
+                    //myParagraph.FontStretch = FontStretches.UltraExpanded;
+                    Padding = new Thickness(5, 1, 5, 1),
+                    FontWeight = FontWeights.Bold,
+                    TextAlignment = TextAlignment.Center
+                };
+                RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(comPort.portName + " is not valid");
+                RichTextBoxConnectStatus.Document.Blocks.Clear();
+                Paragraph myParagraph = new Paragraph(new Run(comPort.portName + " is not valid"))
+                {
+                    Foreground = Brushes.White,
+                    Background = Brushes.Red,
                     //myParagraph.FontFamily = new FontFamily("Arial");
                     //myParagraph.FontSize = 12;
                     //myParagraph.FontWeight = FontWeights.UltraBold;
@@ -231,7 +231,33 @@ namespace CAN_X_CAN_Analyzer
 
         private void ButtonDisconnect_Click(object sender, RoutedEventArgs e)
         {
-            Device.Disconnect();
+            //Device.Disconnect();
+            if (comPort.IsOpen)
+            {
+                comPort.Close();
+                Console.WriteLine(comPort.portName + " is Closed");
+
+                RichTextBoxConnectStatus.Document.Blocks.Clear();
+                Paragraph myParagraph = new Paragraph(new Run(comPort.portName + " is Closed"))
+                {
+                    Foreground = Brushes.Black,
+                    Background = Brushes.Gold,
+                    //myParagraph.FontFamily = new FontFamily("Arial");
+                    //myParagraph.FontSize = 12;
+                    //myParagraph.FontWeight = FontWeights.UltraBold;
+                    //myParagraph.FontStretch = FontStretches.UltraExpanded;
+                    Padding = new Thickness(5, 1, 5, 1),
+                    FontWeight = FontWeights.Bold,
+                    TextAlignment = TextAlignment.Center
+                };
+                RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
+            }
+           
+        }
+
+        private void ComPortManager_DataReceived(object sender, byte[] data)
+        {
+            ParseDeviceCAN_Message(ref data);
         }
 
         private void DeviceConnectionChanged()
@@ -344,7 +370,7 @@ namespace CAN_X_CAN_Analyzer
             DateTime now = DateTime.Now;
             string dateNow = now.ToString("HH:mm:ss.ffff");
             // shift command to index 0
-            Array.Copy(data, 1, data, 0, DATA_SIZE);
+            //Array.Copy(data, 1, data, 0, DATA_SIZE);
 
             CanRxData canRxData = new CanRxData(data);
             canRxData.Line = lineCount++;
@@ -355,16 +381,19 @@ namespace CAN_X_CAN_Analyzer
             // parse ID and compare to receive messages editor. Return string description if available
             ParseForDescription(ref canRxData);
 
-            // add formatted data to data grid
-            isTransmitMessage = false;
-            AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag, NEW_DATA_FLAG);
+            dataGridEditRxMessages.Dispatcher.BeginInvoke(new Action(delegate ()
+            {
+                // add formatted data to data grid
+                isTransmitMessage = false;
+                AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag, NEW_DATA_FLAG);
 
-            // add to master list, update count first
-         //   canRxData.Count = count;
-         //   masterDataGridRx.Add(canRxData);
+                // add to master list, update count first
+                //   canRxData.Count = count;
+                //   masterDataGridRx.Add(canRxData);
 
-            // update the progress bar and remove first row if we are at MAX_ROW_COUNT
-            if (UpdateProgressBar()) dataGridRx.Items.RemoveAt(0);
+                // update the progress bar and remove first row if we are at MAX_ROW_COUNT
+                if (UpdateProgressBar()) dataGridRx.Items.RemoveAt(0);
+            }));
         }
         #endregion
 
@@ -786,7 +815,7 @@ namespace CAN_X_CAN_Analyzer
         #region Button event to send CAN Tx message and to update DataGrid. Starts delegate
         private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
         {
-            if (!Device.IsDeviceConnected)
+            if (!comPort.IsOpen)
             {
                 StatusBarStatus.Text = "Device Not Connected";
                 return;
@@ -833,20 +862,22 @@ namespace CAN_X_CAN_Analyzer
         #region Send CAN TX message to device over USB
         private void SendCanData(ref CanTxData canData)
         {
-            byte[] usbPacket = new byte[DATA_SIZE - 1]; // command + (DATA_SIZE - 1) should be less than 64 bytes
+            byte[] usbPacket = new byte[DATA_SIZE]; // command + (DATA_SIZE - 1) should be less than 64 bytes
+
+            usbPacket[0] = COMMAND_MESSAGE;
 
             // CAN Type ExID = 4, StdID = 0
             if (canData.IDE == "S")
             {
-                usbPacket[0] = CAN_STD_ID;
+                usbPacket[1] = CAN_STD_ID;
             }
             else
             {
-                usbPacket[0] = CAN_EXT_ID;
+                usbPacket[1] = CAN_EXT_ID;
             }
 
             // RTR
-            usbPacket[1] = canData.RTR == true ? (byte) 1: (byte) 0; // RTR, Node
+            usbPacket[2] = canData.RTR == true ? (byte) 1: (byte) 0; // RTR, Node
 
             // Node
             byte i = 0;
@@ -854,7 +885,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 if(en == canData.Node)
                 {
-                    usbPacket[2] = i;
+                    usbPacket[3] = i;
                     break;
                 }
                 i++;
@@ -865,67 +896,66 @@ namespace CAN_X_CAN_Analyzer
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
                 extID = extID & 0x7FF;
-                usbPacket[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
-                usbPacket[4] = (byte)(extID >> 8 & 0xFF);
+                usbPacket[4] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                usbPacket[5] = (byte)(extID >> 8 & 0xFF);
             }
             else
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
-                usbPacket[3] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
-                usbPacket[4] = (byte)(extID >> 8 & 0xFF);
-                usbPacket[5] = (byte)(extID >> 16 & 0xFF);
-                usbPacket[6] = (byte)(extID >> 24 & 0xFF); // MSB         
+                usbPacket[4] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                usbPacket[5] = (byte)(extID >> 8 & 0xFF);
+                usbPacket[6] = (byte)(extID >> 16 & 0xFF);
+                usbPacket[7] = (byte)(extID >> 24 & 0xFF); // MSB         
             }
 
             //DLC
             if (canData.DLC != "")
             {
-                usbPacket[7] = Convert.ToByte(canData.DLC);
+                usbPacket[8] = Convert.ToByte(canData.DLC);
             }
 
             // data bytes
             if (canData.Byte1 != "")
             {
-                usbPacket[8] = Convert.ToByte(canData.Byte1, 16);
+                usbPacket[9] = Convert.ToByte(canData.Byte1, 16);
             }
 
             if (canData.Byte2 != "")
             {
-                usbPacket[9] = Convert.ToByte(canData.Byte2, 16);
+                usbPacket[10] = Convert.ToByte(canData.Byte2, 16);
             }
 
             if (canData.Byte3 != "")
             {
-                usbPacket[10] = Convert.ToByte(canData.Byte3, 16);
+                usbPacket[11] = Convert.ToByte(canData.Byte3, 16);
             }
 
             if (canData.Byte4 != "")
             {
-                usbPacket[11] = Convert.ToByte(canData.Byte4, 16);
+                usbPacket[12] = Convert.ToByte(canData.Byte4, 16);
             }
 
             if (canData.Byte5 != "")
             {
-                usbPacket[12] = Convert.ToByte(canData.Byte5, 16);
+                usbPacket[13] = Convert.ToByte(canData.Byte5, 16);
             }
 
             if (canData.Byte6 != "")
             {
-                usbPacket[13] = Convert.ToByte(canData.Byte6, 16);
+                usbPacket[14] = Convert.ToByte(canData.Byte6, 16);
             }
 
             if (canData.Byte7 != "")
             {
-                usbPacket[14] = Convert.ToByte(canData.Byte7, 16);
+                usbPacket[15] = Convert.ToByte(canData.Byte7, 16);
             }
 
             if (canData.Byte8 != "")
             {
-                usbPacket[15] = Convert.ToByte(canData.Byte8, 16);
+                usbPacket[16] = Convert.ToByte(canData.Byte8, 16);
             }
 
-            var command = new CommandMessage(COMMAND_MESSAGE, usbPacket);
-            Device.SendMessage(command);
+            comPort.WriteBytes(usbPacket, DATA_SIZE);
         }
         #endregion
 
