@@ -201,7 +201,8 @@ namespace CAN_X_CAN_Analyzer
         // button event to connect to device
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
-            comPort = new COM_PortDrv("COM8"); // Replace with your port name and baud rate
+            string com = ComboBoxCOM_Port.SelectedItem.ToString();
+            comPort = new COM_PortDrv(com); // Replace with your port name and baud rate
             comPort.DataReceived += ComPortManager_DataReceived;
             try
             {
@@ -342,8 +343,6 @@ namespace CAN_X_CAN_Analyzer
             // get the date now!
             DateTime now = DateTime.Now;
             string dateNow = now.ToString("HH:mm:ss.ffff");
-            // shift command to index 0
-            //Array.Copy(data, 1, data, 0, DATA_SIZE);
 
             CanRxData canRxData = new CanRxData(data);
             canRxData.Line = lineCount++;
