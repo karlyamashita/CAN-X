@@ -16,8 +16,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using UsbHid;
-using UsbHid.USB.Classes.Messaging;
 using Button = System.Windows.Controls.Button;
 using System.ComponentModel;
 using DataGridCell = System.Windows.Controls.DataGridCell;
@@ -38,6 +36,7 @@ using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using Timer = System.Threading.Timer;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO.Ports;
 
 namespace CAN_X_CAN_Analyzer
 {
@@ -82,7 +81,6 @@ namespace CAN_X_CAN_Analyzer
 
         #region variables
         // arrays, variables, objects
-        public static UsbHidDevice Device;
 
         UInt32 lineCount = 1;
 
@@ -112,6 +110,8 @@ namespace CAN_X_CAN_Analyzer
         {
             InitializeComponent();
 
+            PopulateComPortComboBox();
+
             dataGridRx.DataContext = this;
 
             Values = new ObservableCollection<CanRxData>();
@@ -140,13 +140,40 @@ namespace CAN_X_CAN_Analyzer
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
 
+        private void PopulateComPortComboBox()
+        {
+            // Clear existing items in case the method is called multiple times
+            ComboBoxCOM_Port.Items.Clear();
+
+            // Get an array of available COM port names
+            string[] ports = SerialPort.GetPortNames();
+
+            // Add each port name to the ComboBox
+            foreach (string port in ports)
+            {
+                ComboBoxCOM_Port.Items.Add(port);
+            }
+
+            // Optionally, select the first item if ports are found
+            if (ComboBoxCOM_Port.Items.Count > 0)
+            {
+                ComboBoxCOM_Port.SelectedIndex = 0;
+            }
+        }
+
         #region parse the USB data received. This is running on a thread
         public void ParseUsbData(ref byte[] data)
         {
-            switch (data[1])
+            int command = data[0];
+
+            byte[] newArray = new byte[data.Length - 4];
+
+            Array.Copy(data, 4, newArray, 0, data.Length - 4);
+
+            switch (command)
             {
                 case COMMAND_MESSAGE:
-                    ParseDeviceCAN_Message(ref data);
+                    ParseDeviceCAN_Message(ref newArray);
                     break;
                 case COMMAND_ACK:
                     StatusBarStatus.Text = "ACK Received";
@@ -155,16 +182,16 @@ namespace CAN_X_CAN_Analyzer
                     StatusBarStatus.Text = "NAK Received";
                     break;
                 case COMMAND_CAN_BTR:
-                    ShowBTC_VALUE(data);
+                    ShowBTC_VALUE(newArray);
                     break;
                 case COMMAND_VERSION:
-                    ShowString(COMMAND_VERSION, data);
+                    ShowString(COMMAND_VERSION, newArray);
                     break;
                 case COMMAND_HARDWARE:
-                    ShowString(COMMAND_HARDWARE, data);
+                    ShowString(COMMAND_HARDWARE, newArray);
                     break;
                 case COMMAND_FREQUENCY:
-                    ParseABP1_Frequency(data);
+                    ParseABP1_Frequency(newArray);
                     break;
             }
         }
@@ -174,7 +201,7 @@ namespace CAN_X_CAN_Analyzer
         // button event to connect to device
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
-            comPort = new COM_PortDrv("COM5"); // Replace with your port name and baud rate
+            comPort = new COM_PortDrv("COM8"); // Replace with your port name and baud rate
             comPort.DataReceived += ComPortManager_DataReceived;
             try
             {
@@ -245,7 +272,7 @@ namespace CAN_X_CAN_Analyzer
 
         private void ComPortManager_DataReceived(object sender, byte[] data)
         {
-            ParseDeviceCAN_Message(ref data);
+            ParseUsbData(ref data);
         }
 
         #endregion
@@ -800,30 +827,33 @@ namespace CAN_X_CAN_Analyzer
         {
             byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
 
-            var command = new CommandMessage(COMMAND_INFO, tmp_buf); // no data to send but need array
-            Device.SendMessage(command);
+            tmp_buf[0] = COMMAND_INFO;
+
+            comPort.WriteBytes(tmp_buf, 1);
         }
         #endregion
 
         #region Send CAN TX message to device over USB
         private void SendCanData(ref CanTxData canData)
         {
-            byte[] usbPacket = new byte[DATA_SIZE]; // command + (DATA_SIZE - 1) should be less than 64 bytes
+            byte[] usbPacket = new byte[DATA_SIZE + 4]; // original was 17, but we have 4 more bytes that are reserved
 
             usbPacket[0] = COMMAND_MESSAGE;
+
+            // index 1-3 are reserved.
 
             // CAN Type ExID = 4, StdID = 0
             if (canData.IDE == "S")
             {
-                usbPacket[1] = CAN_STD_ID;
+                usbPacket[4] = CAN_STD_ID;
             }
             else
             {
-                usbPacket[1] = CAN_EXT_ID;
+                usbPacket[4] = CAN_EXT_ID;
             }
 
             // RTR
-            usbPacket[2] = canData.RTR == true ? (byte) 1: (byte) 0; // RTR, Node
+            usbPacket[5] = canData.RTR == true ? (byte) 1: (byte) 0; // RTR, Node
 
             // Node
             byte i = 0;
@@ -831,77 +861,79 @@ namespace CAN_X_CAN_Analyzer
             {
                 if(en == canData.Node)
                 {
-                    usbPacket[3] = i;
+                    usbPacket[6] = i;
                     break;
                 }
                 i++;
             }
+
+            // index 7 is reserved
  
             // Arb ID 29/11 bit
             if (canData.IDE == "CAN_STD_ID")
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
                 extID = extID & 0x7FF;
-                usbPacket[4] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
-                usbPacket[5] = (byte)(extID >> 8 & 0xFF);
+                usbPacket[8] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                usbPacket[9] = (byte)(extID >> 8 & 0xFF);
             }
             else
             {
                 UInt32 extID = Convert.ToUInt32(canData.ArbID, 16);
-                usbPacket[4] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
-                usbPacket[5] = (byte)(extID >> 8 & 0xFF);
-                usbPacket[6] = (byte)(extID >> 16 & 0xFF);
-                usbPacket[7] = (byte)(extID >> 24 & 0xFF); // MSB         
+                usbPacket[8] = (byte)(extID & 0xFF); // LSB GMLAN power mode ID
+                usbPacket[9] = (byte)(extID >> 8 & 0xFF);
+                usbPacket[10] = (byte)(extID >> 16 & 0xFF);
+                usbPacket[11] = (byte)(extID >> 24 & 0xFF); // MSB         
             }
 
             //DLC
             if (canData.DLC != "")
             {
-                usbPacket[8] = Convert.ToByte(canData.DLC);
+                usbPacket[12] = Convert.ToByte(canData.DLC);
             }
 
             // data bytes
             if (canData.Byte1 != "")
             {
-                usbPacket[9] = Convert.ToByte(canData.Byte1, 16);
+                usbPacket[13] = Convert.ToByte(canData.Byte1, 16);
             }
 
             if (canData.Byte2 != "")
             {
-                usbPacket[10] = Convert.ToByte(canData.Byte2, 16);
+                usbPacket[14] = Convert.ToByte(canData.Byte2, 16);
             }
 
             if (canData.Byte3 != "")
             {
-                usbPacket[11] = Convert.ToByte(canData.Byte3, 16);
+                usbPacket[15] = Convert.ToByte(canData.Byte3, 16);
             }
 
             if (canData.Byte4 != "")
             {
-                usbPacket[12] = Convert.ToByte(canData.Byte4, 16);
+                usbPacket[16] = Convert.ToByte(canData.Byte4, 16);
             }
 
             if (canData.Byte5 != "")
             {
-                usbPacket[13] = Convert.ToByte(canData.Byte5, 16);
+                usbPacket[17] = Convert.ToByte(canData.Byte5, 16);
             }
 
             if (canData.Byte6 != "")
             {
-                usbPacket[14] = Convert.ToByte(canData.Byte6, 16);
+                usbPacket[18] = Convert.ToByte(canData.Byte6, 16);
             }
 
             if (canData.Byte7 != "")
             {
-                usbPacket[15] = Convert.ToByte(canData.Byte7, 16);
+                usbPacket[19] = Convert.ToByte(canData.Byte7, 16);
             }
 
             if (canData.Byte8 != "")
             {
-                usbPacket[16] = Convert.ToByte(canData.Byte8, 16);
+                usbPacket[20] = Convert.ToByte(canData.Byte8, 16);
             }
 
-            comPort.WriteBytes(usbPacket, DATA_SIZE);
+            comPort.WriteBytes(usbPacket, DATA_SIZE + 4);
         }
         #endregion
 
@@ -938,7 +970,7 @@ namespace CAN_X_CAN_Analyzer
         // Todo - this modifies CAN1, need to make another button  or another approach to modify CAN2, SWCAN, etc
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
-            if (!Device.IsDeviceConnected)
+            if (!comPort.IsOpen)
             {
                 StatusBarStatus.Text = "Device Not Connected";
                 return;
@@ -970,8 +1002,9 @@ namespace CAN_X_CAN_Analyzer
             tmp_buf[4] = 0; // CAN1
 
             StatusBarStatus.Text = "Sending BTR Value";
-            var command = new CommandMessage(COMMAND_BAUD, tmp_buf);
-            Device.SendMessage(command);
+            //var command = new CommandMessage(COMMAND_BAUD, tmp_buf);
+            comPort.WriteBytes(tmp_buf, DATA_SIZE);
+            //Device.SendMessage(command);
         }
         #endregion
 
@@ -1115,7 +1148,10 @@ namespace CAN_X_CAN_Analyzer
             }
             else
             {
-                Device.Disconnect(); // disconnet USB device
+                if (comPort.IsOpen)
+                { 
+                    comPort.Close(); // disconnet USB device
+                }
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
         }
@@ -2370,7 +2406,7 @@ namespace CAN_X_CAN_Analyzer
         {
             if (toggleButtonAutoTx.IsChecked == true)
             {
-                if (!Device.IsDeviceConnected)
+                if (!comPort.IsOpen)
                 {
                     StatusBarStatus.Text = "Device Not Connected";
                     toggleButtonAutoTx.IsChecked = false;
@@ -2401,7 +2437,7 @@ namespace CAN_X_CAN_Analyzer
             long OldElapsedMilliseconds = 0;
             CanTxData canTxData = null;
 
-            while (sw.IsRunning && Device.IsDeviceConnected)
+            while (sw.IsRunning && comPort.IsOpen)
             {
                 long ElapsedMilliseconds = sw.ElapsedMilliseconds;
                 long mod = (ElapsedMilliseconds % Tick);
@@ -2538,23 +2574,6 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
-
-        private void Test_Click(object sender, RoutedEventArgs e)
-        {
-            CanRxData canRxData = new CanRxData();
-
-            canRxData.Byte1 = "AA";
-            canRxData.Byte2 = "BB";
-            canRxData.Byte3 = "CC";
-
-            Values.Add(canRxData);
-
-            Debug.WriteLine("count: " + Values.Count);
-            foreach (CanRxData canrx in Values)
-            {
-                Debug.WriteLine("{0} {1} {2}", canrx.Byte1, canrx.Byte2, canrx.Byte3);
-            }         
-        }
     }
 }
 

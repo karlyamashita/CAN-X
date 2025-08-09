@@ -87,7 +87,7 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
     </Window.Resources>
-    
+
     <Grid>
         <DockPanel>
             <StackPanel DockPanel.Dock="Top" Height="25" Margin="0">
@@ -116,6 +116,11 @@
                         <Image Source="Resources/disconnect.png" Width="25" />
                     </Button>
                 </StackPanel>
+                <StackPanel>
+                    <ComboBox x:Name="ComboBoxCOM_Port" SelectedIndex="0" IsSynchronizedWithCurrentItem="False" >
+                        <ComboBoxItem Content="&lt;Pick COM Port&gt;"/>
+                    </ComboBox>
+                </StackPanel>
                 <GroupBox Height="200" Header="Node Settings" BorderBrush="#FFABAFB2" Margin="0,0,0,10">
                     <StackPanel Height="165" Margin="0,6,0,0">
 
@@ -123,12 +128,12 @@
                             <Label Content="Node"/>
                             <ComboBox x:Name="ComboBoxNodeSettings" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxNodeSettings_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right"/>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Label Content="APB1 Clock" />
                             <ComboBox x:Name="ComboBoxAPB1" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right" />
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Label Content="Baud Rate (Kbit/s)" />
                             <ComboBox x:Name="ComboBoxBaudRate" Margin="0" VerticalAlignment="Top" SelectionChanged="ComboBoxBaudRate_SelectionChanged" Width="75" HorizontalAlignment="Right"/>
@@ -159,7 +164,7 @@
                     </StackPanel>
                 </GroupBox>-->
                 <CheckBox x:Name="CheckBoxBlind" Content="I'm Blind" Click="CheckBoxBlind_Click" />
-                   <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
                     <RadioButton Content="Hex" GroupName="DataType" IsChecked="True" />
                     <RadioButton Content="Binary" GroupName="DataType" IsEnabled="False" />
                     <RadioButton GroupName="DataType" Content="Decimal" IsEnabled="False" />
@@ -321,15 +326,15 @@
                         <Grid Grid.Row="3">
 
                             <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Description" Binding="{Binding Path='Description'}" />
-                                <DataGridTemplateColumn Header="TX" >
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Name="bthnView" Content="Send" Click="ButtonTxMessage_Click"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Description" Binding="{Binding Path='Description'}" />
+                                    <DataGridTemplateColumn Header="TX" >
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Name="bthnView" Content="Send" Click="ButtonTxMessage_Click"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTemplateColumn Header="AutoTx" >
                                         <DataGridTemplateColumn.CellTemplate>
@@ -339,21 +344,21 @@
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Rate" Binding="{Binding Path='Rate', Mode=OneWay}" />
-                                <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
-                                <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=TwoWay}" />
-                                <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=OneWay}" />
-                                <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
-                                <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=TwoWay}" />
+                                    <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
+                                    <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                                 </DataGrid.Columns>
-                        </DataGrid>
+                            </DataGrid>
                         </Grid>
                         <Grid x:Name="GridSpacer" Grid.Row="4" Margin="5,0,0,20">
                             <StackPanel Orientation="Horizontal">
@@ -369,9 +374,6 @@
                                         </StackPanel>
                                     </ToggleButton.ToolTip>
                                 </ToggleButton>
-                                <Button x:Name="Test" Width="50" Height="25" Margin="50,0" Click="Test_Click">
-                                    
-                                </Button>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -382,13 +384,17 @@
                             <TabItem Header="Receive Messages">
                                 <DockPanel>
                                     <Grid DockPanel.Dock="Top" Margin="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="52*"/>
+                                            <ColumnDefinition Width="915*"/>
+                                        </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="40"/>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="60"/>
                                             <RowDefinition Height="80"/>
                                         </Grid.RowDefinitions>
-                                        <StackPanel Orientation="Horizontal" >
+                                        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" >
                                             <StackPanel.Background>
                                                 <ImageBrush/>
                                             </StackPanel.Background>
@@ -420,7 +426,7 @@
                                                 <Image Source="Resources/icons8-minus-64.png" />
                                             </Button>
                                         </StackPanel>
-                                        <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridEditRxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditRxMessages_PreviewMouseLeftButtonDown" >
+                                        <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridEditRxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditRxMessages_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2" Margin="0,0,0,60" Grid.RowSpan="2" >
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                                 <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=OneWay}" />
@@ -439,7 +445,7 @@
                                                 <DataGridTextColumn Header="Notes" Binding="{Binding Path='Notes', Mode=OneWay}" />
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                        <Grid Grid.Row="2" Margin="15,0,0,0">
+                                        <Grid Grid.Row="2" Margin="15,0,0,80" Grid.ColumnSpan="2" Grid.RowSpan="2">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>
                                             </Grid.RowDefinitions>
@@ -464,7 +470,7 @@
                                                 <ComboBox x:Name="ComboBoxRxNode" SelectedIndex="0" MinHeight="25" DropDownClosed="ComboBoxRxNode_DropDownClosed" />
                                             </StackPanel>
                                         </Grid>
-                                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="15,0,0,0" >
+                                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="15,0,0,0" Grid.ColumnSpan="2" >
                                             <StackPanel Orientation="Vertical">
                                                 <Label Content="DLC"/>
                                                 <TextBox x:Name="TextBoxRxDLC" Width="40" Height="25" MaxLength="1" TextChanged="TextBoxEditMessageRx_TextChanged" PreviewTextInput="TextBoxRxDLC_PreviewTextInput" />

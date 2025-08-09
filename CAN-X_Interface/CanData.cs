@@ -317,8 +317,10 @@ namespace CAN_X_CAN_Analyzer
         // The structure of the data from device
         public CanRxData(byte[] data)
         {
+            int bytesToRemove = 4;
+
             #region CanRxData(byte[] data)
-            if (data[1] == 0)
+            if (data[0] == 0)
             {
                 IDE = "S";
             }
@@ -329,10 +331,10 @@ namespace CAN_X_CAN_Analyzer
             
             // RTR
             
-            RTR = (data[2] & 0x01) == 1 ? true: false; // bit0
+            RTR = (data[1] & 0x01) == 1 ? true: false; // bit0
             
             // Node
-            int nodeNumber = data[3] & 0x0F;
+            int nodeNumber = data[2] & 0x0F;
             int i = 0;
             foreach (var en in Enum.GetNames(typeof(EnumDefines.Nodes)))
             {
@@ -343,6 +345,8 @@ namespace CAN_X_CAN_Analyzer
                 }
                 i++;
             }
+
+            // index 3 is reserved
 
             UInt32 id = (UInt32)(data[4] | data[5] << 8 | data[6] << 16 | data[7] << 24);
             ArbID = Convert.ToString(id, 16).ToUpper();
