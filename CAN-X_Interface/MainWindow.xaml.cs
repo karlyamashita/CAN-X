@@ -176,10 +176,10 @@ namespace CAN_X_CAN_Analyzer
                     ParseDeviceCAN_Message(ref newArray);
                     break;
                 case COMMAND_ACK:
-                    StatusBarStatus.Text = "ACK Received";
+                   // StatusBarStatus.Text = "ACK Received";
                     break;
                 case COMMAND_NAK:
-                    StatusBarStatus.Text = "NAK Received";
+                   // StatusBarStatus.Text = "NAK Received";
                     break;
                 case COMMAND_CAN_BTR:
                     ShowBTC_VALUE(newArray);
@@ -988,17 +988,18 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
 
-
-            tmp_buf[0] = (byte)(btrValue >> 24);
-            tmp_buf[1] = (byte)(btrValue >> 16);
-            tmp_buf[2] = (byte)(btrValue >> 8);
-            tmp_buf[3] = (byte)(btrValue);
+            tmp_buf[0] = COMMAND_BAUD;
+            // 3 bytes reserved
+            tmp_buf[4] = (byte)(btrValue >> 24);
+            tmp_buf[5] = (byte)(btrValue >> 16);
+            tmp_buf[6] = (byte)(btrValue >> 8);
+            tmp_buf[7] = (byte)(btrValue);
             if (CheckBoxListenOnly.IsChecked == true)
             {
-                tmp_buf[0] = (byte)(tmp_buf[0] | 0x80);// bit 31 is Normal=0, Silent = 1. Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
+                tmp_buf[4] = (byte)(tmp_buf[4] | 0x80);// bit 31 is Normal=0, Silent = 1. Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
             }
 
-            tmp_buf[4] = 0; // CAN1
+            tmp_buf[8] = 0; // CAN1
 
             StatusBarStatus.Text = "Sending BTR Value";
             //var command = new CommandMessage(COMMAND_BAUD, tmp_buf);
@@ -2573,6 +2574,11 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+
+        private void Button_COM_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            PopulateComPortComboBox();
+        }
     }
 }
 

@@ -22,7 +22,7 @@ namespace CAN_X_CAN_Analyzer
         public CAN_BaudRate(string freq)
         {
             if(freq == "APB1_48mHz") {
-                 baud_1000 = new BaudStructure("1000", "0x001C0002");
+                 baud_1000 = new BaudStructure("1000", "0x001C0002"); 
                  baud_500 = new BaudStructure("500", "0x001C0005");
                  baud_250 = new BaudStructure("250", "0x001C000B");
                  baud_125 = new BaudStructure("125", "0x001C0017");
