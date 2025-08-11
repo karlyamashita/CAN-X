@@ -61,7 +61,7 @@ namespace CAN_X_CAN_Analyzer
 
         const byte COMMAND_ENABLE_MESSAGES = 0xB0; // enable hardware to send messages on USB data
         const byte COMMAND_DISABLE_MESSAGES = 0xB1; // disable hardware from sending messages on USB data
-
+        const byte COMMAND_CAN_MODE = 0x30;
         const byte COMMAND_INFO = 0x90; // get information from hardware, fw version, BTC value, type hardware
         const byte COMMAND_CAN_BTR = 0x91; // the CAN_BTC value from interface
         const byte COMMAND_VERSION = 0x92;
@@ -316,7 +316,7 @@ namespace CAN_X_CAN_Analyzer
 
             if ((btrValue >> 31 & 0x1) == 1)
             {
-                CheckBoxListenOnly.IsChecked = true;
+             //   CheckBoxListenOnly.IsChecked = true;
             }
 
             TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
@@ -969,6 +969,8 @@ namespace CAN_X_CAN_Analyzer
         // Todo - this modifies CAN1, need to make another button  or another approach to modify CAN2, SWCAN, etc
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
+            int mode = ComboBoxMode.SelectedIndex;
+
             if (!comPort.IsOpen)
             {
                 StatusBarStatus.Text = "Device Not Connected";
@@ -994,17 +996,19 @@ namespace CAN_X_CAN_Analyzer
             tmp_buf[5] = (byte)(btrValue >> 16);
             tmp_buf[6] = (byte)(btrValue >> 8);
             tmp_buf[7] = (byte)(btrValue);
-            if (CheckBoxListenOnly.IsChecked == true)
+            if (mode == 1) 
             {
-                tmp_buf[4] = (byte)(tmp_buf[4] | 0x80);// bit 31 is Normal=0, Silent = 1. Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
+                tmp_buf[4] = (byte)(tmp_buf[4] | 0x40);// Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
+            }
+            else if (mode == 2)
+            {
+                tmp_buf[4] = (byte)(tmp_buf[4] | 0x80);// Bit 31 is Normal=0, Silent = 1.
             }
 
             tmp_buf[8] = 0; // CAN1
 
             StatusBarStatus.Text = "Sending BTR Value";
-            //var command = new CommandMessage(COMMAND_BAUD, tmp_buf);
             comPort.WriteBytes(tmp_buf, DATA_SIZE);
-            //Device.SendMessage(command);
         }
         #endregion
 
@@ -1059,31 +1063,6 @@ namespace CAN_X_CAN_Analyzer
                 }
             }
             TextBoxBtrValue.Text = value;// baudRateList[indexItem].value;
-        }
-
-        private void CheckBoxListenOnly_Click(object sender, RoutedEventArgs e)
-        {
-            if (TextBoxBtrValue.Text == "")
-            {
-                StatusBarStatus.Text = "Missing BTR value";
-                CheckBoxListenOnly.IsChecked = !CheckBoxListenOnly.IsChecked;
-                return;
-            }
-            else
-            {
-                StatusBarStatus.Text = "";
-            }
-            string btrValue = TextBoxBtrValue.Text;
-            UInt32 btrNumber = Convert.ToUInt32(btrValue, 16);
-            if (CheckBoxListenOnly.IsChecked == true)
-            {
-                btrNumber = (UInt32)(btrNumber | (1 << 31));
-            }
-            else
-            {
-                btrNumber = (UInt32)(btrNumber ^ (1 << 31));
-            }
-            TextBoxBtrValue.Text = "0x" + btrNumber.ToString("X8");
         }
 
         private void ComboBoxNodeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2578,6 +2557,11 @@ namespace CAN_X_CAN_Analyzer
         private void Button_COM_Refresh_Click(object sender, RoutedEventArgs e)
         {
             PopulateComPortComboBox();
+        }
+
+        private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO - show about
         }
     }
 }

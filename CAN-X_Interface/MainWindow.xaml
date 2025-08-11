@@ -90,19 +90,18 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="601*"/>
-            <ColumnDefinition Width="554*"/>
-            <ColumnDefinition Width="31*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <DockPanel Grid.ColumnSpan="3">
             <StackPanel DockPanel.Dock="Top" Height="25" Margin="0">
                 <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
-                    <MenuItem Header="File">
+                    <MenuItem x:Name="MenuItemFile" Header="File">
                         <MenuItem x:Name="MenuItemOpenProject" Header="Open Project" Click="MenuItemOpenProject_Click"/>
                         <MenuItem x:Name="MenuItemSaveProject" Header="Save Project" Click="MenuItemSaveProject_Click"/>
                         <Separator/>
                         <MenuItem x:Name="MenuItemExit" Header="Exit" Click="MenuItemExit_Click"/>
                     </MenuItem>
+                    <MenuItem x:Name="MenuItemAbout" Header="About" Click="MenuItemAbout_Click"/>
                 </Menu>
             </StackPanel>
             <StackPanel DockPanel.Dock="Right" Width="192" Margin="0,0,5,5" Background="#FFEEEEEE">
@@ -132,33 +131,46 @@
 
                     </StackPanel>
                 </StackPanel>
-                <GroupBox Height="200" Header="Node Settings" BorderBrush="#FFABAFB2" Margin="0,0,0,10">
-                    <StackPanel Height="165" Margin="0,6,0,0">
-
+                <StackPanel>
+                    <GroupBox Header="Baud" BorderBrush="#FFABAFB2" Margin="0,0,0,10">
+                        <StackPanel Margin="0,10,0,10">
+                            <!--
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Label Content="Node"/>
                             <ComboBox x:Name="ComboBoxNodeSettings" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxNodeSettings_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right"/>
                         </StackPanel>
+                        -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <ComboBox x:Name="ComboBoxAPB1" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right" />
+                                <Label Content="APB1 Clock" />
+                            </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                            <Label Content="APB1 Clock" />
-                            <ComboBox x:Name="ComboBoxAPB1" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right" />
-                        </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Label Content="Baud Rate (Kbit/s)" />
-                            <ComboBox x:Name="ComboBoxBaudRate" Margin="0" VerticalAlignment="Top" SelectionChanged="ComboBoxBaudRate_SelectionChanged" Width="75" HorizontalAlignment="Right"/>
+                                <ComboBox x:Name="ComboBoxBaudRate" Margin="0" VerticalAlignment="Top" SelectionChanged="ComboBoxBaudRate_SelectionChanged" Width="75" HorizontalAlignment="Right"/>
+                                <Label Content="Baud Rate (Kbit/s)" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                                <TextBox x:Name="TextBoxBtrValue" MaxLength="10" Height="23" Margin="0" TextWrapping="Wrap" Text="0x001A001D" VerticalAlignment="Top" Width="120" HorizontalAlignment="Left"/>
+                                <Label Content="BTR Reg" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Left">
+                                <!--<CheckBox x:Name="CheckBoxListenOnly" Content="Listen Only" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CheckBoxListenOnly_Click"/>-->
+
+                                <ComboBox x:Name="ComboBoxMode" HorizontalAlignment="Left" >
+                                    <ComboBoxItem Content="Normal" IsSelected="True"/>
+                                    <ComboBoxItem Content="Loopback"/>
+                                    <ComboBoxItem Content="Listen"/>
+                                </ComboBox>
+                                <Label Content="CAN Mode" />
+                            </StackPanel>
+                            <Button x:Name="ButtonBtrValue" Content="Update Baud" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,10,0,0" Click="ButtonBtrValue_Click" Template="{StaticResource RoundedButtonTemplate}"/>
+
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Label Content="BTR Reg" />
-                            <TextBox x:Name="TextBoxBtrValue" MaxLength="10" Height="23" Margin="0" TextWrapping="Wrap" Text="0x001A001D" VerticalAlignment="Top" Width="120" HorizontalAlignment="Right"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Center">
-                            <CheckBox x:Name="CheckBoxListenOnly" Content="Listen Only" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CheckBoxListenOnly_Click"/>
-                        </StackPanel>
-                        <Button x:Name="ButtonBtrValue" Content="Send BTR" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,10,0,0" Click="ButtonBtrValue_Click" Template="{StaticResource RoundedButtonTemplate}"/>
-                    </StackPanel>
-                </GroupBox>
+                        
+                    </GroupBox>
+                </StackPanel>
                 <!--<GroupBox Header="Filters &amp; Masks" Height="113" BorderBrush="#FFABAFB2" IsEnabled="False">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="180">
@@ -174,14 +186,16 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>-->
-                <CheckBox x:Name="CheckBoxBlind" Content="I'm Blind" Click="CheckBoxBlind_Click" />
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="Hex" GroupName="DataType" IsChecked="True" />
-                    <RadioButton Content="Binary" GroupName="DataType" IsEnabled="False" />
-                    <RadioButton GroupName="DataType" Content="Decimal" IsEnabled="False" />
+                <StackPanel Margin="10,10,0,0">
+                    <CheckBox x:Name="CheckBoxBlind" Content="I'm Blind" Click="CheckBoxBlind_Click" />
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="Hex" GroupName="DataType" IsChecked="True" />
+                        <RadioButton Content="Binary" GroupName="DataType" IsEnabled="False" />
+                        <RadioButton GroupName="DataType" Content="Decimal" IsEnabled="False" />
+                    </StackPanel>
+                    <CheckBox x:Name="CheckBoxAscii" Content="ASCII" Click="CheckBoxAscii_Click" />
+                    <CheckBox x:Name="CheckBoxNotes" Content="Notes" Click="CheckBoxNotes_Click" />
                 </StackPanel>
-                <CheckBox x:Name="CheckBoxAscii" Content="ASCII" Click="CheckBoxAscii_Click" />
-                <CheckBox x:Name="CheckBoxNotes" Content="Notes" Click="CheckBoxNotes_Click" />
             </StackPanel>
 
             <TabControl Margin="0,0,0,10" >
