@@ -142,6 +142,7 @@ namespace CAN_X_CAN_Analyzer
 
         private void PopulateComPortComboBox()
         {
+            /*
             // Clear existing items in case the method is called multiple times
             ComboBoxCOM_Port.Items.Clear();
 
@@ -159,6 +160,14 @@ namespace CAN_X_CAN_Analyzer
             {
                 ComboBoxCOM_Port.SelectedIndex = 0;
             }
+            */
+            Dictionary<string, string> availablePorts = ComPortHelper.GetAvailableComPorts();
+
+            ComboBoxCOM_Port.Items.Clear();
+
+            ComboBoxCOM_Port.ItemsSource = new BindingSource(availablePorts, null);
+            ComboBoxCOM_Port.DisplayMemberPath = "Value"; // Display the friendly name (e.g., "USB Serial Port (COM3)")
+            ComboBoxCOM_Port.SelectedValuePath = "Key";    // Store the actual COM port name (e.g., "COM3")
         }
 
         #region parse the USB data received. This is running on a thread
@@ -201,7 +210,7 @@ namespace CAN_X_CAN_Analyzer
         // button event to connect to device
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
-            string com = ComboBoxCOM_Port.SelectedItem.ToString();
+            string com = ComboBoxCOM_Port.SelectedValue.ToString();
             comPort = new COM_PortDrv(com); // Replace with your port name and baud rate
             comPort.DataReceived += ComPortManager_DataReceived;
             try

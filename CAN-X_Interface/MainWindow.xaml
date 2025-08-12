@@ -123,7 +123,7 @@
                 <StackPanel>
                     <StackPanel>
                         <ComboBox x:Name="ComboBoxCOM_Port" SelectedIndex="0" IsSynchronizedWithCurrentItem="False" >
-                            <ComboBoxItem Content="&lt;Pick COM Port&gt;"/>
+                            
                         </ComboBox>
                     </StackPanel>
                     <StackPanel>
@@ -165,7 +165,7 @@
                                 </ComboBox>
                                 <Label Content="CAN Mode" />
                             </StackPanel>
-                            <Button x:Name="ButtonBtrValue" Content="Update Baud" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,10,0,0" Click="ButtonBtrValue_Click" Template="{StaticResource RoundedButtonTemplate}"/>
+                            <Button x:Name="ButtonBtrValue" Content="Update" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,10,0,0" Click="ButtonBtrValue_Click" Template="{StaticResource RoundedButtonTemplate}"/>
 
                         </StackPanel>
                         

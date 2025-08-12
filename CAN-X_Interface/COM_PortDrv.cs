@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Management; // Required for WMI
 
 namespace USB_CAN_Interface
 {
@@ -64,6 +65,35 @@ namespace USB_CAN_Interface
         protected virtual void OnDataReceived(byte[] data)
         {
             DataReceived?.Invoke(this, data);
+        }
+    }
+
+    public class ComPortHelper
+    {
+        public static Dictionary<string, string> GetAvailableComPorts()
+        {
+            Dictionary<string, string> comPorts = new Dictionary<string, string>();
+            string[] portNames = SerialPort.GetPortNames();
+
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%)%'"))
+            {
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    string caption = queryObj["Caption"].ToString();
+                    // Extract the COM port name (e.g., COM1, COM2) from the caption
+                    int startIndex = caption.IndexOf("(COM") + 1;
+                    int endIndex = caption.IndexOf(")", startIndex);
+                    if (startIndex > 0 && endIndex > startIndex)
+                    {
+                        string comPortName = caption.Substring(startIndex, endIndex - startIndex);
+                        if (portNames.Contains(comPortName)) // Ensure it's an actual available port
+                        {
+                            comPorts[comPortName] = caption; // Store "COMx - Friendly Name"
+                        }
+                    }
+                }
+            }
+            return comPorts;
         }
     }
 }
