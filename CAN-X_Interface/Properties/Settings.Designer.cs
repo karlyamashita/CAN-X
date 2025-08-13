@@ -82,5 +82,29 @@ namespace USB_CAN_Interface.Properties {
                 this["titleWindow"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(c) 2019-2025 Karl Yamashita")]
+        public string copyright_year {
+            get {
+                return ((string)(this["copyright_year"]));
+            }
+            set {
+                this["copyright_year"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Version 3.0.1")]
+        public string version {
+            get {
+                return ((string)(this["version"]));
+            }
+            set {
+                this["version"] = value;
+            }
+        }
     }
 }

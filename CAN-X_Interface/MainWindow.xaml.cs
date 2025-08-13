@@ -2544,6 +2544,8 @@ namespace CAN_X_CAN_Analyzer
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
         {
             // TODO - show about
+            About about = new About();
+            about.Show();
         }
 
         private void ComboBoxCOM_SelectionChanged(object sender, SelectionChangedEventArgs e)

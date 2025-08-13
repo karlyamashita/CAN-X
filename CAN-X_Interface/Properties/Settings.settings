@@ -17,5 +17,11 @@
     <Setting Name="titleWindow" Type="System.String" Scope="User">
       <Value Profile="(Default)">CAN-X (Beta)</Value>
     </Setting>
+    <Setting Name="copyright_year" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(c) 2019-2025 Karl Yamashita</Value>
+    </Setting>
+    <Setting Name="version" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Version 3.0.1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

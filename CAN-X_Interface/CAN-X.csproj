@@ -81,6 +81,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CAN_BaudRate.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="COM_PortDrv.cs" />
@@ -89,6 +92,10 @@
     <Compile Include="Window2CopyMsg.xaml.cs">
       <DependentUpon>Window2CopyMsg.xaml</DependentUpon>
     </Compile>
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
