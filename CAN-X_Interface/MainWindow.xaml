@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CAN_X_CAN_Analyzer"
+        xmlns:local="clr-namespace:CAN_X_CAN_Analyzer" 
         mc:Ignorable="d" 
         Title="CAN-X" WindowStartupLocation="CenterScreen" Margin="0" Height="735.5" Width="1186" Closing="Window_Closing" Loaded="MainWindow1_Loaded" ResizeMode="CanResizeWithGrip">
-
+    <Window.DataContext>
+        <local:ComPortViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}" x:Key="MyStyle">
             <Setter Property="Background">
@@ -122,13 +124,7 @@
                 </StackPanel>
                 <StackPanel>
                     <StackPanel>
-                        <ComboBox x:Name="ComboBoxCOM_Port" SelectedIndex="0" IsSynchronizedWithCurrentItem="False" >
-                            
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel>
-                        <Button x:Name="Button_COM_Refresh" Content="Refresh" Click="Button_COM_Refresh_Click"/>
-
+                        <ComboBox x:Name="ComboBoxCOM" SelectedIndex="0" ItemsSource="{Binding AvailablePorts}" DisplayMemberPath="FullName" SelectedValuePath="PortName" SelectedValue="{Binding SelectedComPort}" SelectionChanged="ComboBoxCOM_SelectionChanged"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel>

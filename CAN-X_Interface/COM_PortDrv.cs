@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
+using System.Management; // Required for WMI
 using System.Text;
 using System.Threading.Tasks;
-using System.Management; // Required for WMI
+using System.Windows;
 
-namespace USB_CAN_Interface
+namespace CAN_X_CAN_Analyzer
 {
     public class COM_PortDrv
     {
@@ -68,32 +70,49 @@ namespace USB_CAN_Interface
         }
     }
 
-    public class ComPortHelper
+    public class ComPortInfo
     {
-        public static Dictionary<string, string> GetAvailableComPorts()
-        {
-            Dictionary<string, string> comPorts = new Dictionary<string, string>();
-            string[] portNames = SerialPort.GetPortNames();
+        public string PortName { get; set; }
+        public string FullName { get; set; }
+    }
 
-            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%)%'"))
+    public class ComPortViewModel
+    {
+        private ManagementEventWatcher _watcher;
+        public ObservableCollection<ComPortInfo> AvailablePorts { get; } = new ObservableCollection<ComPortInfo>();
+
+        public ComPortViewModel()
+        {
+            // Initial population of ports
+            RefreshPortNames();
+
+            // Set up a WMI watcher to detect device changes (including COM port additions/removals)
+            WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_DeviceChangeEvent");
+            _watcher = new ManagementEventWatcher(query);
+            _watcher.EventArrived += (s, e) => RefreshPortNames();
+            _watcher.Start();
+        }
+
+        private void RefreshPortNames()
+        {
+            // Ensure UI updates happen on the UI thread
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                foreach (ManagementObject queryObj in searcher.Get())
+                AvailablePorts.Clear();
+                foreach (string portName in SerialPort.GetPortNames())
                 {
-                    string caption = queryObj["Caption"].ToString();
-                    // Extract the COM port name (e.g., COM1, COM2) from the caption
-                    int startIndex = caption.IndexOf("(COM") + 1;
-                    int endIndex = caption.IndexOf(")", startIndex);
-                    if (startIndex > 0 && endIndex > startIndex)
-                    {
-                        string comPortName = caption.Substring(startIndex, endIndex - startIndex);
-                        if (portNames.Contains(comPortName)) // Ensure it's an actual available port
-                        {
-                            comPorts[comPortName] = caption; // Store "COMx - Friendly Name"
-                        }
-                    }
+                    // You can add logic here to get a more descriptive name if needed
+                    // For simplicity, we'll use the port name as the full name for now.
+                    AvailablePorts.Add(new ComPortInfo { PortName = portName, FullName = $"COM Port: {portName}" });
                 }
-            }
-            return comPorts;
+            });
+        }
+
+        // Important: Implement IDisposable to properly stop the watcher when the ViewModel is no longer needed
+        public void Dispose()
+        {
+            _watcher?.Stop();
+            _watcher?.Dispose();
         }
     }
 }

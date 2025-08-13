@@ -103,6 +103,8 @@ namespace CAN_X_CAN_Analyzer
 
         COM_PortDrv comPort;
 
+        private ComPortViewModel _viewModel;
+
         #endregion
 
         #region MainWindow
@@ -110,11 +112,12 @@ namespace CAN_X_CAN_Analyzer
         {
             InitializeComponent();
 
-            PopulateComPortComboBox();
-
             dataGridRx.DataContext = this;
 
             Values = new ObservableCollection<CanRxData>();
+
+            _viewModel = (ComPortViewModel)DataContext; // Get the instance set in XAML
+            this.Closed += MainWindow_Closed;
         }
         #endregion
 
@@ -138,36 +141,6 @@ namespace CAN_X_CAN_Analyzer
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
-
-        private void PopulateComPortComboBox()
-        {
-            /*
-            // Clear existing items in case the method is called multiple times
-            ComboBoxCOM_Port.Items.Clear();
-
-            // Get an array of available COM port names
-            string[] ports = SerialPort.GetPortNames();
-
-            // Add each port name to the ComboBox
-            foreach (string port in ports)
-            {
-                ComboBoxCOM_Port.Items.Add(port);
-            }
-
-            // Optionally, select the first item if ports are found
-            if (ComboBoxCOM_Port.Items.Count > 0)
-            {
-                ComboBoxCOM_Port.SelectedIndex = 0;
-            }
-            */
-            Dictionary<string, string> availablePorts = ComPortHelper.GetAvailableComPorts();
-
-            ComboBoxCOM_Port.Items.Clear();
-
-            ComboBoxCOM_Port.ItemsSource = new BindingSource(availablePorts, null);
-            ComboBoxCOM_Port.DisplayMemberPath = "Value"; // Display the friendly name (e.g., "USB Serial Port (COM3)")
-            ComboBoxCOM_Port.SelectedValuePath = "Key";    // Store the actual COM port name (e.g., "COM3")
         }
 
         #region parse the USB data received. This is running on a thread
@@ -210,7 +183,7 @@ namespace CAN_X_CAN_Analyzer
         // button event to connect to device
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
-            string com = ComboBoxCOM_Port.SelectedValue.ToString();
+            string com = ComboBoxCOM.SelectedValue.ToString();
             comPort = new COM_PortDrv(com); // Replace with your port name and baud rate
             comPort.DataReceived += ComPortManager_DataReceived;
             try
@@ -1136,7 +1109,7 @@ namespace CAN_X_CAN_Analyzer
             }
             else
             {
-                if (comPort.IsOpen)
+                if (comPort != null && comPort.IsOpen)
                 { 
                     comPort.Close(); // disconnet USB device
                 }
@@ -1144,6 +1117,11 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            _viewModel?.Dispose(); // Dispose the watcher when the window closes
+        }
 
         #region add and edit messages
         /*
@@ -2563,15 +2541,16 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        private void Button_COM_Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            PopulateComPortComboBox();
-        }
-
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
         {
             // TODO - show about
         }
+
+        private void ComboBoxCOM_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
     }
 }
 
