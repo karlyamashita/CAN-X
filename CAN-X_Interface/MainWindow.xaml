@@ -148,13 +148,13 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
-                                <TextBox x:Name="TextBoxBtrValue" MaxLength="10" Height="23" Margin="0" TextWrapping="Wrap" Text="0x001A001D" VerticalAlignment="Top" Width="120" HorizontalAlignment="Left"/>
+                                <TextBox x:Name="TextBoxBtrValue" MaxLength="10" Height="23" Margin="0" TextWrapping="Wrap" Text="0x001A001D" VerticalAlignment="Top" Width="120" HorizontalAlignment="Left" IsEnabled="False"/>
                                 <Label Content="BTR Reg" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Left">
                                 <!--<CheckBox x:Name="CheckBoxListenOnly" Content="Listen Only" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CheckBoxListenOnly_Click"/>-->
 
-                                <ComboBox x:Name="ComboBoxMode" HorizontalAlignment="Left" >
+                                <ComboBox x:Name="ComboBoxMode" HorizontalAlignment="Left" SelectionChanged="ComboBoxMode_SelectionChanged" >
                                     <ComboBoxItem Content="Normal" IsSelected="True"/>
                                     <ComboBoxItem Content="Loopback"/>
                                     <ComboBoxItem Content="Listen"/>

@@ -951,8 +951,6 @@ namespace CAN_X_CAN_Analyzer
         // Todo - this modifies CAN1, need to make another button  or another approach to modify CAN2, SWCAN, etc
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
-            int mode = ComboBoxMode.SelectedIndex;
-
             if (!comPort.IsOpen)
             {
                 StatusBarStatus.Text = "Device Not Connected";
@@ -978,14 +976,6 @@ namespace CAN_X_CAN_Analyzer
             tmp_buf[5] = (byte)(btrValue >> 16);
             tmp_buf[6] = (byte)(btrValue >> 8);
             tmp_buf[7] = (byte)(btrValue);
-            if (mode == 1) 
-            {
-                tmp_buf[4] = (byte)(tmp_buf[4] | 0x40);// Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
-            }
-            else if (mode == 2)
-            {
-                tmp_buf[4] = (byte)(tmp_buf[4] | 0x80);// Bit 31 is Normal=0, Silent = 1.
-            }
 
             tmp_buf[8] = 0; // CAN1
 
@@ -1012,6 +1002,17 @@ namespace CAN_X_CAN_Analyzer
 
         private void ComboBoxBaudRate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            CalculateBTR();
+        }
+
+        private void ComboBoxAPB1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CalculateBTR();
+        }
+
+        private void CalculateBTR()
+        {
+            // baud rate change
             if (ComboBoxBaudRate.Items.Count == 0 || ComboBoxAPB1.Items.Count == 0) return;
             string comboBoxItemName = ComboBoxBaudRate.SelectedValue.ToString();
             string comboBoxAPB1Name = ComboBoxAPB1.SelectedValue.ToString();
@@ -1026,27 +1027,25 @@ namespace CAN_X_CAN_Analyzer
                     break;
                 }
             }
-            TextBoxBtrValue.Text = value;// baudRateList[indexItem].value;
-        }
 
-        private void ComboBoxAPB1_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string comboBoxItemName = ComboBoxBaudRate.SelectedValue.ToString();
-            string comboBoxAPB1Name = ComboBoxAPB1.SelectedValue.ToString();
+            // CAN mode change
+            int mode = ComboBoxMode.SelectedIndex;
+            UInt32 currentBTRValue = Convert.ToUInt32(value, 16);
 
-            CAN_BaudRate can_baudRate = new CAN_BaudRate(comboBoxAPB1Name);
-            string value = "";
-            foreach (var baud in can_baudRate.baudList)
+            if (mode == 1)
             {
-                if (comboBoxItemName == baud.baud)
-                {
-                    value = baud.value;
-                    break;
-                }
+                currentBTRValue |= 0x40000000;// Bit 30 is Loopback mode, disable = 0, loopback enabled = 1
             }
-            TextBoxBtrValue.Text = value;// baudRateList[indexItem].value;
-        }
+            else if (mode == 2)
+            {
+                currentBTRValue |= 0x80000000;// Bit 31 is Normal=0, Silent = 1.
+            }
 
+            string finalStrValue = string.Format("{0}{1}", "0x", currentBTRValue.ToString("X8"));
+            
+            TextBoxBtrValue.Text = finalStrValue;
+
+        }
         private void ComboBoxNodeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -2553,6 +2552,10 @@ namespace CAN_X_CAN_Analyzer
 
         }
 
+        private void ComboBoxMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CalculateBTR();
+        }
     }
 }
 
