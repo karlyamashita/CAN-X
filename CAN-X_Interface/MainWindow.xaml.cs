@@ -951,7 +951,7 @@ namespace CAN_X_CAN_Analyzer
         // Todo - this modifies CAN1, need to make another button  or another approach to modify CAN2, SWCAN, etc
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
-            if (!comPort.IsOpen)
+            if ((comPort == null) || !comPort.IsOpen)
             {
                 StatusBarStatus.Text = "Device Not Connected";
                 return;
@@ -1004,8 +1004,11 @@ namespace CAN_X_CAN_Analyzer
         {
             CalculateBTR();
         }
-
         private void ComboBoxAPB1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CalculateBTR();
+        }
+        private void ComboBoxMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CalculateBTR();
         }
@@ -2552,10 +2555,7 @@ namespace CAN_X_CAN_Analyzer
 
         }
 
-        private void ComboBoxMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            CalculateBTR();
-        }
+
     }
 }
 
