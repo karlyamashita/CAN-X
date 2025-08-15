@@ -259,7 +259,7 @@ namespace CAN_X_CAN_Analyzer
 
         private void ComPortManager_DataReceived(object sender, byte[] data)
         {
-            byte[,] twoDByteArray = new byte[4, data.Length];
+            byte[,] twoDByteArray = new byte[256, data.Length];
             int msgCount = 0;
 
             PreParseCOM_PortData(ref twoDByteArray, data, ref msgCount);
@@ -2357,7 +2357,7 @@ namespace CAN_X_CAN_Analyzer
 
             if (data == null)
             {
-                StatusBarStatus.Text = "Please select an ArbID to modify";
+             //   StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
             // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
@@ -2386,7 +2386,7 @@ namespace CAN_X_CAN_Analyzer
 
             if (data == null)
             {
-                StatusBarStatus.Text = "Please select an ArbID to modify";
+             //   StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
             // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
