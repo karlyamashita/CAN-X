@@ -137,7 +137,7 @@
                         </StackPanel>
                         -->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <ComboBox x:Name="ComboBoxAPB1" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right" />
+                                <ComboBox x:Name="ComboBoxAPB1" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right" IsEnabled="False" />
                                 <Label Content="APB1 Clock" />
                             </StackPanel>
 
@@ -180,23 +180,7 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>-->
-                <StackPanel Margin="5,10,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="125"/>
-                            <ColumnDefinition Width="60"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="TextBoxHardware" Grid.Row="0" Grid.Column="0" IsEnabled="False" />
-                        <TextBox x:Name="TextBoxVersion" Grid.Row="1" Grid.Column="0" IsEnabled="False" />
-                        <Label Content="Hardware" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <Label Content="Version" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    </Grid>
-                </StackPanel>
+         
                 <StackPanel Margin="10,10,0,0">
                     <CheckBox x:Name="CheckBoxBlind" Content="Large Text" Click="CheckBoxBlind_Click" />
                     <StackPanel Orientation="Horizontal">

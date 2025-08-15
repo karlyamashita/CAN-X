@@ -46,5 +46,12 @@ namespace CAN_X_CAN_Analyzer
             APB1_42mHz,
             APB1_36mHz
         }
+
+        public enum Frequency
+        {
+            _48000000,
+            _42000000,
+            _36000000
+        }
     }
 }

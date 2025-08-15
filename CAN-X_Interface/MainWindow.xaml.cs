@@ -67,7 +67,8 @@ namespace CAN_X_CAN_Analyzer
         const byte COMMAND_VERSION = 0x92;
         const byte COMMAND_HARDWARE = 0x93; // 
         const byte COMMAND_FREQUENCY = 0x94; // the APB1 Frequency
-        const byte COMMAND_BAUD = 0x95;
+        const byte COMMAND_BAUD = 0x95; // set the baud and mode
+        /// </summary>
 
         // const defines
         const byte CAN_STD_ID = 0x00;
@@ -206,6 +207,9 @@ namespace CAN_X_CAN_Analyzer
                     TextAlignment = TextAlignment.Center
                 };
                 RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
+
+                GetInfo();
+
             }
             catch (Exception ex)
             {
@@ -255,7 +259,49 @@ namespace CAN_X_CAN_Analyzer
 
         private void ComPortManager_DataReceived(object sender, byte[] data)
         {
-            ParseUsbData(ref data);
+            byte[,] twoDByteArray = new byte[4, data.Length];
+            int msgCount = 0;
+
+            PreParseCOM_PortData(ref twoDByteArray, data, ref msgCount);
+
+            int rowLength = twoDByteArray.GetLength(1);
+            for (int i = 0; i < msgCount; i++)
+            {
+                byte[] singleDimByteArray = new byte[rowLength];
+                int rowIndexToCopy = i;
+                int sourceOffset = rowIndexToCopy * rowLength * sizeof(byte);
+
+                Buffer.BlockCopy(twoDByteArray, sourceOffset, singleDimByteArray, 0, rowLength * sizeof(byte));
+
+                ParseUsbData(ref singleDimByteArray);
+            }            
+        }
+
+        /*
+         * Description: parse multiple messages in COM buffer into it's own queue. 
+         */
+        private void PreParseCOM_PortData(ref byte[,] buffer, byte[] data, ref int msgCount)
+        {
+            int idxPtr = 0;
+            int i = 0;
+            int messageLength = 0;
+            int msgDataPtr = 0;
+
+            foreach(byte b in data)
+            { 
+                if(msgDataPtr == 3) messageLength = b + msgDataPtr + 1; // index 3 is the data size expected
+
+                buffer[idxPtr, msgDataPtr] = data[i];
+
+                if (++msgDataPtr == messageLength) // end of current message
+                {
+                    msgDataPtr = 0;
+                    ++idxPtr; // increment to next queue
+                }
+                ++i;
+            }
+
+            msgCount = idxPtr; // return queue size
         }
 
         #endregion
@@ -267,10 +313,18 @@ namespace CAN_X_CAN_Analyzer
             switch (command)
             {
                 case COMMAND_VERSION:
-                    StatusBarStatusVersion.Text = "FW: " + GetStringFromData(data);
+                    StatusBarStatusVersion.Dispatcher.BeginInvoke(new Action(delegate ()
+                    {
+                        //StatusBarStatusVersion.Text = "FW: " + GetStringFromData(data);
+                        StatusBarStatusVersion.Text = "FW: " + Encoding.ASCII.GetString(data);
+                    }));
                     break;
                 case COMMAND_HARDWARE:
-                    StatusBarStatusHardware.Text = "HW: " + GetStringFromData(data);
+                    StatusBarStatusVersion.Dispatcher.BeginInvoke(new Action(delegate ()
+                    {
+                        //StatusBarStatusHardware.Text = "HW: " + GetStringFromData(data);
+                        StatusBarStatusHardware.Text = "HW: " + Encoding.ASCII.GetString(data);
+                    }));
                     break;
             }
         }
@@ -398,38 +452,17 @@ namespace CAN_X_CAN_Analyzer
         private void ParseABP1_Frequency(byte[] data)
         {
             int i = 0;
-            byte[] temp = new byte[DATA_SIZE];
 
-            while (data[i + 1] != '\0') // index 1 is command
-            {
-                temp[i] = data[i + 2]; // string starts at index 2 
-                i++;
-            }
-            string apb1Freq = Encoding.ASCII.GetString(temp);
+            string apb1Freq = Encoding.ASCII.GetString(data);
+            string frequency = "_" + apb1Freq.Replace(Environment.NewLine, "").Replace("\0", "");
 
-            apb1Freq = apb1Freq.Trim('\0');
-            /*
-            switch (apb1Freq)
-            {
-                case "APB1_36mHz":
-                    StatusBarStatus.Text = "36mHz";
-                    break;
-                case "APB1_42mHz":
-                    StatusBarStatus.Text = "42mHz";
-                    break;
-                case "APB1_48mHz":
-                    StatusBarStatus.Text = "48mHz";
-                    break;
-                default:
-
-                    break;
-            }
-            */
-            i = 0;
-            foreach(var en in Enum.GetNames(typeof(EnumDefines.APB1_Freq))){
-                if(en == apb1Freq)
+            foreach (var en in Enum.GetNames(typeof(EnumDefines.Frequency))){
+                if(en == frequency)
                 {
-                    ComboBoxAPB1.SelectedIndex = i;
+                    ComboBoxAPB1.Dispatcher.BeginInvoke(new Action(delegate ()
+                    {
+                        ComboBoxAPB1.SelectedIndex = i;
+                    }));
                     break;
                 }
                 i++;
@@ -809,6 +842,42 @@ namespace CAN_X_CAN_Analyzer
             byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
 
             tmp_buf[0] = COMMAND_INFO;
+
+            comPort.WriteBytes(tmp_buf, 1);
+        }
+
+        private void GetVersion()
+        {
+            byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
+
+            tmp_buf[0] = COMMAND_VERSION;
+
+            comPort.WriteBytes(tmp_buf, 1);
+        }
+
+        private void GetHardware()
+        {
+            byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
+
+            tmp_buf[0] = COMMAND_HARDWARE;
+
+            comPort.WriteBytes(tmp_buf, 1);
+        }
+
+        private void GetFrequency()
+        {
+            byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
+
+            tmp_buf[0] = COMMAND_FREQUENCY;
+
+            comPort.WriteBytes(tmp_buf, 1);
+        }
+
+        private void GetBaud()
+        {
+            byte[] tmp_buf = new byte[DATA_SIZE]; // command + 63 byte = 64 bytes
+
+            tmp_buf[0] = COMMAND_CAN_BTR;
 
             comPort.WriteBytes(tmp_buf, 1);
         }
