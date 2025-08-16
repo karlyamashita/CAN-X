@@ -26,7 +26,6 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
-
         <ControlTemplate x:Key="RoundedButtonTemplate" TargetType="{x:Type Button}">
             <Border x:Name="border" 
                     CornerRadius="10" 

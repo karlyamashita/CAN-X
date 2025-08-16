@@ -38,6 +38,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO.Ports;
 
+
+/*
+    
+
+*/
+
 namespace CAN_X_CAN_Analyzer
 {
     /// <summary>
@@ -159,10 +165,10 @@ namespace CAN_X_CAN_Analyzer
                     ParseDeviceCAN_Message(ref newArray);
                     break;
                 case COMMAND_ACK:
-                   // StatusBarStatus.Text = "ACK Received";
+                    // StatusBarStatus.Text = "ACK Received";
                     break;
                 case COMMAND_NAK:
-                   // StatusBarStatus.Text = "NAK Received";
+                    // StatusBarStatus.Text = "NAK Received";
                     break;
                 case COMMAND_CAN_BTR:
                     ShowBTC_VALUE(newArray);
@@ -254,7 +260,7 @@ namespace CAN_X_CAN_Analyzer
                 };
                 RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
             }
-           
+
         }
 
         private void ComPortManager_DataReceived(object sender, byte[] data)
@@ -274,7 +280,7 @@ namespace CAN_X_CAN_Analyzer
                 Buffer.BlockCopy(twoDByteArray, sourceOffset, singleDimByteArray, 0, rowLength * sizeof(byte));
 
                 ParseUsbData(ref singleDimByteArray);
-            }            
+            }
         }
 
         /*
@@ -287,9 +293,9 @@ namespace CAN_X_CAN_Analyzer
             int messageLength = 0;
             int msgDataPtr = 0;
 
-            foreach(byte b in data)
-            { 
-                if(msgDataPtr == 3) messageLength = b + msgDataPtr + 1; // index 3 is the data size expected
+            foreach (byte b in data)
+            {
+                if (msgDataPtr == 3) messageLength = b + msgDataPtr + 1; // index 3 is the data size expected
 
                 buffer[idxPtr, msgDataPtr] = data[i];
 
@@ -352,7 +358,7 @@ namespace CAN_X_CAN_Analyzer
 
             if ((btrValue >> 31 & 0x1) == 1)
             {
-             //   CheckBoxListenOnly.IsChecked = true;
+                //   CheckBoxListenOnly.IsChecked = true;
             }
 
             TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
@@ -456,8 +462,9 @@ namespace CAN_X_CAN_Analyzer
             string apb1Freq = Encoding.ASCII.GetString(data);
             string frequency = "_" + apb1Freq.Replace(Environment.NewLine, "").Replace("\0", "");
 
-            foreach (var en in Enum.GetNames(typeof(EnumDefines.Frequency))){
-                if(en == frequency)
+            foreach (var en in Enum.GetNames(typeof(EnumDefines.Frequency)))
+            {
+                if (en == frequency)
                 {
                     ComboBoxAPB1.Dispatcher.BeginInvoke(new Action(delegate ()
                     {
@@ -504,20 +511,20 @@ namespace CAN_X_CAN_Analyzer
             return false;
         }
         #endregion
-    
+
         #region Add formatted data to datagrid
         private void AddToDataGrid(CanRxData canRxData, bool transmitFlag, bool scrollFlag, bool newData)
         {
             CanRxData canRxDataNew = new CanRxData();
             bool foundMatch = false;
             if (newData)
-            {               
+            {
                 if (scrollFlag)
                 {
                     masterDataGridRx.Reverse();
                     foreach (CanRxData masterRow in masterDataGridRx)
                     {
-                        if(!transmitFlag)
+                        if (!transmitFlag)
                         {
                             if (masterRow.ArbID == canRxData.ArbID && masterRow.Tx == false)
                             {
@@ -549,7 +556,7 @@ namespace CAN_X_CAN_Analyzer
                                 canRxDataNew.RTR = canRxData.RTR;
 
                                 canRxDataNew.DLC = canRxData.DLC;
-                                if(!String.Equals(canRxDataNew.Byte1, canRxData.Byte1))
+                                if (!String.Equals(canRxDataNew.Byte1, canRxData.Byte1))
                                 {
                                     canRxDataNew.Byte1 = canRxData.Byte1;
                                 }
@@ -674,7 +681,7 @@ namespace CAN_X_CAN_Analyzer
 
                                 masterDataGridRx.Reverse();// back to original order
                                 break;
-                            }   
+                            }
                             else
                             {
                                 canRxData.Count = "";
@@ -767,7 +774,7 @@ namespace CAN_X_CAN_Analyzer
                     else
                     {
                         masterDataGridRx.Add(canRxData); // matchFound
-                     //   dataGridRx.Items.Refresh();
+                                                         //   dataGridRx.Items.Refresh();
                     }
                 }
                 else
@@ -779,11 +786,11 @@ namespace CAN_X_CAN_Analyzer
 
                     Debug.WriteLine(Values.Count);
 
-                 //   dataGridRx.ClearValue(ItemsControl.ItemsSourceProperty);
-                 //   dataGridRx.Items.Add(canRxData);
+                    //   dataGridRx.ClearValue(ItemsControl.ItemsSourceProperty);
+                    //   dataGridRx.Items.Add(canRxData);
                 }
             }
- 
+
             if (pauseMessagesFlag == false)
             {
                 if (dataGridRx.Items.Count > 0)
@@ -903,13 +910,13 @@ namespace CAN_X_CAN_Analyzer
             }
 
             // RTR
-            usbPacket[5] = canData.RTR == true ? (byte) 1: (byte) 0; // RTR, Node
+            usbPacket[5] = canData.RTR == true ? (byte)1 : (byte)0; // RTR, Node
 
             // Node
             byte i = 0;
             foreach (var en in Enum.GetNames(typeof(EnumDefines.Nodes)))
             {
-                if(en == canData.Node)
+                if (en == canData.Node)
                 {
                     usbPacket[6] = i;
                     break;
@@ -918,7 +925,7 @@ namespace CAN_X_CAN_Analyzer
             }
 
             // index 7 is reserved
- 
+
             // Arb ID 29/11 bit
             if (canData.IDE == "CAN_STD_ID")
             {
@@ -1114,7 +1121,7 @@ namespace CAN_X_CAN_Analyzer
             }
 
             string finalStrValue = string.Format("{0}{1}", "0x", currentBTRValue.ToString("X8"));
-            
+
             TextBoxBtrValue.Text = finalStrValue;
 
         }
@@ -1145,7 +1152,7 @@ namespace CAN_X_CAN_Analyzer
 
             // need to remove "_" in the enum
             List<string> txRateList = new List<string>();
-            foreach(var en in Enum.GetNames(typeof(EnumDefines.TxRate)))
+            foreach (var en in Enum.GetNames(typeof(EnumDefines.TxRate)))
             {
                 txRateList.Add(en.Replace("_", ""));
             }
@@ -1181,7 +1188,7 @@ namespace CAN_X_CAN_Analyzer
             else
             {
                 if (comPort != null && comPort.IsOpen)
-                { 
+                {
                     comPort.Close(); // disconnet USB device
                 }
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -1232,7 +1239,7 @@ namespace CAN_X_CAN_Analyzer
             dataGridEditTxMessages.Items.Add(canTxData);
 
             dataGridTx.Items.Add(canTxData); // the Tx dataGrid
-         //   dataGridTx.RowHeight = 15;
+                                             //   dataGridTx.RowHeight = 15;
         }
 
         private void ButtonDeleteEditTxRow_Click(object sender, RoutedEventArgs e)
@@ -1374,7 +1381,7 @@ namespace CAN_X_CAN_Analyzer
             int i = 0;
             foreach (var en in Enum.GetNames(typeof(EnumDefines.TxRate)))
             {
-                if(en.Replace("_","") == name)
+                if (en.Replace("_", "") == name)
                 {
                     return i;
                 }
@@ -1558,7 +1565,7 @@ namespace CAN_X_CAN_Analyzer
             if (dgr == null) { return; }
 
             rowIndexEditTx = dgr.GetIndex();
-         //   StatusBarStatus.Text = rowIndexEditTx.ToString();
+            //   StatusBarStatus.Text = rowIndexEditTx.ToString();
         }
 
         // gets the row index
@@ -1575,7 +1582,7 @@ namespace CAN_X_CAN_Analyzer
             if (dgr == null) { return; }
 
             rowIndexEditRx = dgr.GetIndex();
-         //   StatusBarStatus.Text = rowIndexEditRx.ToString();
+            //   StatusBarStatus.Text = rowIndexEditRx.ToString();
         }
         #endregion
 
@@ -1664,7 +1671,7 @@ namespace CAN_X_CAN_Analyzer
                 strBuilder.Append("\n");
 
                 foreach (var item in masterDataGridRx)
-                    //foreach (var item in dataGridRx.Items.OfType<CanRxData>())
+                //foreach (var item in dataGridRx.Items.OfType<CanRxData>())
                 {
                     strBuilder.Append(item.Line + ", ");
                     strBuilder.Append(item.Count + ", ");
@@ -1961,7 +1968,7 @@ namespace CAN_X_CAN_Analyzer
                             }
                             break;
                         case "Byte1":
-                            xmlReader.Read();                            
+                            xmlReader.Read();
                             result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
                             if (dataGridName == "edit_tx_messages")
                             {
@@ -2203,7 +2210,7 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
 
-            data.RTR = (bool) CheckBoxRemoteTransmit.IsChecked;
+            data.RTR = (bool)CheckBoxRemoteTransmit.IsChecked;
 
             if (data.RTR == true)
             {
@@ -2251,9 +2258,9 @@ namespace CAN_X_CAN_Analyzer
             }
             dataGridEditTxMessages.Items.Refresh();
             // now update dataGridTx
-            foreach(CanTxData row in dataGridTx.Items)
+            foreach (CanTxData row in dataGridTx.Items)
             {
-                if(row.Key == data.Key)
+                if (row.Key == data.Key)
                 {
                     row.RTR = data.RTR;
                     dataGridTx.Items.Refresh();
@@ -2284,7 +2291,7 @@ namespace CAN_X_CAN_Analyzer
                 rowStyle.Setters.Add(new Setter() { Property = HeightProperty, Value = 18D });
                 dataGridRx.RowStyle = rowStyle;
                 // resize columns
-                foreach(DataGridColumn c in dataGridRx.Columns)
+                foreach (DataGridColumn c in dataGridRx.Columns)
                 {
                     c.Width = 0;
                 }
@@ -2357,7 +2364,7 @@ namespace CAN_X_CAN_Analyzer
 
             if (data == null)
             {
-             //   StatusBarStatus.Text = "Please select an ArbID to modify";
+                //   StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
             // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
@@ -2386,7 +2393,7 @@ namespace CAN_X_CAN_Analyzer
 
             if (data == null)
             {
-             //   StatusBarStatus.Text = "Please select an ArbID to modify";
+                //   StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
             // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
@@ -2455,15 +2462,15 @@ namespace CAN_X_CAN_Analyzer
                     threadAutoTx = new Thread(TxSendThread);
                     threadAutoTx.Start();
                     sw.Start();
-                }                
-            //    StatusBarStatus.Text = "Started";
+                }
+                //    StatusBarStatus.Text = "Started";
             }
             else
-            {                
+            {
                 threadAutoTx.Abort();
                 threadAutoTx = null;
                 sw.Stop();
-            //    StatusBarStatus.Text = "Stopped";
+                //    StatusBarStatus.Text = "Stopped";
             }
         }
 
@@ -2484,7 +2491,7 @@ namespace CAN_X_CAN_Analyzer
                     {
                         if (row.AutoTx == true)
                         {
-                            if (++row.RateTimer >= (Convert.ToUInt32(row.Rate) /10))
+                            if (++row.RateTimer >= (Convert.ToUInt32(row.Rate) / 10))
                             {
                                 row.RateTimer = 0;
                                 canTxData = new CanTxData(row);
@@ -2549,9 +2556,9 @@ namespace CAN_X_CAN_Analyzer
 
             // find next key number to use
             ulong highKey = 0;
-            foreach(CanTxData item in dataGridEditTxMessages.Items)
+            foreach (CanTxData item in dataGridEditTxMessages.Items)
             {
-                if(item.Key > highKey)
+                if (item.Key > highKey)
                 {
                     highKey = item.Key;
                 }
@@ -2578,7 +2585,7 @@ namespace CAN_X_CAN_Analyzer
 
         private void CheckBoxAscii_Click(object sender, RoutedEventArgs e)
         {
-            USB_CAN_Interface.Properties.Settings.Default.ascii = (bool) CheckBoxAscii.IsChecked;
+            USB_CAN_Interface.Properties.Settings.Default.ascii = (bool)CheckBoxAscii.IsChecked;
             USB_CAN_Interface.Properties.Settings.Default.Save();
             FormatDataGridColumns();
         }
