@@ -56,7 +56,6 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
         <ControlTemplate x:Key="RoundedToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
             <Border x:Name="border" 
                     CornerRadius="10" 
