@@ -245,7 +245,7 @@
 
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
-                        <DataGrid x:Name="dataGridRx" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem x:Name="MenuItemSaveRx" Header="Save to Rx" Click="MenuItemSaveRx_Click_1"/>
@@ -265,7 +265,7 @@
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Line" Binding="{Binding Line, Mode=OneWay, NotifyOnTargetUpdated=True}" />
-                                <DataGridTextColumn Header="RxCnt" Binding="{Binding Count, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                                <DataGridTextColumn Header="RxCnt" Binding="{Binding RxCount, Mode=OneWay, NotifyOnTargetUpdated=True}" />
                                 <DataGridTextColumn Header="TxCnt" Binding="{Binding TxCount, Mode=OneWay, NotifyOnTargetUpdated=True}" />
 
                                 <DataGridTextColumn Header="TimeAbs" Binding="{Binding TimeAbs, Mode=OneWay, NotifyOnTargetUpdated=True}" />
@@ -343,7 +343,7 @@
 
                         <Grid Grid.Row="3">
 
-                            <DataGrid x:Name="dataGridTx" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
+                            <DataGrid x:Name="dataGridTxWindow" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                                     <DataGridTextColumn Header="Description" Binding="{Binding Path='Description'}" />

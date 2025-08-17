@@ -275,23 +275,23 @@ namespace CAN_X_CAN_Analyzer
         public string Node { get; set; } = "CAN1";
         public string ASCII { get; set; } = "";
 
-        private string _Count = "1";
-        public string Count
+        private string _RxCount = "0";
+        public string RxCount
         {
             get
             {
-                return _Count;
+                return _RxCount;
             }
             set
             {
-                if (_Count == value) return;
-                _Count = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+                if (_RxCount == value) return;
+                _RxCount = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("RxCount"));
             }
         }
-        public string CountSaved { get; set; } = "1";
+        public string RxCountSaved { get; set; } = String.Empty;
 
-        private string _TxCount = "1";
+        private string _TxCount = "0";
         public string TxCount
         {
             get
@@ -305,7 +305,7 @@ namespace CAN_X_CAN_Analyzer
                 OnPropertyChanged(new PropertyChangedEventArgs("TxCount"));
             }
         }
-        public string TxCountSaved { get; set; } = "1";
+        public string TxCountSaved { get; set; } = String.Empty;
         public string Notes { get; set; } = "";
         public string Color { get; set; } = "";
 
@@ -427,7 +427,7 @@ namespace CAN_X_CAN_Analyzer
             Byte7 = canRxData.Byte7;
             Byte8 = canRxData.Byte8;
             Node = canRxData.Node;
-            Count = canRxData.Count;
+            RxCount = canRxData.RxCount;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -100,8 +100,10 @@ namespace CAN_X_CAN_Analyzer
         bool pauseMessagesFlag = false;
         bool scrollMessagesFlag = false;
         bool isTransmitMessage = false;
+        bool isDataGridWindowCleard = false;
 
-        List<CanRxData> masterDataGridRx = new List<CanRxData>();
+        // all tx/rx messages are stored in this list
+        List<CanRxData> masterDataGridRx = new List<CanRxData>(); 
 
         string mainWindowTitle = "";
 
@@ -119,8 +121,9 @@ namespace CAN_X_CAN_Analyzer
         {
             InitializeComponent();
 
-            dataGridRx.DataContext = this;
+            dataGridRxWindow.DataContext = this;
 
+            // Values is item source for dataGridRxWindow
             Values = new ObservableCollection<CanRxData>();
 
             _viewModel = (ComPortViewModel)DataContext; // Get the instance set in XAML
@@ -150,7 +153,55 @@ namespace CAN_X_CAN_Analyzer
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
 
-        #region parse the USB data received. This is running on a thread
+        #region parse the USB data received.
+
+        private void ComPortManager_DataReceived(object sender, byte[] data)
+        {
+            byte[,] twoDByteArray = new byte[256, data.Length];
+            int msgCount = 0;
+
+            PreParseCOM_PortData(ref twoDByteArray, data, ref msgCount);
+
+            int rowLength = twoDByteArray.GetLength(1);
+            for (int i = 0; i < msgCount; i++)
+            {
+                byte[] singleDimByteArray = new byte[rowLength];
+                int rowIndexToCopy = i;
+                int sourceOffset = rowIndexToCopy * rowLength * sizeof(byte);
+
+                Buffer.BlockCopy(twoDByteArray, sourceOffset, singleDimByteArray, 0, rowLength * sizeof(byte));
+
+                ParseUsbData(ref singleDimByteArray);
+            }
+        }
+
+        /*
+         * Description: parse multiple messages in COM buffer into it's own queue. 
+         */
+        private void PreParseCOM_PortData(ref byte[,] buffer, byte[] data, ref int msgCount)
+        {
+            int idxPtr = 0;
+            int i = 0;
+            int messageLength = 0;
+            int msgDataPtr = 0;
+
+            foreach (byte b in data)
+            {
+                if (msgDataPtr == 3) messageLength = b + msgDataPtr + 1; // index 3 is the data size expected
+
+                buffer[idxPtr, msgDataPtr] = data[i];
+
+                if (++msgDataPtr == messageLength) // end of current message
+                {
+                    msgDataPtr = 0;
+                    ++idxPtr; // increment to next queue
+                }
+                ++i;
+            }
+
+            msgCount = idxPtr; // return queue size
+        }
+
         public void ParseUsbData(ref byte[] data)
         {
             int command = data[0];
@@ -260,54 +311,6 @@ namespace CAN_X_CAN_Analyzer
                 };
                 RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
             }
-
-        }
-
-        private void ComPortManager_DataReceived(object sender, byte[] data)
-        {
-            byte[,] twoDByteArray = new byte[256, data.Length];
-            int msgCount = 0;
-
-            PreParseCOM_PortData(ref twoDByteArray, data, ref msgCount);
-
-            int rowLength = twoDByteArray.GetLength(1);
-            for (int i = 0; i < msgCount; i++)
-            {
-                byte[] singleDimByteArray = new byte[rowLength];
-                int rowIndexToCopy = i;
-                int sourceOffset = rowIndexToCopy * rowLength * sizeof(byte);
-
-                Buffer.BlockCopy(twoDByteArray, sourceOffset, singleDimByteArray, 0, rowLength * sizeof(byte));
-
-                ParseUsbData(ref singleDimByteArray);
-            }
-        }
-
-        /*
-         * Description: parse multiple messages in COM buffer into it's own queue. 
-         */
-        private void PreParseCOM_PortData(ref byte[,] buffer, byte[] data, ref int msgCount)
-        {
-            int idxPtr = 0;
-            int i = 0;
-            int messageLength = 0;
-            int msgDataPtr = 0;
-
-            foreach (byte b in data)
-            {
-                if (msgDataPtr == 3) messageLength = b + msgDataPtr + 1; // index 3 is the data size expected
-
-                buffer[idxPtr, msgDataPtr] = data[i];
-
-                if (++msgDataPtr == messageLength) // end of current message
-                {
-                    msgDataPtr = 0;
-                    ++idxPtr; // increment to next queue
-                }
-                ++i;
-            }
-
-            msgCount = idxPtr; // return queue size
         }
 
         #endregion
@@ -399,14 +402,14 @@ namespace CAN_X_CAN_Analyzer
             {
                 // add formatted data to data grid
                 isTransmitMessage = false;
-                AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag, NEW_DATA_FLAG);
+                AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag);
 
                 // add to master list, update count first
                 //   canRxData.Count = count;
                 //   masterDataGridRx.Add(canRxData);
 
                 // update the progress bar and remove first row if we are at MAX_ROW_COUNT
-                if (UpdateProgressBar()) dataGridRx.Items.RemoveAt(0);
+                if (UpdateProgressBar()) dataGridRxWindow.Items.RemoveAt(0);
             }));
         }
         #endregion
@@ -513,289 +516,108 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region Add formatted data to datagrid
-        private void AddToDataGrid(CanRxData canRxData, bool transmitFlag, bool scrollFlag, bool newData)
+        private void AddToDataGrid(CanRxData canRxData, bool transmitFlag, bool scrollFlag)
         {
             CanRxData canRxDataNew = new CanRxData();
-            bool foundMatch = false;
-            if (newData)
+            bool is_CAN_ID_Match = false;
+
+            // updating row members will update Values at that index on the fly
+            if (!scrollFlag)
             {
-                if (scrollFlag)
+                foreach (CanRxData row in Values)
                 {
-                    masterDataGridRx.Reverse();
-                    foreach (CanRxData masterRow in masterDataGridRx)
+                    if (row.ArbID == canRxData.ArbID)
                     {
                         if (!transmitFlag)
                         {
-                            if (masterRow.ArbID == canRxData.ArbID && masterRow.Tx == false)
-                            {
-                                if (masterRow.Count == "")
-                                {
-                                    masterRow.Count = masterRow.CountSaved;
-                                }
-                                if (masterRow.Count == "")
-                                {
-                                    canRxDataNew.Count = (1).ToString();
-                                }
-                                else
-                                {
-                                    canRxDataNew.Count = (Convert.ToUInt32(masterRow.Count) + 1).ToString();
-                                }
-
-                                canRxDataNew.CountSaved = canRxDataNew.Count;
-                                canRxDataNew.TxCount = "";
-
-                                canRxDataNew.Line = canRxData.Line;
-                                canRxDataNew.TimeAbs = canRxData.TimeAbs;
-
-                                canRxDataNew.Description = canRxData.Description;
-
-                                // ArbID matches so copy new data to current row
-                                canRxDataNew.Tx = canRxData.Tx;
-                                canRxDataNew.IDE = canRxData.IDE;
-                                canRxDataNew.ArbID = canRxData.ArbID;
-                                canRxDataNew.RTR = canRxData.RTR;
-
-                                canRxDataNew.DLC = canRxData.DLC;
-                                if (!String.Equals(canRxDataNew.Byte1, canRxData.Byte1))
-                                {
-                                    canRxDataNew.Byte1 = canRxData.Byte1;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte2, canRxData.Byte2))
-                                {
-                                    canRxDataNew.Byte2 = canRxData.Byte2;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte3, canRxData.Byte3))
-                                {
-                                    canRxDataNew.Byte3 = canRxData.Byte3;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte4, canRxData.Byte4))
-                                {
-                                    canRxDataNew.Byte4 = canRxData.Byte4;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte5, canRxData.Byte5))
-                                {
-                                    canRxDataNew.Byte5 = canRxData.Byte5;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte6, canRxData.Byte6))
-                                {
-                                    canRxDataNew.Byte6 = canRxData.Byte6;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte7, canRxData.Byte7))
-                                {
-                                    canRxDataNew.Byte7 = canRxData.Byte7;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte8, canRxData.Byte8))
-                                {
-                                    canRxDataNew.Byte8 = canRxData.Byte8;
-                                }
-
-                                canRxDataNew.Node = canRxData.Node;
-
-                                canRxDataNew.ASCII = canRxData.ASCII;
-
-                                canRxDataNew.Notes = canRxData.Notes;
-
-                                foundMatch = true;
-
-                                masterDataGridRx.Reverse();// back to original order
-                                break;
-                            }
-                            else
-                            {
-                                canRxData.TxCount = "";
-                            }
+                            row.RxCount = (Convert.ToUInt32(row.RxCount) + 1).ToString();         
                         }
                         else
                         {
-                            if (masterRow.ArbID == canRxData.ArbID && masterRow.Tx == true)
-                            {
-                                if (masterRow.TxCount == "")
-                                {
-                                    masterRow.TxCount = masterRow.TxCountSaved;
-                                }
-                                if (masterRow.TxCount == "")
-                                {
-                                    canRxDataNew.TxCount = (1).ToString();
-                                }
-                                else
-                                {
-                                    canRxDataNew.TxCount = (Convert.ToUInt32(masterRow.TxCount) + 1).ToString();
-                                }
-
-                                canRxDataNew.TxCountSaved = canRxDataNew.TxCount;
-                                canRxDataNew.Count = "";
-
-                                canRxDataNew.Line = canRxData.Line;
-                                canRxDataNew.TimeAbs = canRxData.TimeAbs;
-
-                                canRxDataNew.Description = canRxData.Description;
-
-                                // ArbID matches so copy new data to current row
-                                canRxDataNew.Tx = canRxData.Tx;
-                                canRxDataNew.IDE = canRxData.IDE;
-                                canRxDataNew.ArbID = canRxData.ArbID;
-                                canRxDataNew.RTR = canRxData.RTR;
-
-                                canRxDataNew.DLC = canRxData.DLC;
-                                if (!String.Equals(canRxDataNew.Byte1, canRxData.Byte1))
-                                {
-                                    canRxDataNew.Byte1 = canRxData.Byte1;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte2, canRxData.Byte2))
-                                {
-                                    canRxDataNew.Byte2 = canRxData.Byte2;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte3, canRxData.Byte3))
-                                {
-                                    canRxDataNew.Byte3 = canRxData.Byte3;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte4, canRxData.Byte4))
-                                {
-                                    canRxDataNew.Byte4 = canRxData.Byte4;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte5, canRxData.Byte5))
-                                {
-                                    canRxDataNew.Byte5 = canRxData.Byte5;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte6, canRxData.Byte6))
-                                {
-                                    canRxDataNew.Byte6 = canRxData.Byte6;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte7, canRxData.Byte7))
-                                {
-                                    canRxDataNew.Byte7 = canRxData.Byte7;
-                                }
-                                if (!String.Equals(canRxDataNew.Byte8, canRxData.Byte8))
-                                {
-                                    canRxDataNew.Byte8 = canRxData.Byte8;
-                                }
-
-                                canRxDataNew.Node = canRxData.Node;
-
-                                canRxDataNew.ASCII = canRxData.ASCII;
-
-                                canRxDataNew.Notes = canRxData.Notes;
-
-
-                                foundMatch = true;
-
-                                masterDataGridRx.Reverse();// back to original order
-                                break;
-                            }
-                            else
-                            {
-                                canRxData.Count = "";
-                            }
+                            row.TxCount = (Convert.ToUInt32(row.TxCount) + 1).ToString(); 
                         }
-                    }
-                }
-                else
-                {
-                    //foreach (CanRxData row in dataGridRx.Items)
 
-                    foreach (CanRxData row in Values)
-                    {
-                        if (row.ArbID == canRxData.ArbID)
+                        row.Line = canRxData.Line;
+                        row.TimeAbs = canRxData.TimeAbs;
+
+                        row.Description = canRxData.Description;
+
+                        // ArbID matches so copy new data to current row
+                        row.Tx = canRxData.Tx;
+                        row.IDE = canRxData.IDE;
+                        row.ArbID = canRxData.ArbID;
+                        row.RTR = canRxData.RTR;
+
+                        row.DLC = canRxData.DLC;
+                        if (!String.Equals(row.Byte1, canRxData.Byte1))
                         {
-                            masterDataGridRx.Reverse();
-                            if (row.Count == "")
-                            {
-                                row.Count = "1";
-                            }
-
-                            row.Count = (Convert.ToUInt32(row.Count) + 1).ToString();
-
-                            row.Line = canRxData.Line;
-                            row.TimeAbs = canRxData.TimeAbs;
-
-                            row.Description = canRxData.Description;
-
-                            // ArbID matches so copy new data to current row
-                            row.Tx = canRxData.Tx;
-                            row.IDE = canRxData.IDE;
-                            row.ArbID = canRxData.ArbID;
-                            row.RTR = canRxData.RTR;
-
-                            row.DLC = canRxData.DLC;
-                            if (!String.Equals(row.Byte1, canRxData.Byte1))
-                            {
-                                row.Byte1 = canRxData.Byte1;
-                            }
-                            if (!String.Equals(row.Byte2, canRxData.Byte2))
-                            {
-                                row.Byte2 = canRxData.Byte2;
-                            }
-                            if (!String.Equals(row.Byte3, canRxData.Byte3))
-                            {
-                                row.Byte3 = canRxData.Byte3;
-                            }
-                            if (!String.Equals(row.Byte4, canRxData.Byte4))
-                            {
-                                row.Byte4 = canRxData.Byte4;
-                            }
-                            if (!String.Equals(row.Byte5, canRxData.Byte5))
-                            {
-                                row.Byte5 = canRxData.Byte5;
-                            }
-                            if (!String.Equals(row.Byte6, canRxData.Byte6))
-                            {
-                                row.Byte6 = canRxData.Byte6;
-                            }
-                            if (!String.Equals(row.Byte7, canRxData.Byte7))
-                            {
-                                row.Byte7 = canRxData.Byte7;
-                            }
-                            if (!String.Equals(row.Byte8, canRxData.Byte8))
-                            {
-                                row.Byte8 = canRxData.Byte8;
-                            }
-
-                            row.Node = canRxData.Node;
-
-                            row.ASCII = canRxData.ASCII;
-
-                            row.Notes = canRxData.Notes;
-
-                            foundMatch = true;
-
-                            break;
+                            row.Byte1 = canRxData.Byte1;
                         }
+                        if (!String.Equals(row.Byte2, canRxData.Byte2))
+                        {
+                            row.Byte2 = canRxData.Byte2;
+                        }
+                        if (!String.Equals(row.Byte3, canRxData.Byte3))
+                        {
+                            row.Byte3 = canRxData.Byte3;
+                        }
+                        if (!String.Equals(row.Byte4, canRxData.Byte4))
+                        {
+                            row.Byte4 = canRxData.Byte4;
+                        }
+                        if (!String.Equals(row.Byte5, canRxData.Byte5))
+                        {
+                            row.Byte5 = canRxData.Byte5;
+                        }
+                        if (!String.Equals(row.Byte6, canRxData.Byte6))
+                        {
+                            row.Byte6 = canRxData.Byte6;
+                        }
+                        if (!String.Equals(row.Byte7, canRxData.Byte7))
+                        {
+                            row.Byte7 = canRxData.Byte7;
+                        }
+                        if (!String.Equals(row.Byte8, canRxData.Byte8))
+                        {
+                            row.Byte8 = canRxData.Byte8;
+                        }
+
+                        row.Node = canRxData.Node;
+
+                        row.ASCII = canRxData.ASCII;
+
+                        row.Notes = canRxData.Notes;
+
+                        is_CAN_ID_Match = true;
+
+                        break;
                     }
                 }
-
-                if (foundMatch)
+                if (!is_CAN_ID_Match)// no match, so add new data
                 {
-                    if (scrollFlag)
+                    if (!transmitFlag)
                     {
-                        masterDataGridRx.Add(canRxDataNew); // matchFound
-                        dataGridRx.ClearValue(ItemsControl.ItemsSourceProperty);
-                        dataGridRx.Items.Add(canRxDataNew);
+                        canRxData.RxCount = (1).ToString();
                     }
                     else
                     {
-                        masterDataGridRx.Add(canRxData); // matchFound
-                                                         //   dataGridRx.Items.Refresh();
+                        canRxData.TxCount = (1).ToString();
                     }
-                }
-                else
-                {
-                    masterDataGridRx.Reverse();// back to original order
-                    masterDataGridRx.Add(canRxData);
-
-                    Values.Add(canRxData);
-
-                    Debug.WriteLine(Values.Count);
-
-                    //   dataGridRx.ClearValue(ItemsControl.ItemsSourceProperty);
-                    //   dataGridRx.Items.Add(canRxData);
+                    Values.Add(canRxData); // adds data to next row on data grid/gui
                 }
             }
-
-            if (pauseMessagesFlag == false)
+            else // scroll
             {
-                if (dataGridRx.Items.Count > 0)
+                dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty); // clear data grid/gui, is needed before using dataGridRxWindow.Items.Add
+                dataGridRxWindow.Items.Add(canRxData);
+            }
+
+            // scrolls to end of data grid, if not paused
+            if (pauseMessagesFlag == false && scrollFlag == true)
+            {
+                if (dataGridRxWindow.Items.Count > 0)
                 {
-                    var border = VisualTreeHelper.GetChild(dataGridRx, 0) as Decorator;
+                    var border = VisualTreeHelper.GetChild(dataGridRxWindow, 0) as Decorator;
                     if (border != null)
                     {
                         var scroll = border.Child as ScrollViewer;
@@ -825,7 +647,7 @@ namespace CAN_X_CAN_Analyzer
             string dateNow = now.ToString("HH:mm:ss.ffff");
 
             // get the current selected row data
-            CanTxData canTxData = dataGridTx.SelectedItem as CanTxData;
+            CanTxData canTxData = dataGridTxWindow.SelectedItem as CanTxData;
             // send to device
             SendCanData(ref canTxData);
 
@@ -839,7 +661,7 @@ namespace CAN_X_CAN_Analyzer
 
             // add formatted data to data grid
             isTransmitMessage = true;
-            AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag, NEW_DATA_FLAG);
+            AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag);
         }
         #endregion
 
@@ -997,10 +819,10 @@ namespace CAN_X_CAN_Analyzer
         #region clear receive window, ClearStatusBar
         private void ButtonClear_Click(object sender, RoutedEventArgs e)
         {
-            dataGridRx.ClearValue(ItemsControl.ItemsSourceProperty);
-            while (dataGridRx.Items.Count != 0)
+            dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+            while (dataGridRxWindow.Items.Count != 0)
             {
-                dataGridRx.Items.RemoveAt(0);
+                dataGridRxWindow.Items.RemoveAt(0);
             }
             Values.Clear();
             while (masterDataGridRx.Count != 0)
@@ -1009,6 +831,7 @@ namespace CAN_X_CAN_Analyzer
             }
             ProgressBar.Value = 0;
             lineCount = 0;
+            isDataGridWindowCleard = true;
         }
 
         private void ClearStatusBarStatus()
@@ -1194,12 +1017,12 @@ namespace CAN_X_CAN_Analyzer
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
         }
-        #endregion
-
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             _viewModel?.Dispose(); // Dispose the watcher when the window closes
         }
+
+        #endregion
 
         #region add and edit messages
         /*
@@ -1238,7 +1061,7 @@ namespace CAN_X_CAN_Analyzer
             canTxData.Key = newIndex;
             dataGridEditTxMessages.Items.Add(canTxData);
 
-            dataGridTx.Items.Add(canTxData); // the Tx dataGrid
+            dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
                                              //   dataGridTx.RowHeight = 15;
         }
 
@@ -1248,7 +1071,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 // TODO - need to find solution to delete selected row, for now using index
                 dataGridEditTxMessages.Items.RemoveAt(rowIndexEditTx);
-                dataGridTx.Items.RemoveAt(rowIndexEditTx);
+                dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
             }
         }
 
@@ -1674,7 +1497,7 @@ namespace CAN_X_CAN_Analyzer
                 //foreach (var item in dataGridRx.Items.OfType<CanRxData>())
                 {
                     strBuilder.Append(item.Line + ", ");
-                    strBuilder.Append(item.Count + ", ");
+                    strBuilder.Append(item.RxCount + ", ");
                     strBuilder.Append(item.TxCount + ", ");
                     strBuilder.Append(item.TimeAbs + ", ");
                     strBuilder.Append(item.Description + ", ");
@@ -1864,9 +1687,9 @@ namespace CAN_X_CAN_Analyzer
                             {
                                 dataGridEditTxMessages.Items.RemoveAt(0);
                             }
-                            while (dataGridTx.Items.Count != 0)
+                            while (dataGridTxWindow.Items.Count != 0)
                             {
-                                dataGridTx.Items.RemoveAt(0);
+                                dataGridTxWindow.Items.RemoveAt(0);
                             }
                             break;
                         case "edit_tx_messages":
@@ -2097,7 +1920,7 @@ namespace CAN_X_CAN_Analyzer
                                 canTxData.Notes = result;
 
                                 dataGridEditTxMessages.Items.Add(canTxData);
-                                dataGridTx.Items.Add(canTxData);
+                                dataGridTxWindow.Items.Add(canTxData);
                                 canTxData = new CanTxData();
                             }
                             else
@@ -2134,12 +1957,12 @@ namespace CAN_X_CAN_Analyzer
             data.Node = comboBox.SelectionBoxItem.ToString();
             dataGridEditTxMessages.Items.Refresh();
             // update dataGridTx
-            foreach (CanTxData canTxData in dataGridTx.Items)
+            foreach (CanTxData canTxData in dataGridTxWindow.Items)
             {
                 if (data.Key == canTxData.Key)
                 {
                     canTxData.Node = comboBox.SelectionBoxItem.ToString();
-                    dataGridTx.Items.Refresh();
+                    dataGridTxWindow.Items.Refresh();
                     break;
                 }
             }
@@ -2258,12 +2081,12 @@ namespace CAN_X_CAN_Analyzer
             }
             dataGridEditTxMessages.Items.Refresh();
             // now update dataGridTx
-            foreach (CanTxData row in dataGridTx.Items)
+            foreach (CanTxData row in dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
                     row.RTR = data.RTR;
-                    dataGridTx.Items.Refresh();
+                    dataGridTxWindow.Items.Refresh();
                 }
             }
         }
@@ -2278,7 +2101,7 @@ namespace CAN_X_CAN_Analyzer
                 rowStyle.TargetType = typeof(DataGridRow);
                 rowStyle.Setters.Add(new Setter() { Property = FontSizeProperty, Value = 20D });
                 rowStyle.Setters.Add(new Setter() { Property = HeightProperty, Value = 30D });
-                dataGridRx.RowStyle = rowStyle;
+                dataGridRxWindow.RowStyle = rowStyle;
 
                 USB_CAN_Interface.Properties.Settings.Default.imBlind = true;
                 USB_CAN_Interface.Properties.Settings.Default.Save();
@@ -2289,17 +2112,17 @@ namespace CAN_X_CAN_Analyzer
                 rowStyle.TargetType = typeof(DataGridRow);
                 rowStyle.Setters.Add(new Setter() { Property = FontSizeProperty, Value = 12D });
                 rowStyle.Setters.Add(new Setter() { Property = HeightProperty, Value = 18D });
-                dataGridRx.RowStyle = rowStyle;
+                dataGridRxWindow.RowStyle = rowStyle;
                 // resize columns
-                foreach (DataGridColumn c in dataGridRx.Columns)
+                foreach (DataGridColumn c in dataGridRxWindow.Columns)
                 {
                     c.Width = 0;
                 }
-                foreach (DataGridColumn c in dataGridRx.Columns)
+                foreach (DataGridColumn c in dataGridRxWindow.Columns)
                 {
                     c.Width = DataGridLength.Auto;
                 }
-                dataGridRx.UpdateLayout();
+                dataGridRxWindow.UpdateLayout();
 
                 USB_CAN_Interface.Properties.Settings.Default.imBlind = false;
                 USB_CAN_Interface.Properties.Settings.Default.Save();
@@ -2318,7 +2141,7 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
             // need to update the dataGridTx
-            foreach (CanTxData row in dataGridTx.Items)
+            foreach (CanTxData row in dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
@@ -2326,7 +2149,7 @@ namespace CAN_X_CAN_Analyzer
                     row.AutoTx = true;
 
                     dataGridEditTxMessages.Items.Refresh();
-                    dataGridTx.Items.Refresh();
+                    dataGridTxWindow.Items.Refresh();
                 }
             }
         }
@@ -2341,16 +2164,16 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
             // need to update the dataGridTx
-            foreach (CanTxData row in dataGridTx.Items)
+            foreach (CanTxData row in dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
-                    dataGridTx.UnselectAll();
+                    dataGridTxWindow.UnselectAll();
                     data.AutoTx = false;
                     row.AutoTx = false;
 
                     dataGridEditTxMessages.Items.Refresh();
-                    dataGridTx.Items.Refresh();
+                    dataGridTxWindow.Items.Refresh();
                 }
             }
         }
@@ -2359,7 +2182,7 @@ namespace CAN_X_CAN_Analyzer
         #region CheckBoxAutoTx Checked
         private void CheckBoxAutoTx_Checked(object sender, RoutedEventArgs e)
         {
-            CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData data = dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
             CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
 
             if (data == null)
@@ -2388,7 +2211,7 @@ namespace CAN_X_CAN_Analyzer
 
         private void CheckBoxAutoTx_Unchecked(object sender, RoutedEventArgs e)
         {
-            CanTxData data = dataGridTx.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData data = dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
             CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
 
             if (data == null)
@@ -2433,12 +2256,12 @@ namespace CAN_X_CAN_Analyzer
             data.Rate = ComboBoxEditTxRate.Text;
             dataGridEditTxMessages.Items.Refresh();
             // update dataGridTx
-            foreach (CanTxData canTxData in dataGridTx.Items)
+            foreach (CanTxData canTxData in dataGridTxWindow.Items)
             {
                 if (data.Key == canTxData.Key)
                 {
                     canTxData.Rate = ComboBoxEditTxRate.Text;
-                    dataGridTx.Items.Refresh();
+                    dataGridTxWindow.Items.Refresh();
                     break;
                 }
             }
@@ -2487,7 +2310,7 @@ namespace CAN_X_CAN_Analyzer
                 long mod = (ElapsedMilliseconds % Tick);
                 if (OldElapsedMilliseconds != ElapsedMilliseconds && (mod == 0 || ElapsedMilliseconds > Tick))
                 {
-                    foreach (CanTxData row in dataGridTx.Items)
+                    foreach (CanTxData row in dataGridTxWindow.Items)
                     {
                         if (row.AutoTx == true)
                         {
@@ -2496,6 +2319,23 @@ namespace CAN_X_CAN_Analyzer
                                 row.RateTimer = 0;
                                 canTxData = new CanTxData(row);
                                 SendCanData(ref canTxData);
+                                dataGridEditRxMessages.Dispatcher.BeginInvoke(new Action(delegate ()
+                                {
+                                    // added 8-15-2025
+                                    DateTime now = DateTime.Now;
+                                    string dateNow = now.ToString("HH:mm:ss.ffff");
+                                    // formatting canRxData with canTxData and adding line count, time, tx
+                                    CanRxData canRxData = new CanRxData(canTxData);
+                                    canRxData.Line = lineCount++;
+                                    canRxData.TimeAbs = dateNow;
+                                    canRxData.Tx = true;
+                                    // parse ASCII characters from data bytes
+                                    ParseAscii(ref canRxData);
+
+                                    // add formatted data to data grid
+                                    isTransmitMessage = true;
+                                    AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag);
+                                }));
                             }
                         }
                         else
@@ -2519,7 +2359,7 @@ namespace CAN_X_CAN_Analyzer
         private void MenuItemSaveRx_Click_1(object sender, RoutedEventArgs e)
         {
             // StatusBarStatus.Text = "Save to Rx";
-            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            CanRxData data = dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
             if (data == null)
             {
                 StatusBarStatus.Text = "Please select an ArbID to save";
@@ -2547,7 +2387,7 @@ namespace CAN_X_CAN_Analyzer
         private void MenuItemSaveTx_Click(object sender, RoutedEventArgs e)
         {
             // StatusBarStatus.Text = "Save to Tx";
-            CanRxData data = dataGridRx.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            CanRxData data = dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
             if (data == null)
             {
                 StatusBarStatus.Text = "Please select an ArbID to save";
@@ -2571,7 +2411,7 @@ namespace CAN_X_CAN_Analyzer
             // add to message editor Tx datagrid
             dataGridEditTxMessages.Items.Add(canTxData);
             // add to main Tx datagrid
-            dataGridTx.Items.Add(canTxData);
+            dataGridTxWindow.Items.Add(canTxData);
         }
         #endregion
 
@@ -2601,20 +2441,20 @@ namespace CAN_X_CAN_Analyzer
         {
             if (CheckBoxAscii.IsChecked == true)
             {
-                dataGridRx.Columns[20].Visibility = Visibility.Visible;
+                dataGridRxWindow.Columns[20].Visibility = Visibility.Visible;
             }
             else
             {
-                dataGridRx.Columns[20].Visibility = Visibility.Hidden;
+                dataGridRxWindow.Columns[20].Visibility = Visibility.Hidden;
             }
 
             if (CheckBoxNotes.IsChecked == true)
             {
-                dataGridRx.Columns[21].Visibility = Visibility.Visible;
+                dataGridRxWindow.Columns[21].Visibility = Visibility.Visible;
             }
             else
             {
-                dataGridRx.Columns[21].Visibility = Visibility.Hidden;
+                dataGridRxWindow.Columns[21].Visibility = Visibility.Hidden;
             }
         }
         #endregion

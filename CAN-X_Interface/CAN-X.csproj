@@ -89,9 +89,6 @@
     <Compile Include="COM_PortDrv.cs" />
     <Compile Include="EnumDefines.cs" />
     <Compile Include="HighResolutionTimer.cs" />
-    <Compile Include="Window2CopyMsg.xaml.cs">
-      <DependentUpon>Window2CopyMsg.xaml</DependentUpon>
-    </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -109,10 +106,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Window2CopyMsg.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
