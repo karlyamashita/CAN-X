@@ -100,9 +100,8 @@ namespace CAN_X_CAN_Analyzer
         bool pauseMessagesFlag = false;
         bool scrollMessagesFlag = false;
         bool isTransmitMessage = false;
-        bool isDataGridWindowCleard = false;
 
-        // all tx/rx messages are stored in this list
+        // all tx/rx messages are stored in this list. Can be used to save to file.
         List<CanRxData> masterDataGridRx = new List<CanRxData>(); 
 
         string mainWindowTitle = "";
@@ -499,13 +498,12 @@ namespace CAN_X_CAN_Analyzer
         private bool UpdateProgressBar()
         {
             // update progress bar
-            int count = masterDataGridRx.Count;
-            ProgressBar.Value = count;
+            ProgressBar.Value = lineCount;
 
-            TextBoxBufferPercentage.Text = count.ToString() + "/" + MAX_ROW_COUNT.ToString();
+            TextBoxBufferPercentage.Text = lineCount.ToString() + "/" + MAX_ROW_COUNT.ToString();
 
             // remove data from datagrid if we reach max amount of rows
-            if (count >= MAX_ROW_COUNT)
+            if (lineCount >= MAX_ROW_COUNT)
             {
                 ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
                 return true;
@@ -593,7 +591,7 @@ namespace CAN_X_CAN_Analyzer
                         break;
                     }
                 }
-                if (!is_CAN_ID_Match)// no match, so add new data
+                if (!is_CAN_ID_Match || dataGridRxWindow.Items.Count == 0)// no match, so add new data
                 {
                     if (!transmitFlag)
                     {
@@ -604,12 +602,19 @@ namespace CAN_X_CAN_Analyzer
                         canRxData.TxCount = (1).ToString();
                     }
                     Values.Add(canRxData); // adds data to next row on data grid/gui
+
+                    dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty); // clear data grid/gui, is needed before using dataGridRxWindow.Items.Add
+                    dataGridRxWindow.Items.Add(canRxData);
+
+                    masterDataGridRx.Add(canRxData); // do we need master list?
                 }
             }
             else // scroll
             {
                 dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty); // clear data grid/gui, is needed before using dataGridRxWindow.Items.Add
                 dataGridRxWindow.Items.Add(canRxData);
+
+                masterDataGridRx.Add(canRxData); // do we need master list?
             }
 
             // scrolls to end of data grid, if not paused
@@ -831,7 +836,6 @@ namespace CAN_X_CAN_Analyzer
             }
             ProgressBar.Value = 0;
             lineCount = 0;
-            isDataGridWindowCleard = true;
         }
 
         private void ClearStatusBarStatus()
@@ -2019,6 +2023,14 @@ namespace CAN_X_CAN_Analyzer
         private void ButtonScrollMessages_Click(object sender, RoutedEventArgs e)
         {
             scrollMessagesFlag = (bool)ButtonScrollMessages.IsChecked;
+            if (!scrollMessagesFlag)
+            {
+                dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+                while (dataGridRxWindow.Items.Count != 0)
+                {
+                    dataGridRxWindow.Items.RemoveAt(0);
+                }
+            }
         }
         #endregion
 
@@ -2465,13 +2477,6 @@ namespace CAN_X_CAN_Analyzer
             About about = new About();
             about.Show();
         }
-
-        private void ComboBoxCOM_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-
     }
 }
 

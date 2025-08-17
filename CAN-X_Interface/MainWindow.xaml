@@ -122,7 +122,7 @@
                 </StackPanel>
                 <StackPanel>
                     <StackPanel>
-                        <ComboBox x:Name="ComboBoxCOM" SelectedIndex="0" ItemsSource="{Binding AvailablePorts}" DisplayMemberPath="FullName" SelectedValuePath="PortName" SelectedValue="{Binding SelectedComPort}" SelectionChanged="ComboBoxCOM_SelectionChanged"/>
+                        <ComboBox x:Name="ComboBoxCOM" SelectedIndex="0" ItemsSource="{Binding AvailablePorts}" DisplayMemberPath="FullName" SelectedValuePath="PortName" SelectedValue="{Binding SelectedComPort}"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel>
