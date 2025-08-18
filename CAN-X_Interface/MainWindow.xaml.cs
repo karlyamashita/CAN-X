@@ -83,6 +83,8 @@ namespace CAN_X_CAN_Analyzer
         const int DATA_SIZE = 17;
         const bool NEW_DATA_FLAG = true;
 
+        const int COM_PORT_QUEUE_SIZE = 256;
+
         const int MAX_ROW_COUNT = 10000; // how many lines to receive. This is used for the progress as well
         #endregion
 
@@ -156,10 +158,10 @@ namespace CAN_X_CAN_Analyzer
 
         private void ComPortManager_DataReceived(object sender, byte[] data)
         {
-            byte[,] twoDByteArray = new byte[256, data.Length];
+            byte[,] twoDByteArray = new byte[COM_PORT_QUEUE_SIZE, data.Length];
             int msgCount = 0;
 
-            PreParseCOM_PortData(ref twoDByteArray, data, ref msgCount);
+            QueueCOM_PortData(ref twoDByteArray, data, ref msgCount);
 
             int rowLength = twoDByteArray.GetLength(1);
             for (int i = 0; i < msgCount; i++)
@@ -175,9 +177,9 @@ namespace CAN_X_CAN_Analyzer
         }
 
         /*
-         * Description: parse multiple messages in COM buffer into it's own queue. 
+         * Description: Parse message(s) from COM buffer into it's own queue. 
          */
-        private void PreParseCOM_PortData(ref byte[,] buffer, byte[] data, ref int msgCount)
+        private void QueueCOM_PortData(ref byte[,] buffer, byte[] data, ref int msgCount)
         {
             int idxPtr = 0;
             int i = 0;
@@ -220,7 +222,7 @@ namespace CAN_X_CAN_Analyzer
                 case COMMAND_NAK:
                     // StatusBarStatus.Text = "NAK Received";
                     break;
-                case COMMAND_CAN_BTR:
+                case COMMAND_CAN_BTR: // TODO - Work on STM32 to send this data
                     ShowBTC_VALUE(newArray);
                     break;
                 case COMMAND_VERSION:
