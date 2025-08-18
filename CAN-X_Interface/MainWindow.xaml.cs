@@ -342,10 +342,20 @@ namespace CAN_X_CAN_Analyzer
             UInt32 btrValue = 0;
             btrValue = (UInt32)(data[2] << 24 | data[3] << 16 | data[4] << 8 | data[5]);
 
-            if ((btrValue >> 31 & 0x1) == 1)
+            if ((btrValue >> 31 & 0x1) == 1) // silent
             {
-                //   CheckBoxListenOnly.IsChecked = true;
+                ComboBoxMode.SelectedIndex = 2;
             }
+            else if ((btrValue >> 32 & 0x1) == 1) // loopback
+            {
+                ComboBoxMode.SelectedIndex = 1;
+            }
+            else // normal
+            {
+                ComboBoxMode.SelectedIndex = 0;
+            }
+
+            // TODO - show selected baud rate in combobox
 
             TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
 
@@ -358,6 +368,7 @@ namespace CAN_X_CAN_Analyzer
                 if (item.value == TextBoxBtrValue.Text)
                 {
                     ComboBoxBaudRate.SelectedIndex = i;
+
                     return;
                 }
                 i++;
@@ -387,12 +398,9 @@ namespace CAN_X_CAN_Analyzer
                 isTransmitMessage = false;
                 AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag);
 
-                // add to master list, update count first
-                //   canRxData.Count = count;
-                //   masterDataGridRx.Add(canRxData);
-
                 // update the progress bar and remove first row if we are at MAX_ROW_COUNT
                 if (UpdateProgressBar()) dataGridRxWindow.Items.RemoveAt(0);
+                //if (UpdateProgressBar()) Values.RemoveAt(0);
             }));
         }
         #endregion

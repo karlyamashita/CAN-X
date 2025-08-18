@@ -96,6 +96,7 @@
             <StackPanel DockPanel.Dock="Top" Height="25" Margin="0">
                 <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
                     <MenuItem x:Name="MenuItemFile" Header="File">
+                        <MenuItem Header="New" IsEnabled="False"/>
                         <MenuItem x:Name="MenuItemOpenProject" Header="Open Project" Click="MenuItemOpenProject_Click"/>
                         <MenuItem x:Name="MenuItemSaveProject" Header="Save Project" Click="MenuItemSaveProject_Click"/>
                         <Separator/>
