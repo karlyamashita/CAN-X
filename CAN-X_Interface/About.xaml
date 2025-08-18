@@ -11,7 +11,7 @@
     <Grid>
         <Label Content="CAN-X" HorizontalAlignment="Left" Margin="81,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Open Source CAN Bus Analyzer" HorizontalAlignment="Left" Margin="81,36,0,0" VerticalAlignment="Top"/>
-        <Image Margin="10,10,0,0" Source="/CAN-X Logo.ico" Stretch="Fill" Width="52" Height="52" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Image Margin="10,10,0,0" Source="/CAN-X_Logo.png" Stretch="Fill" Width="52" Height="52" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Label x:Name="Label_version" Content="version" HorizontalAlignment="Left" Margin="81,62,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Label_copyright" Content="copyright" HorizontalAlignment="Left" Margin="81,88,0,0" VerticalAlignment="Top"/>
         <Button x:Name="button_ok" Content="OK" HorizontalAlignment="Left" Margin="218,129,0,0" VerticalAlignment="Top" Click="button_ok_Click" Width="50"/>

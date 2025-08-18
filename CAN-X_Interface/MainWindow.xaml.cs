@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms;
@@ -15,28 +24,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
-using Button = System.Windows.Controls.Button;
-using System.ComponentModel;
-using DataGridCell = System.Windows.Controls.DataGridCell;
-using System.Windows.Controls.Primitives;
-using DataGrid = System.Windows.Controls.DataGrid;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Globalization;
-using TextBox = System.Windows.Controls.TextBox;
-using System.Xml.Serialization;
-using System.Xml.Linq;
+using System.Windows.Threading;
 using System.Xml;
-using System.Data;
-using Path = System.IO.Path;
-using ComboBox = System.Windows.Controls.ComboBox;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 using USB_CAN_Interface;
+using Button = System.Windows.Controls.Button;
+using ComboBox = System.Windows.Controls.ComboBox;
+using DataGrid = System.Windows.Controls.DataGrid;
+using DataGridCell = System.Windows.Controls.DataGridCell;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+using Path = System.IO.Path;
+using TextBox = System.Windows.Controls.TextBox;
 using Timer = System.Threading.Timer;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO.Ports;
 
 
 /*
@@ -247,68 +247,52 @@ namespace CAN_X_CAN_Analyzer
             {
                 comPort.Open();
 
-                Console.WriteLine(comPort.portName + " is Opened");
+                LabelConnectionStatus.Content = comPort.portName + " is Opened";
 
-                RichTextBoxConnectStatus.Document.Blocks.Clear();
-                Paragraph myParagraph = new Paragraph(new Run(comPort.portName + " is Opened"))
-                {
-                    Foreground = Brushes.Black,
-                    Background = Brushes.LightGreen,
-                    //myParagraph.FontFamily = new FontFamily("Arial");
-                    //myParagraph.FontSize = 12;
-                    //myParagraph.FontWeight = FontWeights.UltraBold;
-                    //myParagraph.FontStretch = FontStretches.UltraExpanded;
-                    Padding = new Thickness(5, 1, 5, 1),
-                    FontWeight = FontWeights.Bold,
-                    TextAlignment = TextAlignment.Center
-                };
-                RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
+                Console.WriteLine(comPort.portName + " is Opened");           
 
                 GetInfo();
 
+                ButtonDisconnect.IsEnabled = true;
+                ButtonConnect.IsEnabled = false;
             }
-            catch (Exception ex)
+            catch (Exception ex) // TODO - make this and the button close call a function
             {
-                Console.WriteLine(comPort.portName + " is not valid");
-                RichTextBoxConnectStatus.Document.Blocks.Clear();
-                Paragraph myParagraph = new Paragraph(new Run(comPort.portName + " is not valid"))
-                {
-                    Foreground = Brushes.White,
-                    Background = Brushes.Red,
-                    //myParagraph.FontFamily = new FontFamily("Arial");
-                    //myParagraph.FontSize = 12;
-                    //myParagraph.FontWeight = FontWeights.UltraBold;
-                    //myParagraph.FontStretch = FontStretches.UltraExpanded;
-                    Padding = new Thickness(5, 1, 5, 1),
-                    FontWeight = FontWeights.Bold,
-                    TextAlignment = TextAlignment.Center
-                };
-                RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
+
+                LabelConnectionStatus.Content = comPort.portName + " is not valid";
+
+                Console.WriteLine(comPort.portName + " is not valid");               
             }
         }
 
         private void ButtonDisconnect_Click(object sender, RoutedEventArgs e)
         {
-            //Device.Disconnect();
-            if (comPort.IsOpen)
+            try
             {
                 comPort.Close();
+
+                LabelConnectionStatus.Content = comPort.portName + " is Closed";
+
                 Console.WriteLine(comPort.portName + " is Closed");
 
-                RichTextBoxConnectStatus.Document.Blocks.Clear();
-                Paragraph myParagraph = new Paragraph(new Run(comPort.portName + " is Closed"))
+                ClearStatusSoftwareHarHardware();
+
+                ButtonConnect.IsEnabled = true;
+                ButtonDisconnect.IsEnabled = false;
+
+                if (threadAutoTx != null)
                 {
-                    Foreground = Brushes.Black,
-                    Background = Brushes.Gold,
-                    //myParagraph.FontFamily = new FontFamily("Arial");
-                    //myParagraph.FontSize = 12;
-                    //myParagraph.FontWeight = FontWeights.UltraBold;
-                    //myParagraph.FontStretch = FontStretches.UltraExpanded;
-                    Padding = new Thickness(5, 1, 5, 1),
-                    FontWeight = FontWeights.Bold,
-                    TextAlignment = TextAlignment.Center
-                };
-                RichTextBoxConnectStatus.Document.Blocks.Add(myParagraph);
+                    threadAutoTx.Abort();
+                    threadAutoTx = null;
+                }
+                sw.Stop(); // for auto tx
+                toggleButtonAutoTx.IsChecked = false;
+            }
+            catch (Exception ex)
+            {
+                LabelConnectionStatus.Content = "No COM Opened";
+
+                Console.WriteLine("No COM Opened");              
             }
         }
 
@@ -850,7 +834,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region sends new baud rate to device and/or Listen mode
+        #region ButtonBtr click. Sends new baud rate to device and/or Listen mode
         // Todo - this modifies CAN1, need to make another button  or another approach to modify CAN2, SWCAN, etc
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
@@ -1392,7 +1376,6 @@ namespace CAN_X_CAN_Analyzer
             if (dgr == null) { return; }
 
             rowIndexEditTx = dgr.GetIndex();
-            //   StatusBarStatus.Text = rowIndexEditTx.ToString();
         }
 
         // gets the row index
@@ -1409,7 +1392,6 @@ namespace CAN_X_CAN_Analyzer
             if (dgr == null) { return; }
 
             rowIndexEditRx = dgr.GetIndex();
-            //   StatusBarStatus.Text = rowIndexEditRx.ToString();
         }
         #endregion
 
@@ -2023,6 +2005,8 @@ namespace CAN_X_CAN_Analyzer
         private void ButtonScrollMessages_Click(object sender, RoutedEventArgs e)
         {
             scrollMessagesFlag = (bool)ButtonScrollMessages.IsChecked;
+            
+            // no longer scrolling so clear screen so active messages show on gui.
             if (!scrollMessagesFlag)
             {
                 dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
@@ -2030,6 +2014,13 @@ namespace CAN_X_CAN_Analyzer
                 {
                     dataGridRxWindow.Items.RemoveAt(0);
                 }
+                Values.Clear();
+                ButtonPauseMessages.IsEnabled = false;
+                ButtonPauseMessages.IsChecked = false;
+            }
+            else
+            {
+                ButtonPauseMessages.IsEnabled = true;
             }
         }
         #endregion
@@ -2285,7 +2276,7 @@ namespace CAN_X_CAN_Analyzer
         {
             if (toggleButtonAutoTx.IsChecked == true)
             {
-                if (!comPort.IsOpen)
+                if ((comPort != null) && !comPort.IsOpen)
                 {
                     StatusBarStatus.Text = "Device Not Connected";
                     toggleButtonAutoTx.IsChecked = false;
@@ -2298,14 +2289,15 @@ namespace CAN_X_CAN_Analyzer
                     threadAutoTx.Start();
                     sw.Start();
                 }
-                //    StatusBarStatus.Text = "Started";
             }
             else
             {
-                threadAutoTx.Abort();
-                threadAutoTx = null;
+                if (threadAutoTx != null)
+                { 
+                    threadAutoTx.Abort();
+                    threadAutoTx = null;
+                }
                 sw.Stop();
-                //    StatusBarStatus.Text = "Stopped";
             }
         }
 
@@ -2316,7 +2308,9 @@ namespace CAN_X_CAN_Analyzer
             long OldElapsedMilliseconds = 0;
             CanTxData canTxData = null;
 
-            while (sw.IsRunning && comPort.IsOpen)
+            if(comPort == null || (comPort.IsOpen == false)) return;
+
+            while (sw.IsRunning)
             {
                 long ElapsedMilliseconds = sw.ElapsedMilliseconds;
                 long mod = (ElapsedMilliseconds % Tick);

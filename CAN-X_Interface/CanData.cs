@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Security.RightsManagement;
 
 namespace CAN_X_CAN_Analyzer
 {
@@ -53,6 +54,8 @@ namespace CAN_X_CAN_Analyzer
         public string Count { get; set; } = "1";
         public string Notes { get; set; } = "";
         public string Color { get; set; } = "";
+
+        public UInt32 ScheduledTime { get; set; } // try something new
 
         public CanTxData()
         {

@@ -55,7 +55,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>CAN-X Logo.ico</ApplicationIcon>
+    <ApplicationIcon>CAN-X_Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -167,7 +167,10 @@
     <Resource Include="Resources\connect.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="CAN-X Logo.ico" />
+    <Resource Include="CAN-X_Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="CAN-X_Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
