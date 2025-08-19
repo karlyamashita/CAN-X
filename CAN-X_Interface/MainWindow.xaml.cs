@@ -342,39 +342,49 @@ namespace CAN_X_CAN_Analyzer
         {
             // todo - parse the BTC_VALUE and show in TextBoxBtcValue. Then set index in the ComboBoxBaudRate
             UInt32 btrValue = 0;
-            btrValue = (UInt32)(data[2] << 24 | data[3] << 16 | data[4] << 8 | data[5]);
-
-            if ((btrValue >> 31 & 0x1) == 1) // silent
-            {
-                ComboBoxMode.SelectedIndex = 2;
-            }
-            else if ((btrValue >> 32 & 0x1) == 1) // loopback
-            {
-                ComboBoxMode.SelectedIndex = 1;
-            }
-            else // normal
-            {
-                ComboBoxMode.SelectedIndex = 0;
-            }
+            btrValue = (UInt32)(data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3]);
 
             // TODO - show selected baud rate in combobox
-
-            TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
-
-            int i = 0;
-            string comboBoxAPB1Name = ComboBoxAPB1.SelectedValue.ToString();
-            CAN_BaudRate can_baudRate = new CAN_BaudRate(comboBoxAPB1Name);
-
-            foreach (var item in can_baudRate.baudList)
+            TextBoxBtrValue.Dispatcher.BeginInvoke(new Action(delegate ()
             {
-                if (item.value == TextBoxBtrValue.Text)
-                {
-                    ComboBoxBaudRate.SelectedIndex = i;
+                TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
+            }));
 
-                    return;
+            ComboBoxMode.Dispatcher.BeginInvoke(new Action(delegate ()
+            {
+                if ((btrValue & 0x80000000) == 0x80000000) // silent
+                {
+                    ComboBoxMode.SelectedIndex = 2;
                 }
-                i++;
-            }
+                else if ((btrValue & 0x40000000) == 0x40000000) // loopback
+                {
+                    ComboBoxMode.SelectedIndex = 1;
+                }
+                else // normal
+                {
+                    ComboBoxMode.SelectedIndex = 0;
+                }
+            }));
+
+            ComboBoxAPB1.Dispatcher.BeginInvoke(new Action(delegate ()
+            {
+                int i = 0;
+                string comboBoxAPB1Name = ComboBoxAPB1.SelectedValue.ToString();
+                CAN_BaudRate can_baudRate = new CAN_BaudRate(comboBoxAPB1Name);
+
+                foreach (var item in can_baudRate.baudList)
+                {
+                    UInt32 _item = Convert.ToUInt32(item.value, 16) & 0x3FFFFFFF;
+                    UInt32 _textBox = btrValue & 0x3FFFFFFF;
+                    if (_item == _textBox)
+                    {
+                        ComboBoxBaudRate.SelectedIndex = i;
+
+                        return;
+                    }
+                    i++;
+                }
+            }));
         }
         #endregion
 
