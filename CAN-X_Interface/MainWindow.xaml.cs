@@ -420,6 +420,8 @@ namespace CAN_X_CAN_Analyzer
         #region Parse ASCII from data
         private void ParseAscii(ref CanRxData canRxData)
         {
+            /*
+            if (CheckBoxAscii.IsChecked != true) return;
             byte[] data = new byte[8];
             int dlcLength = (char)Convert.ToUInt16(canRxData.DLC);
 
@@ -457,6 +459,7 @@ namespace CAN_X_CAN_Analyzer
             }
 
             canRxData.ASCII = Encoding.UTF8.GetString(data);
+            */
         }
         #endregion
 
@@ -640,7 +643,7 @@ namespace CAN_X_CAN_Analyzer
         #region Button event to send CAN Tx message and to update DataGrid. Starts delegate
         private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
         {
-            if (!comPort.IsOpen)
+            if ((comPort == null) || (comPort.IsOpen == false))
             {
                 StatusBarStatus.Text = "Device Not Connected";
                 return;
@@ -657,11 +660,13 @@ namespace CAN_X_CAN_Analyzer
 
             // get the current selected row data
             CanTxData canTxData = dataGridTxWindow.SelectedItem as CanTxData;
-            // send to device
-            SendCanData(ref canTxData);
 
             // formatting canRxData with canTxData and adding line count, time, tx
-            CanRxData canRxData = new CanRxData(canTxData);
+            CanRxData canRxData = new CanRxData(canTxData); // make copy before calling SendCanData below. Really only a problem with AutoTx, but we'll follow the same procedure here as well.
+
+            // send to device
+            SendCanData(ref canTxData);
+            //CanRxData canRxData = new CanRxData(canTxData); // this is created before calling SendCanData above
             canRxData.Line = lineCount++;
             canRxData.TimeAbs = dateNow;
             canRxData.Tx = true;
@@ -858,7 +863,7 @@ namespace CAN_X_CAN_Analyzer
         // Todo - this modifies CAN1, need to make another button  or another approach to modify CAN2, SWCAN, etc
         private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
         {
-            if ((comPort == null) || !comPort.IsOpen)
+            if ((comPort == null) || (comPort.IsOpen == false))
             {
                 StatusBarStatus.Text = "Device Not Connected";
                 return;
@@ -1018,7 +1023,11 @@ namespace CAN_X_CAN_Analyzer
             }
             else
             {
-                if (comPort != null && comPort.IsOpen)
+                if (comPort == null || (comPort.IsOpen == false))
+                {
+                    return;
+                }
+                else
                 {
                     comPort.Close(); // disconnet USB device
                 }
@@ -2296,7 +2305,7 @@ namespace CAN_X_CAN_Analyzer
         {
             if (toggleButtonAutoTx.IsChecked == true)
             {
-                if ((comPort != null) && !comPort.IsOpen)
+                if ((comPort == null) || (comPort.IsOpen == false))
                 {
                     StatusBarStatus.Text = "Device Not Connected";
                     toggleButtonAutoTx.IsChecked = false;
@@ -2307,8 +2316,9 @@ namespace CAN_X_CAN_Analyzer
                 {
                     threadAutoTx = new Thread(TxSendThread);
                     threadAutoTx.Start();
-                    sw.Start();
                 }
+                
+                sw.Start();
             }
             else
             {
@@ -2344,6 +2354,7 @@ namespace CAN_X_CAN_Analyzer
                             {
                                 row.RateTimer = 0;
                                 canTxData = new CanTxData(row);
+                                CanRxData canRxData = new CanRxData(canTxData); // save to rx first before sending
                                 SendCanData(ref canTxData);
                                 dataGridEditRxMessages.Dispatcher.BeginInvoke(new Action(delegate ()
                                 {
@@ -2351,7 +2362,7 @@ namespace CAN_X_CAN_Analyzer
                                     DateTime now = DateTime.Now;
                                     string dateNow = now.ToString("HH:mm:ss.ffff");
                                     // formatting canRxData with canTxData and adding line count, time, tx
-                                    CanRxData canRxData = new CanRxData(canTxData);
+                                   // CanRxData canRxData = new CanRxData(canTxData); // done before calling SendCanData above. Now GUI update seems to be in sync with Transmitted messages.
                                     canRxData.Line = lineCount++;
                                     canRxData.TimeAbs = dateNow;
                                     canRxData.Tx = true;
