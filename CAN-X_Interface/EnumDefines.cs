@@ -26,11 +26,19 @@ namespace CAN_X_CAN_Analyzer
         public enum TxRate
         {
             _100,
+            _125,
             _250,
+            _300,
             _500,
+            _750,
+            _800,
             _1000,
+            _1200,
+            _1500,
             _2000,
-            _5000
+            _2500,
+            _5000,
+            _10000
         }
 
         public enum DataByteType

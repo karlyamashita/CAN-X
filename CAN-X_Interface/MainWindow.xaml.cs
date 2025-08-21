@@ -2504,6 +2504,48 @@ namespace CAN_X_CAN_Analyzer
             About about = new About();
             about.Show();
         }
+
+        private void ButtonCopyEditTxRow_Click(object sender, RoutedEventArgs e)
+        {
+            UInt32 newIndex = 0;
+
+            if (dataGridEditTxMessages.SelectedItem != null)
+            {
+                CanTxData selectedItem = (CanTxData)dataGridEditTxMessages.SelectedItem;
+
+                CanTxData newCanTxData = new CanTxData
+                {
+                    Description = selectedItem.Description,
+                    AutoTx = selectedItem.AutoTx,
+                    Rate = selectedItem.Rate,
+                    IDE = selectedItem.IDE,
+                    ArbID = selectedItem.ArbID,
+                    RTR = selectedItem.RTR,
+                    DLC = selectedItem.DLC,
+                    Byte1 = selectedItem.Byte1,
+                    Byte2 = selectedItem.Byte2,
+                    Byte3 = selectedItem.Byte3,
+                    Byte4 = selectedItem.Byte4,
+                    Byte5 = selectedItem.Byte5,
+                    Byte6 = selectedItem.Byte6,
+                    Byte7 = selectedItem.Byte7,
+                    Byte8 = selectedItem.Byte8,
+                    Node = selectedItem.Node
+                };
+
+                // TODO- need to interate and find next or unused index key. Once done, we can uncomment next line
+                foreach (CanTxData tx in dataGridEditTxMessages.Items)
+                {
+                    if (tx.Key > newIndex)
+                    {
+                        newIndex = (UInt32)tx.Key;
+                    }
+                }
+                newCanTxData.Key = newIndex + 1; // update key before adding item
+
+                dataGridEditTxMessages.Items.Add(newCanTxData);
+            }
+        }
     }
 }
 

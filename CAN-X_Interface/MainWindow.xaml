@@ -603,6 +603,19 @@
                                                     </StackPanel>
                                                 </Button.ToolTip>
                                             </Button>
+                                            <Button x:Name="ButtonCopyEditTxRow" Width="25" Height="25"  Margin="5,0,0,0" Click="ButtonCopyEditTxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                                                <Image Source="Resources/icons8-copy-64.png" />
+                                                <Button.ToolTip>
+                                                    <StackPanel>
+                                                        <TextBlock FontWeight="Bold" FontSize="14">
+                                                            Copy Message
+                                                        </TextBlock>
+                                                        <TextBlock>
+                                                            Select an ArbID to Copy
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                            </Button>
                                         </StackPanel>
                                         <DataGrid x:Name="dataGridEditTxMessages" Grid.Row="1" Background="White" IsReadOnly="True" MouseLeftButtonUp="DataGridEditTxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditTxMessages_PreviewMouseLeftButtonDown" >
                                             <DataGrid.Columns>
