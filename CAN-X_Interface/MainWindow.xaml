@@ -135,7 +135,7 @@
                                 <ComboBox x:Name="ComboBoxBaudRate" Margin="0" VerticalAlignment="Top" SelectionChanged="ComboBoxBaudRate_SelectionChanged" Width="75" HorizontalAlignment="Right"/>
                                 <Label Content="Baud Rate (Kbit/s)" />
                             </StackPanel>
-                            
+
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Left">
                                 <ComboBox x:Name="ComboBoxMode" HorizontalAlignment="Left" SelectionChanged="ComboBoxMode_SelectionChanged" >
                                     <ComboBoxItem Content="Normal" IsSelected="True"/>
@@ -162,7 +162,7 @@
                             </Button>
 
                         </StackPanel>
-                        
+
                     </GroupBox>
                 </StackPanel>
                 <GroupBox Header="Misc" Height="113" BorderBrush="#FFABAFB2">
@@ -195,24 +195,24 @@
                 </GroupBox>
                 <GroupBox Header="Auto Tx" BorderBrush="#FFABAFB2">
                     <StackPanel Margin="0,10,0,20">
-                    <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}" Height="20" IsEnabled="True">
-                        <ToggleButton.ToolTip>
-                            <StackPanel>
-                                <TextBlock FontWeight="Bold" FontSize="14">
+                        <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}" Height="20" IsEnabled="True">
+                            <ToggleButton.ToolTip>
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" FontSize="14">
                Auto Transmit
-                                </TextBlock>
-                                <TextBlock>
+                                    </TextBlock>
+                                    <TextBlock>
                Automatically transmit messages in list that are checked
-                                </TextBlock>
-                            </StackPanel>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
-                </StackPanel>
-                    
+                                    </TextBlock>
+                                </StackPanel>
+                            </ToggleButton.ToolTip>
+                        </ToggleButton>
+                    </StackPanel>
+
                 </GroupBox>
-       
+
             </StackPanel>
-            
+
             <TabControl >
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
@@ -241,6 +241,10 @@
                 </TabControl.Resources>
                 <TabItem Header="Message Monitor">
                     <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="89*"/>
+                            <ColumnDefinition Width="405*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="*"/>
@@ -248,7 +252,7 @@
                             <RowDefinition Height="200"/>
                             <!--<RowDefinition Height="60"/>-->
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="3">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="2">
                             <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20" Template="{StaticResource RoundedButtonTemplate}"/>
                             <Button x:Name="ButtonSaveRxMessages" Content="Save Messages" Width="91" Margin="30,0,0,0" Click="ButtonSaveRxMessages_Click" Height="20" MinWidth="100" Template="{StaticResource RoundedButtonTemplate}">
                                 <Button.ToolTip>
@@ -278,13 +282,13 @@
 
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
-                        <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,0,0,5" Grid.ColumnSpan="2" Grid.RowSpan="2">
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem x:Name="MenuItemSaveRx" Header="Save to Rx" Click="MenuItemSaveRx_Click_1"/>
-                                    <MenuItem x:Name="MenuItemSaveRxWithData" Header="Save to Rx with data" IsEnabled="False"/>
+                                    <!-- <MenuItem x:Name="MenuItemSaveRxWithData" Header="Save to Rx with data" IsEnabled="False"/> -->
                                     <MenuItem x:Name="MenuItemSaveTx" Header="Save to Tx" Click="MenuItemSaveTx_Click"/>
-                                    <MenuItem x:Name="MenuItemSaveTxWithData" Header="Save to Tx with data" IsEnabled="False"/>
+                                    <!--<MenuItem x:Name="MenuItemSaveTxWithData" Header="Save to Tx with data" IsEnabled="False"/>-->
                                 </ContextMenu>
                             </DataGrid.ContextMenu>
                             <DataGrid.Background>
@@ -372,9 +376,9 @@
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0"/>
+                        <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0,0,0,200" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
 
-                        <Grid Grid.Row="3">
+                        <Grid Grid.Row="3" Grid.ColumnSpan="2">
 
                             <DataGrid x:Name="dataGridTxWindow" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
                                 <DataGrid.Columns>
@@ -420,8 +424,13 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Message Editor">
-                    <Grid Margin="0,0,0,20">
-                        <TabControl TabStripPlacement="Bottom">
+                    <Grid Margin="0,0,0,0">
+                        <TabControl TabStripPlacement="Top">
+                            <TabControl.Resources>
+                                <Style TargetType="TabPanel">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </TabControl.Resources>
                             <TabItem Header="Receive Messages">
                                 <DockPanel>
                                     <Grid DockPanel.Dock="Top" Margin="5">

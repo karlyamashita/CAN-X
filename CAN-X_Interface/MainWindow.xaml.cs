@@ -2330,7 +2330,9 @@ namespace CAN_X_CAN_Analyzer
                 sw.Stop();
             }
         }
+        #endregion
 
+        #region TxSendThread
         public void TxSendThread(object state)
         {
             int Tick = 10;
