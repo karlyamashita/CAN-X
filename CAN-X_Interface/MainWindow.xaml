@@ -475,6 +475,19 @@
                                                 </Button.ToolTip>
                                                 <Image Source="Resources/icons8-minus-64.png" />
                                             </Button>
+                                            <Button x:Name="ButtonCopyEditRxRow" Width="25" Height="25" Margin="5,0,0,0" Click="ButtonCopyEditRxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                                                <Button.ToolTip>
+                                                    <StackPanel>
+                                                        <TextBlock FontWeight="Bold" FontSize="14">
+                                                        Copy Message
+                                                        </TextBlock>
+                                                        <TextBlock>
+                                                        Select an ArbID to Delete
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                                <Image Source="Resources/icons8-copy-64.png" />
+                                            </Button>
                                         </StackPanel>
                                         <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridEditRxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditRxMessages_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2" Margin="0,0,0,60" Grid.RowSpan="2" >
                                             <DataGrid.Columns>
