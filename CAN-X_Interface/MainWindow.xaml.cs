@@ -1362,31 +1362,94 @@ namespace CAN_X_CAN_Analyzer
                     canTxData.ArbID = tempStr;
                     break;
                 case "TextBoxTxDLC":
-                    canTxData.DLC = TextBoxTxDLC.Text.ToUpper();
+                    if (TextBoxTxDLC.Text != string.Empty)
+                    {
+                        canTxData.DLC = uint.Parse(TextBoxTxDLC.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.DLC = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte1":
-                    canTxData.Byte1 = TextBoxTxByte1.Text.ToUpper();
+                    if (TextBoxTxByte1.Text != string.Empty)
+                    {
+                        canTxData.Byte1 = uint.Parse(TextBoxTxByte1.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte1 = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte2":
-                    canTxData.Byte2 = TextBoxTxByte2.Text.ToUpper();
+                    if (TextBoxTxByte2.Text != string.Empty)
+                    {
+                        canTxData.Byte2 = uint.Parse(TextBoxTxByte2.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte2 = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte3":
-                    canTxData.Byte3 = TextBoxTxByte3.Text.ToUpper();
+                    if (TextBoxTxByte3.Text != string.Empty)
+                    {
+                        canTxData.Byte3 = uint.Parse(TextBoxTxByte3.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte3 = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte4":
-                    canTxData.Byte4 = TextBoxTxByte4.Text.ToUpper();
+                    if (TextBoxTxByte4.Text != string.Empty)
+                    {
+                        canTxData.Byte4 = uint.Parse(TextBoxTxByte4.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte4 = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte5":
-                    canTxData.Byte5 = TextBoxTxByte5.Text.ToUpper();
+                    if (TextBoxTxByte5.Text != string.Empty)
+                    {
+                        canTxData.Byte5 = uint.Parse(TextBoxTxByte5.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte5 = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte6":
-                    canTxData.Byte6 = TextBoxTxByte6.Text.ToUpper();
+                    if (TextBoxTxByte6.Text != string.Empty)
+                    {
+                        canTxData.Byte6 = uint.Parse(TextBoxTxByte6.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte6 = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte7":
-                    canTxData.Byte7 = TextBoxTxByte7.Text.ToUpper();
+                    if (TextBoxTxByte7.Text != string.Empty)
+                    {
+                        canTxData.Byte7 = uint.Parse(TextBoxTxByte7.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte7 = string.Empty;
+                    }
                     break;
                 case "TextBoxTxByte8":
-                    canTxData.Byte8 = TextBoxTxByte8.Text.ToUpper();
+                    if (TextBoxTxByte8.Text != string.Empty)
+                    {
+                        canTxData.Byte8 = uint.Parse(TextBoxTxByte8.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canTxData.Byte8 = string.Empty;
+                    }
                     break;
 
             }
@@ -1440,31 +1503,151 @@ namespace CAN_X_CAN_Analyzer
                     canRxData.ArbID = tempStr;
                     break;
                 case "TextBoxRxDLC":
-                    canRxData.DLC = TextBoxRxDLC.Text.ToUpper();
+                    if (TextBoxRxDLC.Text != string.Empty)
+                    {
+                        if (TextBoxRxDLC.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.DLC = TextBoxRxDLC.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.DLC = uint.Parse(TextBoxRxDLC.Text.ToUpper()).ToString("D2");
+                        }
+                    }
+                    else
+                    {
+                        canRxData.DLC = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte1":
-                    canRxData.Byte1 = TextBoxRxByte1.Text.ToUpper();
+                    if (TextBoxRxByte1.Text != string.Empty)
+                    {
+                        if (TextBoxRxByte1.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.Byte1 = TextBoxRxByte1.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.Byte1 = uint.Parse(TextBoxRxByte1.Text.ToUpper()).ToString("D2");
+                        }
+                    }
+                    else
+                    {
+                        canRxData.Byte1 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte2":
-                    canRxData.Byte2 = TextBoxRxByte2.Text.ToUpper();
+                    if (TextBoxRxByte2.Text != string.Empty)
+                    {
+                        canRxData.Byte2 = uint.Parse(TextBoxRxByte2.Text.ToUpper()).ToString("D2");
+                    }
+                    else
+                    {
+                        canRxData.Byte2 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte3":
-                    canRxData.Byte3 = TextBoxRxByte3.Text.ToUpper();
+                    if (TextBoxRxByte3.Text != string.Empty)
+                    {
+                        if (TextBoxRxByte3.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.Byte3 = TextBoxRxByte3.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.Byte3 = uint.Parse(TextBoxRxByte3.Text.ToUpper()).ToString("D2");
+                        }
+                    }
+                    else
+                    {
+                        canRxData.Byte3 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte4":
-                    canRxData.Byte4 = TextBoxRxByte4.Text.ToUpper();
+                    if (TextBoxRxByte4.Text != string.Empty)
+                    {
+                        if(TextBoxRxByte4.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.Byte4 = TextBoxRxByte4.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.Byte4 = uint.Parse(TextBoxRxByte4.Text.ToUpper()).ToString("D2");
+                        }   
+                    }
+                    else
+                    {
+                        canRxData.Byte4 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte5":
-                    canRxData.Byte5 = TextBoxRxByte5.Text.ToUpper();
+                    if (TextBoxRxByte5.Text != string.Empty)
+                    {
+                        if (TextBoxRxByte5.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.Byte5 = TextBoxRxByte5.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.Byte5 = uint.Parse(TextBoxRxByte5.Text.ToUpper()).ToString("D2");
+                        }
+                    }
+                    else
+                    {
+                        canRxData.Byte5 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte6":
                     canRxData.Byte6 = TextBoxRxByte6.Text.ToUpper();
+                    if (TextBoxRxByte6.Text != string.Empty)
+                    {
+                        if (TextBoxRxByte6.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.Byte6 = TextBoxRxByte6.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.Byte6 = uint.Parse(TextBoxRxByte6.Text.ToUpper()).ToString("D2");
+                        }
+                    }
+                    else
+                    {
+                        canRxData.Byte6 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte7":
-                    canRxData.Byte7 = TextBoxRxByte7.Text.ToUpper();
+                    if (TextBoxRxByte7.Text != string.Empty)
+                    {
+                        if (TextBoxRxByte7.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.Byte7 = TextBoxRxByte7.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.Byte7 = uint.Parse(TextBoxRxByte7.Text.ToUpper()).ToString("D2");
+                        }
+                    }
+                    else
+                    {
+                        canRxData.Byte7 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxByte8":
-                    canRxData.Byte8 = TextBoxRxByte8.Text.ToUpper();
+                    if (TextBoxRxByte8.Text != string.Empty)
+                    {
+                        if (TextBoxRxByte8.Text.Any(char.IsLetter) == true)
+                        {
+                            canRxData.Byte8 = TextBoxRxByte8.Text.ToUpper();
+                        }
+                        else
+                        {
+                            canRxData.Byte8 = uint.Parse(TextBoxRxByte8.Text.ToUpper()).ToString("D2");
+                        }
+                    }
+                    else
+                    {
+                        canRxData.Byte8 = string.Empty;
+                    }
                     break;
                 case "TextBoxRxNotes":
                     canRxData.Notes = TextBoxRxNotes.Text;
@@ -2582,12 +2765,14 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
+        #region about
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
         {
             // TODO - show about
             About about = new About();
             about.Show();
         }
+        #endregion
     }
 }
 
