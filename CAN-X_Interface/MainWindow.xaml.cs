@@ -1086,7 +1086,7 @@ namespace CAN_X_CAN_Analyzer
             dataGridEditTxMessages.Items.Add(canTxData);
 
             // TODO - figure out why this doesn't update the tx window
-            // dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
+            dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
         }
 
         private void ButtonDeleteEditTxRow_Click(object sender, RoutedEventArgs e)
@@ -1095,7 +1095,17 @@ namespace CAN_X_CAN_Analyzer
             {
                 // TODO - need to find solution to delete selected row, for now using index
                 dataGridEditTxMessages.Items.RemoveAt(rowIndexEditTx);
-             //   dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
+                try 
+                {
+                    // If adding new Tx row doesn't update Tx Window, then this index won't exist.
+                    // So catch exception to avoid crash.
+                    dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
+                }
+                catch(Exception ex) 
+                {
+                
+                }
+                
             }
         }
 
@@ -1471,6 +1481,7 @@ namespace CAN_X_CAN_Analyzer
 
             }
             dataGridEditTxMessages.Items.Refresh();
+            dataGridTxWindow.Items.Refresh();
         }
         #endregion
 
