@@ -320,8 +320,6 @@ namespace CAN_X_CAN_Analyzer
         // The structure of the data from device
         public CanRxData(byte[] data)
         {
-            int bytesToRemove = 4;
-
             #region CanRxData(byte[] data)
             if (data[0] == 0)
             {

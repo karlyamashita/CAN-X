@@ -257,6 +257,8 @@ namespace CAN_X_CAN_Analyzer
 
                 ButtonDisconnect.IsEnabled = true;
                 ButtonConnect.IsEnabled = false;
+
+                ClearStatusBarStatus();
             }
             catch (Exception ex) // TODO - make this and the button close call a function
             {
@@ -289,6 +291,8 @@ namespace CAN_X_CAN_Analyzer
                 }
                 sw.Stop(); // for auto tx
                 toggleButtonAutoTx.IsChecked = false;
+
+                ClearStatusBarStatus();
             }
             catch (Exception ex)
             {
@@ -845,6 +849,7 @@ namespace CAN_X_CAN_Analyzer
             }
             ProgressBar.Value = 0;
             lineCount = 0;
+            ClearStatusBarStatus();
         }
 
         private void ClearStatusBarStatus()
@@ -878,6 +883,7 @@ namespace CAN_X_CAN_Analyzer
             }
             catch (FormatException)
             {
+                // we should never get here
                 StatusBarStatus.Text = "Hex value is not in correct format";
                 return;
             }
@@ -891,7 +897,7 @@ namespace CAN_X_CAN_Analyzer
 
             tmp_buf[8] = 0; // CAN1
 
-            StatusBarStatus.Text = "Sending BTR Value";
+            //StatusBarStatus.Text = "Sending BTR Value";
             comPort.WriteBytes(tmp_buf, DATA_SIZE);
         }
         #endregion
@@ -1076,10 +1082,11 @@ namespace CAN_X_CAN_Analyzer
                 }
             }
             canTxData.Key = newIndex;
+
             dataGridEditTxMessages.Items.Add(canTxData);
 
-            dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
-                                             //   dataGridTx.RowHeight = 15;
+            // TODO - figure out why this doesn't update the tx window
+            // dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
         }
 
         private void ButtonDeleteEditTxRow_Click(object sender, RoutedEventArgs e)
@@ -1088,7 +1095,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 // TODO - need to find solution to delete selected row, for now using index
                 dataGridEditTxMessages.Items.RemoveAt(rowIndexEditTx);
-                dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
+             //   dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
             }
         }
 
@@ -1173,6 +1180,8 @@ namespace CAN_X_CAN_Analyzer
                 newCanTxData.Key = newIndex + 1; // update key before adding item
 
                 dataGridEditTxMessages.Items.Add(newCanTxData);
+
+                dataGridTxWindow.Items.Add(newCanTxData);
             }
         }
 
@@ -1347,12 +1356,12 @@ namespace CAN_X_CAN_Analyzer
                     if (id == 1)
                     {
                         canTxData.IDE = "X";
-                        StatusBarStatus.Text = "";
+                        //StatusBarStatus.Text = "";
                     }
                     else if (id == 0)
                     {
                         canTxData.IDE = "S";
-                        StatusBarStatus.Text = "";
+                        //StatusBarStatus.Text = "";
                     }
                     else
                     {
@@ -1496,12 +1505,12 @@ namespace CAN_X_CAN_Analyzer
                     if (id == 1)
                     {
                         canRxData.IDE = "X";
-                        StatusBarStatus.Text = "";
+                        //StatusBarStatus.Text = "";
                     }
                     else if (id == 0)
                     {
                         canRxData.IDE = "S";
-                        StatusBarStatus.Text = "";
+                        //StatusBarStatus.Text = "";
                     }
                     else
                     {
@@ -1779,7 +1788,22 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region save project
+        #region MenuItemNew
+
+        private void MenuItemNew_Click(object sender, RoutedEventArgs e)
+        {
+            dataGridEditTxMessages.Items.Clear();
+            dataGridEditRxMessages.Items.Clear();
+            dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+            dataGridRxWindow.Items.Clear();
+            dataGridTxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+            dataGridTxWindow.Items.Clear();
+            masterDataGridRx.Clear();
+            lineCount = 1;
+        }
+        #endregion
+
+        #region MenuItem Save project
         // TODO - save Edit messages Tx and Rx datagrid to xml file
         private void MenuItemSaveProject_Click(object sender, RoutedEventArgs e)
         {
@@ -1874,7 +1898,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region open project
+        #region MenuItem Open project
         private void MenuItemOpenProject_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog()
@@ -2732,6 +2756,8 @@ namespace CAN_X_CAN_Analyzer
             about.Show();
         }
         #endregion
+
+
     }
 }
 
