@@ -242,6 +242,11 @@ namespace CAN_X_CAN_Analyzer
         // button event to connect to device
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
         {
+            if (ComboBoxCOM.Text == string.Empty)
+            {
+                LabelConnectionStatus.Content = "Select a COM Port";
+                return;
+            }
             string com = ComboBoxCOM.SelectedValue.ToString();
             comPort = new COM_PortDrv(com); // Replace with your port name and baud rate
             comPort.DataReceived += ComPortManager_DataReceived;

@@ -21,7 +21,7 @@
       <Value Profile="(Default)">(c) 2019-2025 Karl Yamashita</Value>
     </Setting>
     <Setting Name="version" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Version 3.0.1</Value>
+      <Value Profile="(Default)">Version 3.0.2</Value>
     </Setting>
   </Settings>
 </SettingsFile>
