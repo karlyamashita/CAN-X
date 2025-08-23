@@ -1274,7 +1274,8 @@ namespace CAN_X_CAN_Analyzer
             TextBoxTxByte8.Text = data.Byte8;
             ComboBoxTxNode.SelectedIndex = GetComboBoxNodeIndex(data.Node);
 
-            ComboBoxEditTxRate.SelectedIndex = GetComboBoxTxRateIndex(data.Rate);
+           //ComboBoxEditTxRate.SelectedIndex = GetComboBoxTxRateIndex(data.Rate);
+            ComboBoxEditTxRate.Text = data.Rate;
 
             CheckBoxEditTxAutoTx.IsChecked = data.AutoTx;
 
@@ -1637,7 +1638,7 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region previews mouse left button down for which row index is selected and stores in variable
-        // gets the current row index and saves in variable
+        // gets the current row index for Tx and saves in variable.
         private void DataGridEditTxMessages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DataGridRow dgr = null;
@@ -1653,7 +1654,7 @@ namespace CAN_X_CAN_Analyzer
             rowIndexEditTx = dgr.GetIndex();
         }
 
-        // gets the row index
+        // gets the row index for Rx
         private void DataGridEditRxMessages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DataGridRow dgr = null;
