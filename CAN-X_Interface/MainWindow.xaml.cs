@@ -429,8 +429,11 @@ namespace CAN_X_CAN_Analyzer
         #region Parse ASCII from data
         private void ParseAscii(ref CanRxData canRxData)
         {
-            /*
-            if (CheckBoxAscii.IsChecked != true) return;
+            CheckBoxAscii.Dispatcher.BeginInvoke(new Action(delegate ()
+            {
+                if (CheckBoxAscii.IsChecked != true) return;
+            }));
+            
             byte[] data = new byte[8];
             int dlcLength = (char)Convert.ToUInt16(canRxData.DLC);
 
@@ -468,7 +471,6 @@ namespace CAN_X_CAN_Analyzer
             }
 
             canRxData.ASCII = Encoding.UTF8.GetString(data);
-            */
         }
         #endregion
 

@@ -219,7 +219,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="TabItem">
-                                    <Border Name="Border" BorderThickness="1,1,1,1" BorderBrush="Black" CornerRadius="15,5,0,0" Margin="0,0">
+                                    <Border Name="Border" BorderThickness="1,1,1,1" BorderBrush="Black" CornerRadius="5,5,0,0" Margin="0,0" >
                                         <ContentPresenter x:Name="ContentSite"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
@@ -229,9 +229,11 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="LightSkyBlue" />
+                                            <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,1"/>
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="False">
                                             <Setter TargetName="Border" Property="Background" Value="#FFD1D1D1" />
+                                            <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -528,7 +530,7 @@
                                                 <Label Content="ArbID"/>
                                                 <TextBox x:Name="TextBoxRxArbID" Height="25" MaxLength="8" PreviewTextInput="TextBoxRx_PreviewTextInput" TextChanged="TextBoxEditMessageRx_TextChanged" />
                                             </StackPanel>
-                                            <StackPanel Grid.Column="3" Margin="20,0,0,0">
+                                            <StackPanel Grid.Column="3" Margin="20,0,0,0" IsEnabled="False">
                                                 <Label Content="Node"/>
                                                 <ComboBox x:Name="ComboBoxRxNode" SelectedIndex="0" MinHeight="25" DropDownClosed="ComboBoxRxNode_DropDownClosed" />
                                             </StackPanel>
@@ -675,7 +677,7 @@
                                                 <Label Content="Remote Transmit"/>
                                                 <CheckBox x:Name="CheckBoxRemoteTransmit" Content="RTR" Margin="5,0,0,0" Click="CheckBoxRemoteTransmit_Click"/>
                                             </StackPanel>
-                                            <StackPanel Grid.Column="3" Margin="20,0,0,0">
+                                            <StackPanel Grid.Column="3" Margin="20,0,0,0" IsEnabled="False">
                                                 <Label Content="Node"/>
                                                 <ComboBox x:Name="ComboBoxTxNode" SelectedIndex="0" MinHeight="25" DropDownClosed="ComboBoxTxNode_DropDownClosed" />
                                             </StackPanel>
@@ -755,7 +757,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem >
-                <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="10,0,0,0" MinWidth="600" Height="25"/>
+                <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="15,0,0,0" MinWidth="600" Height="25"/>
             </StatusBarItem>
             <Separator Grid.Column="1" />
             <StatusBarItem Grid.Column="2">
