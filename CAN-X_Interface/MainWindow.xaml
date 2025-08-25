@@ -243,16 +243,15 @@
                 </TabControl.Resources>
                 <TabItem Header="Message Monitor">
                     <Grid>
-                        <Grid.ColumnDefinitions>
+                        <!--<Grid.ColumnDefinitions>
                             <ColumnDefinition Width="89*"/>
                             <ColumnDefinition Width="405*"/>
-                        </Grid.ColumnDefinitions>
+                        </Grid.ColumnDefinitions>-->
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="5"/>
-                            <RowDefinition Height="200"/>
-                            <!--<RowDefinition Height="60"/>-->
+                            <RowDefinition Height="35"/> <!-- Buttons -->
+                            <RowDefinition Height="*"/> <!-- Receive -->
+                            <RowDefinition Height="5"/> <!-- grid splitter -->
+                            <RowDefinition Height="*"/> <!-- Transmit -->
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="2">
                             <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20" Template="{StaticResource RoundedButtonTemplate}"/>
@@ -378,7 +377,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0,0,0,200" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+                        <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
 
                         <Grid Grid.Row="3" Grid.ColumnSpan="2">
 
