@@ -1760,6 +1760,9 @@ namespace CAN_X_CAN_Analyzer
                 strBuilder.Append("Byte6" + ", ");
                 strBuilder.Append("Byte7" + ", ");
                 strBuilder.Append("Byte8" + ", ");
+                strBuilder.Append("Node" + ", ");
+                strBuilder.Append("ASCII" + ", ");
+                strBuilder.Append("Notes" + ", ");
                 strBuilder.Append("\n");
 
                 foreach (var item in masterDataGridRx)
@@ -1783,6 +1786,11 @@ namespace CAN_X_CAN_Analyzer
                     strBuilder.Append(item.Byte6 + ", ");
                     strBuilder.Append(item.Byte7 + ", ");
                     strBuilder.Append(item.Byte8 + ", ");
+
+                    strBuilder.Append(item.Node + ", ");
+                    strBuilder.Append(item.ASCII + ", ");
+                    strBuilder.Append(item.Notes + ", ");
+
                     strBuilder.Append("\n");
                 }
 
