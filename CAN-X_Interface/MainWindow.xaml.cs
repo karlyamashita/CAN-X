@@ -1856,8 +1856,8 @@ namespace CAN_X_CAN_Analyzer
             About about = new About();
             about.Show();
         }
-        #endregion
 
+        #endregion
 
     }
 }

@@ -5,10 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CAN_X_CAN_Analyzer.Components"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" >
     <Grid>
-        <Grid Grid.ColumnSpan="2">
-
+        <Grid x:Name="DataGridTransmit" Grid.ColumnSpan="2" >
             <DataGrid x:Name="dataGridTxWindow" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />

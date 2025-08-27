@@ -22,9 +22,6 @@ namespace CAN_X_CAN_Analyzer.Components
     {
         MainWindow mainWindow;
 
-        public event EventHandler TransmitMessageSendEvent;
-        public event EventHandler TransmitMessageAutoTxEvent;
-
         public TransmitMessages()
         {
             InitializeComponent();

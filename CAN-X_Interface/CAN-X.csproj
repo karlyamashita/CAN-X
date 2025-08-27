@@ -98,6 +98,9 @@
     <Compile Include="Components\MessageMonitor.xaml.cs">
       <DependentUpon>MessageMonitor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Components\StatusBar.xaml.cs">
+      <DependentUpon>StatusBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\TransmitMessages.xaml.cs">
       <DependentUpon>TransmitMessages.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,10 @@
     <Page Include="Components\MessageMonitor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\StatusBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Components\TransmitMessages.xaml">
       <SubType>Designer</SubType>

@@ -152,8 +152,7 @@ namespace CAN_X_CAN_Analyzer.Components
             ComboBoxTxNode.SelectedIndex = GetComboBoxNodeIndex(data.Node);
 
             //ComboBoxEditTxRate.SelectedIndex = GetComboBoxTxRateIndex(data.Rate);
-// TODO - fix xml
-            //ComboBoxEditTxRate.Text = data.Rate;
+            ComboBoxEditTxRate.Text = data.Rate;
 
             CheckBoxEditTxAutoTx.IsChecked = data.AutoTx;
 
