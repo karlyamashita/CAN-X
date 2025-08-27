@@ -41,7 +41,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             // find next key number to use
             ulong highKey = 0;
-            foreach (CanRxData item in mainWindow.dataGridEditRxMessages.Items)
+            foreach (CanRxData item in mainWindow.editRxMessages.dataGridEditRxMessages.Items)
             {
                 if (item.Key > highKey)
                 {
@@ -54,7 +54,7 @@ namespace CAN_X_CAN_Analyzer.Components
             // assign new Key number
             canRxData.Key = highKey + 1;
             // add to datagrid
-            mainWindow.dataGridEditRxMessages.Items.Add(canRxData);
+            mainWindow.editRxMessages.dataGridEditRxMessages.Items.Add(canRxData);
         }
 
         private void MenuItemSaveTx_Click(object sender, RoutedEventArgs e)
@@ -69,7 +69,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             // find next key number to use
             ulong highKey = 0;
-            foreach (CanTxData item in mainWindow.dataGridEditTxMessages.Items)
+            foreach (CanTxData item in mainWindow.editTxMessages.dataGridEditTxMessages.Items)
             {
                 if (item.Key > highKey)
                 {
@@ -82,7 +82,7 @@ namespace CAN_X_CAN_Analyzer.Components
             // assign new key number
             canTxData.Key = highKey + 1;
             // add to message editor Tx datagrid
-            mainWindow.dataGridEditTxMessages.Items.Add(canTxData);
+            mainWindow.editTxMessages.dataGridEditTxMessages.Items.Add(canTxData);
             // add to main Tx datagrid
             mainWindow.transmitMessages.dataGridTxWindow.Items.Add(canTxData);
         }

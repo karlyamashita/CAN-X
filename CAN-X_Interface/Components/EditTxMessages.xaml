@@ -7,6 +7,157 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <DockPanel>
+            <Grid DockPanel.Dock="Top"  Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="80"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="Transmit Messages" FontWeight="Bold" />
+                    <Button x:Name="ButtonAddEditTxRow" Width="25" Height="25"  Margin="20,0,0,0" Click="ButtonAddEditTxRow_Click" FontSize="18" FontWeight="Bold" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <Image Source="../Resources/icons8-plus-64.png" />
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14">
+                        Add Message
+                                </TextBlock>
+                                <TextBlock>
+                            Adds a new message row
+                                </TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="ButtonDeleteEditTxRow" Width="25" Height="25"  Margin="5,0,0,0" Click="ButtonDeleteEditTxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                        <Image Source="../Resources/icons8-minus-64.png" />
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14">
+                        Delete Message
+                                </TextBlock>
+                                <TextBlock>
+                        Select an ArbID to Delete
+                                </TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="ButtonCopyEditTxRow" Width="25" Height="25"  Margin="5,0,0,0" Click="ButtonCopyEditTxRow_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                        <Image Source="../Resources/icons8-copy-64.png" />
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14">
+                            Copy Message
+                                </TextBlock>
+                                <TextBlock>
+                            Select an ArbID to Copy
+                                </TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+                <DataGrid x:Name="dataGridEditTxMessages" Grid.Row="1" Background="White" IsReadOnly="True" MouseLeftButtonUp="DataGridEditTxMessages_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridEditTxMessages_PreviewMouseLeftButtonDown" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
+                        <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="AutoTx" Binding="{Binding Path='AutoTx', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Rate" Binding="{Binding Path='Rate', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID' , Mode=TwoWay}" />
+                        <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=TwoWay}" />
+                        <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=TwoWay}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid Grid.Row="2" Margin="15,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Description" />
+                        <TextBox x:Name="TextBoxTxDescription" MaxLength="32" Height="25" Margin="0" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
+                        <Label Content="ArbID"/>
+                        <TextBox x:Name="TextBoxTxArbID" Height="25" MaxLength="8" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="10,0,0,0">
+                        <Label Content="Remote Transmit"/>
+                        <CheckBox x:Name="CheckBoxRemoteTransmit" Content="RTR" Margin="5,0,0,0" Click="CheckBoxRemoteTransmit_Click"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" Margin="20,0,0,0" IsEnabled="False">
+                        <Label Content="Node"/>
+                        <ComboBox x:Name="ComboBoxTxNode" SelectedIndex="0" MinHeight="25" DropDownClosed="ComboBoxTxNode_DropDownClosed" />
+                    </StackPanel>
+                    <StackPanel x:Name="StackPanelHighVoltage" Grid.Column="4" Orientation="Vertical" Margin="10,0,0,0" IsEnabled="False">
+                        <Label Content="High Voltage"/>
+                        <CheckBox x:Name="CheckBoxHighVoltage" Content="GMLAN" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="15,0,0,0" >
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="DLC"/>
+                        <TextBox x:Name="TextBoxTxDLC" Width="40" Height="25" MaxLength="1" TextChanged="TextBoxEditMessageTx_TextChanged" PreviewTextInput="TextBoxTxDLC_PreviewTextInput" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE1"/>
+                        <TextBox x:Name="TextBoxTxByte1" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE2"/>
+                        <TextBox x:Name="TextBoxTxByte2" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE3"/>
+                        <TextBox x:Name="TextBoxTxByte3" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE4"/>
+                        <TextBox x:Name="TextBoxTxByte4" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE5"/>
+                        <TextBox x:Name="TextBoxTxByte5" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE6"/>
+                        <TextBox x:Name="TextBoxTxByte6" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE7"/>
+                        <TextBox x:Name="TextBoxTxByte7" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="BYTE8"/>
+                        <TextBox x:Name="TextBoxTxByte8" Width="40" Height="25" MaxLength="2" PreviewTextInput="TextBoxTx_PreviewTextInput" TextChanged="TextBoxEditMessageTx_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                        <Label Content="AutoTx"/>
+                        <CheckBox x:Name="CheckBoxEditTxAutoTx" Content="Enable" Checked="CheckBoxEditTxAutoTx_Checked" Unchecked="CheckBoxEditTxAutoTx_Unchecked" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                        <Label Content="Rate"/>
+                        <ComboBox x:Name="ComboBoxEditTxRate" SelectedIndex="0" Width="60"  IsEditable="True" TextBoxBase.TextChanged="OnComboBoxTxRateTextChanged" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
     </Grid>
 </UserControl>
