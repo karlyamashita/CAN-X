@@ -89,10 +89,17 @@
         </ControlTemplate>
     </Window.Resources>
 
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <Grid x:Name="Events" Visibility="Hidden">
+            <components:TransmitMessages TransmitMessagesEvent="UserControl_TransmitMessagesEvent"/>
+            <components:COM_Connection COM_ConnectionEvent="UserControl_COM_ConnectionEvent"/>
+            <components:EditTxMessages EditTxMessagesUpdateStatusEvent="UserControl_EditTxMessagesUpdateStatusEvent"/>
+            <components:EditRxMessages EditRxMessagesUpdateStatusEvent="UserControl_EditRxMessagesUpdateStatusEvent"/>
+        </Grid>
         <DockPanel Grid.ColumnSpan="3" Margin="0,0,0,25">
             <StackPanel x:Name="Menu_Bar"   DockPanel.Dock="Top" Height="25" Margin="0">
                 <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
@@ -140,10 +147,14 @@
                 <TabItem Header="Message Monitor">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/> <!-- Buttons -->
-                            <RowDefinition Height="*"/> <!-- Receive -->
-                            <RowDefinition Height="5"/> <!-- grid splitter -->
-                            <RowDefinition Height="*"/> <!-- Transmit -->
+                            <RowDefinition Height="35"/>
+                            <!-- Buttons -->
+                            <RowDefinition Height="*"/>
+                            <!-- Receive -->
+                            <RowDefinition Height="5"/>
+                            <!-- grid splitter -->
+                            <RowDefinition Height="*"/>
+                            <!-- Transmit -->
                         </Grid.RowDefinitions>
                         <StackPanel x:Name="Buttons" Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="2">
                             <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20" Template="{StaticResource RoundedButtonTemplate}"/>
@@ -202,41 +213,6 @@
                 </TabItem>
             </TabControl>
         </DockPanel>
-        <!--<StatusBar x:Name="StatusBar" Height="25" VerticalAlignment="Bottom" Margin="0,0,10,0" Background="#FFE2E2E2" Grid.ColumnSpan="3">
-            <StatusBar.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="180" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="300" />
-                        </Grid.ColumnDefinitions>
-                    </Grid>
-                </ItemsPanelTemplate>
-            </StatusBar.ItemsPanel>
-            <StatusBarItem >
-                <TextBlock x:Name="StatusBarStatus" Foreground="Red" FontWeight="Bold" Margin="15,0,0,0" MinWidth="600" Height="25"/>
-            </StatusBarItem>
-            <Separator Grid.Column="1" />
-            <StatusBarItem Grid.Column="2">
-                <TextBlock x:Name="StatusBarStatusHardware" Margin="0,0,20,0" />
-            </StatusBarItem>
-            <Separator Grid.Column="3" />
-            <StatusBarItem Grid.Column="4">
-                <TextBlock x:Name="StatusBarStatusVersion" Margin="0,0,20,0" />
-            </StatusBarItem>
-            <Separator Grid.Column="5" />
-            <StatusBarItem Grid.Column="6">
-                <ProgressBar x:Name="ProgressBar" RenderTransformOrigin="0.5,0.5" Height="20" Width="300" BorderBrush="#FF7C7C7C" Background="#FFCFCFCF" Margin="0" Maximum="5000" />
-            </StatusBarItem>
-            <StatusBarItem Grid.Column="6">
-                <TextBlock x:Name="TextBoxBufferPercentage" Background="{x:Null}" MinWidth="300" MinHeight="20" TextAlignment="Center"/>
-            </StatusBarItem>
-        </StatusBar>-->
         <components:StatusBar x:Name="statusBar" />
     </Grid>
 </Window>

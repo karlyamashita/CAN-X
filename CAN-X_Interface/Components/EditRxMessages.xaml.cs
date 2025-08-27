@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static CAN_X_CAN_Analyzer.Components.EditTxMessages;
 
 namespace CAN_X_CAN_Analyzer.Components
 {
@@ -25,6 +26,23 @@ namespace CAN_X_CAN_Analyzer.Components
         int rowIndexEditRx = 0;
 
         MainWindow mainWindow;
+
+        public event EventHandler<EditRxMessagesEventArgs> EditRxMessagesUpdateStatusEvent;
+
+        public class EditRxMessagesEventArgs : EventArgs
+        {
+            public string EventType { get; set; }
+
+            public string statusBar { get; set; }
+
+            // Add other properties as needed
+        }
+
+        // Helper method to raise the event
+        protected virtual void OnMyCustomEvent(EditRxMessagesEventArgs e)
+        {
+            EditRxMessagesUpdateStatusEvent?.Invoke(this, e);
+        }
 
         public EditRxMessages()
         {
@@ -52,7 +70,8 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
                 {
-                   // StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                    //StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                    OnMyCustomEvent(new EditRxMessagesEventArgs { EventType = "status_bar", statusBar = "Select an ArbID first and try selecting the node again" });
                 }
                 catch (NullReferenceException)
                 {
@@ -81,12 +100,14 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (canRxData == null)
             {
-            //    StatusBarStatus.Text = "You need to select a row";
+                //    StatusBarStatus.Text = "You need to select a row";
+                OnMyCustomEvent(new EditRxMessagesEventArgs { EventType = "status_bar", statusBar = "You need to select a row" });
                 return;
             }
             else
             {
-            //    StatusBarStatus.Text = "";
+                //    StatusBarStatus.Text = "";
+                OnMyCustomEvent(new EditRxMessagesEventArgs { EventType = "status_bar", statusBar = "" });
             }
 
             TextBox obj = sender as TextBox;
@@ -106,15 +127,18 @@ namespace CAN_X_CAN_Analyzer.Components
                     {
                         canRxData.IDE = "X";
                         //StatusBarStatus.Text = "";
+                        OnMyCustomEvent(new EditRxMessagesEventArgs { EventType = "status_bar", statusBar = "" });
                     }
                     else if (id == 0)
                     {
                         canRxData.IDE = "S";
                         //StatusBarStatus.Text = "";
+                        OnMyCustomEvent(new EditRxMessagesEventArgs { EventType = "status_bar", statusBar = "" });
                     }
                     else
                     {
                         //StatusBarStatus.Text = "ArbID should be between 0x000 - 0x1FFFFFFF";
+                        OnMyCustomEvent(new EditRxMessagesEventArgs { EventType = "status_bar", statusBar = "ArbID should be between 0x000 - 0x1FFFFFFF" });
                         break;
                     }
                     canRxData.ArbID = tempStr;

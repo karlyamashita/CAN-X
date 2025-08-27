@@ -128,6 +128,105 @@ namespace CAN_X_CAN_Analyzer
 
             _viewModel = (ComPortViewModel)DataContext; // Get the instance set in XAML
             this.Closed += MainWindow_Closed;
+
+
+            transmitMessages.TransmitMessagesEvent += UserControl_TransmitMessagesEvent;
+            com_connection.COM_ConnectionEvent += UserControl_COM_ConnectionEvent;
+
+            editTxMessages.EditTxMessagesUpdateStatusEvent += UserControl_EditTxMessagesUpdateStatusEvent;
+            editRxMessages.EditRxMessagesUpdateStatusEvent += UserControl_EditRxMessagesUpdateStatusEvent;
+
+
+        }
+
+        private void UserControl_EditRxMessagesUpdateStatusEvent(object sender, EditRxMessages.EditRxMessagesEventArgs e)
+        {
+            if ((e.EventType == "status_bar"))
+            {
+                statusBar.StatusBarStatus.Text = e.statusBar;
+            }
+        }
+        #endregion
+
+        private void UserControl_EditTxMessagesUpdateStatusEvent(object sender, EditTxMessages.EditTxMessagesEventArgs e)
+        {
+            if(e.EventType == "dataGridTxWindow_Items_Add")
+            {
+                transmitMessages.dataGridTxWindow.Items.Add(e.canTxData);
+            }
+            else if(e.EventType == "dataGridTxWindow_Items_RemoveAt")
+            {
+                transmitMessages.dataGridTxWindow.Items.RemoveAt(e.rowIndex);
+            }
+            else if(e.EventType =="refresh")
+            {
+                transmitMessages.dataGridTxWindow.Items.Refresh();
+            }
+            else if( e.EventType == "unselectAll")
+            {
+                transmitMessages.dataGridTxWindow.UnselectAll();
+            }
+            else if( (e.EventType == "status_bar"))
+            {
+                statusBar.StatusBarStatus.Text = e.statusBar;
+            }
+        }
+
+        #region UserControl_COM_ConnectionEvent
+        private void UserControl_COM_ConnectionEvent(object sender, COM_Connection.COM_ConnectionEventArgs e)
+        {
+            if (e.EventType == "ButtonConnect")
+            {
+                ButtonConnect();
+            }
+            else if (e.EventType == "ButtonDisconnect")
+            {
+                ButtonDisconnect();
+            }
+            else if(e.EventType == "CalculateBTR")
+            {
+                CalculateBTR();
+            }
+            else if(e.EventType == "ButtonBtrClicked")
+            {
+                ButtonBtrClicked();
+            }
+            else if(e.EventType == "ResizeDataGridRx")
+            {
+                ResizeDataGridRx();
+            }
+            else if(e.EventType == "FormatDataGridColumns")
+            {
+                FormatDataGridColumns();
+            }
+            else if(e.EventType == "FormatDataGridColumns")
+            {
+                FormatDataGridColumns();
+            }
+            else if(e.EventType == "ToggleButtonAutoTx")
+            {
+                ToggleButtonAutoTx();
+            }
+                
+        }
+        #endregion
+
+        #region UserControl_TransmitMessagesEvent
+        private void UserControl_TransmitMessagesEvent(object sender, TransmitMessages.TransmitMessagesEventArgs e)
+        {
+            // Handle the event from the UserControl            
+            if(e.EventType == "ButtonTxMessage_Click")
+            {
+                TransmitMessages_Send();
+            }
+            else if( e.EventType == "CheckBoxAutoTx_Checked")
+            {
+                TransmitMessages_AutoTx_Checked();
+            }
+            else if (e.EventType == "CheckBoxAutoTx_Unchecked")
+            {
+                TransmitMessages_AutoTx_Unchecked();
+            }
         }
         #endregion
 
@@ -652,7 +751,7 @@ namespace CAN_X_CAN_Analyzer
 
         #region Button Send CAN message
 
-        public void TransmitMessages_Send()
+        private void TransmitMessages_Send()
         {
             SendTxMsgToDataGridAndCanBus();
         }
@@ -1608,7 +1707,7 @@ namespace CAN_X_CAN_Analyzer
 
         #region CheckBoxEditTxAutoTx checked
 
-        public void TransmitMessages_AutoTx_Checked()
+        private void TransmitMessages_AutoTx_Checked()
         {
             CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
             CanTxData dataEdit = editTxMessages.dataGridEditTxMessages.SelectedItem as CanTxData;
@@ -1640,7 +1739,7 @@ namespace CAN_X_CAN_Analyzer
 
         #region CheckBoxAutoTx Checked
 
-        public void TransmitMessages_AutoTx_Unchecked()
+        private void TransmitMessages_AutoTx_Unchecked()
         {
             CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
             CanTxData dataEdit = editTxMessages.dataGridEditTxMessages.SelectedItem as CanTxData;
@@ -1858,6 +1957,7 @@ namespace CAN_X_CAN_Analyzer
         }
 
         #endregion
+
 
     }
 }

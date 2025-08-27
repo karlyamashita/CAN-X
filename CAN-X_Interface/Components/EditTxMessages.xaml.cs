@@ -26,6 +26,30 @@ namespace CAN_X_CAN_Analyzer.Components
 
         MainWindow mainWindow;
 
+        public event EventHandler<EditTxMessagesEventArgs> EditTxMessagesUpdateStatusEvent;
+
+        public class EditTxMessagesEventArgs : EventArgs
+        {
+            public string EventType { get; set; }
+
+            public string statusBar { get; set; }
+
+            public int rowIndex { get; set; }
+
+            public bool dataGridTxWindow_Items_Refresh { get; set; }
+
+            public CanTxData canTxData { get; set; }
+
+
+            // Add other properties as needed
+        }
+
+        // Helper method to raise the event
+        protected virtual void OnMyCustomEvent(EditTxMessagesEventArgs e)
+        {
+            EditTxMessagesUpdateStatusEvent?.Invoke(this, e);
+        }
+
         public EditTxMessages()
         {
             InitializeComponent();
@@ -65,8 +89,8 @@ namespace CAN_X_CAN_Analyzer.Components
 
             dataGridEditTxMessages.Items.Add(canTxData);
 
-            // TODO - figure out why this doesn't update the tx window
-            mainWindow.transmitMessages.dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
+            // the Tx dataGrid
+            OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "dataGridTxWindow_Items_Add", canTxData = canTxData });
         }
 
         private void ButtonDeleteEditTxRow_Click(object sender, RoutedEventArgs e)
@@ -79,13 +103,12 @@ namespace CAN_X_CAN_Analyzer.Components
                 {
                     // If adding new Tx row doesn't update Tx Window, then this index won't exist.
                     // So catch exception to avoid crash.
-                    mainWindow.transmitMessages.dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "dataGridTxWindow_Items_RemoveAt", rowIndex = rowIndexEditTx });
                 }
                 catch (Exception ex)
                 {
 
                 }
-
             }
         }
 
@@ -129,7 +152,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
                 dataGridEditTxMessages.Items.Add(newCanTxData);
 
-                mainWindow.transmitMessages.dataGridTxWindow.Items.Add(newCanTxData);
+                OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "dataGridTxWindow_Items_Add", canTxData = newCanTxData });
             }
         }
 
@@ -204,12 +227,12 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (canTxData == null)
             {
-                mainWindow.statusBar.StatusBarStatus.Text = "You need to select a row";
+                OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "You need to select a row" });
                 return;
             }
             else
             {
-                mainWindow.statusBar.StatusBarStatus.Text = "";
+                OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
             }
 
             TextBox obj = sender as TextBox;
@@ -228,16 +251,16 @@ namespace CAN_X_CAN_Analyzer.Components
                     if (id == 1)
                     {
                         canTxData.IDE = "X";
-                        mainWindow.statusBar.StatusBarStatus.Text = "";
+                        OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "" });
                     }
                     else if (id == 0)
                     {
                         canTxData.IDE = "S";
-                        mainWindow.statusBar.StatusBarStatus.Text = "";
+                        OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "" });
                     }
                     else
                     {
-                        mainWindow.statusBar.StatusBarStatus.Text = "ArbID should be between 0x000 - 0x1FFFFFFF";
+                        OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "ArbID should be between 0x000 - 0x1FFFFFFF" });
                         break;
                     }
                     canTxData.ArbID = tempStr;
@@ -343,7 +366,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             }
             dataGridEditTxMessages.Items.Refresh();
-            mainWindow.transmitMessages.dataGridTxWindow.Items.Refresh();
+            OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "refresh"});
         }
 
         private void TextBoxTx_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -359,7 +382,7 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
                 {
-                   mainWindow.statusBar.StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                   OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "Select an ArbID first and try selecting the node again" });
                 }
                 catch (NullReferenceException)
                 {
@@ -376,7 +399,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 if (data.Key == canTxData.Key)
                 {
                     canTxData.Node = comboBox.SelectionBoxItem.ToString();
-                    mainWindow.transmitMessages.dataGridTxWindow.Items.Refresh();
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "refresh" });
                     break;
                 }
             }
@@ -404,7 +427,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (data == null)
             {
-                mainWindow.statusBar.StatusBarStatus.Text = "Please select an ArbID to modify";
+                OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "Please select an ArbID to modify" });
                 return;
             }
             // need to update the dataGridTx
@@ -412,12 +435,12 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 if (row.Key == data.Key)
                 {
-                    mainWindow.transmitMessages.dataGridTxWindow.UnselectAll();
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "unselectAll" });
                     data.AutoTx = false;
                     row.AutoTx = false;
 
                     dataGridEditTxMessages.Items.Refresh();
-                    mainWindow.transmitMessages.dataGridTxWindow.Items.Refresh();
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "refresh" });
                 }
             }
         }
@@ -428,10 +451,12 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (data == null)
             {
-               mainWindow.statusBar.StatusBarStatus.Text = "Please select an ArbID to modify";
+                OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "Please select an ArbID to modify" });
+
                 return;
             }
             // need to update the dataGridTx
+            // TODO figure out how to get datagrid item using Dependency Properties and Data Binding
             foreach (CanTxData row in mainWindow.transmitMessages.dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
@@ -440,7 +465,7 @@ namespace CAN_X_CAN_Analyzer.Components
                     row.AutoTx = true;
 
                     dataGridEditTxMessages.Items.Refresh();
-                    mainWindow.transmitMessages.dataGridTxWindow.Items.Refresh();
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "refresh" });
                 }
             }
         }
@@ -452,7 +477,7 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
                 {
-                    mainWindow.statusBar.StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "Select an ArbID first and try selecting the node again" });
                 }
                 catch (NullReferenceException)
                 {
@@ -468,7 +493,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 if (data.Key == canTxData.Key)
                 {
                     canTxData.Rate = ComboBoxEditTxRate.Text;
-                    mainWindow.transmitMessages.dataGridTxWindow.Items.Refresh();
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "refresh" });
                     break;
                 }
             }
@@ -480,7 +505,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (data == null)
             {
-                mainWindow.statusBar.StatusBarStatus.Text = "Please select an ArbID to modify";
+                OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "Please select an ArbID to modify" });
                 return;
             }
 
@@ -537,7 +562,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 if (row.Key == data.Key)
                 {
                     row.RTR = data.RTR;
-                    mainWindow.transmitMessages.dataGridTxWindow.Items.Refresh();
+                    OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "refresh" });
                 }
             }
         }
