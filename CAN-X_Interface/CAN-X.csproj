@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{46F0E167-EE9D-4E66-A768-DD089CAF37F5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>USB_CAN_Interface</RootNamespace>
+    <RootNamespace>CAN_X_CAN_Analyzer</RootNamespace>
     <AssemblyName>CAN-X</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -86,10 +86,45 @@
     </Compile>
     <Compile Include="CAN_BaudRate.cs" />
     <Compile Include="Clock.cs" />
+    <Compile Include="Components\COM_Connection.xaml.cs">
+      <DependentUpon>COM_Connection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\EditRxMessages.xaml.cs">
+      <DependentUpon>EditRxMessages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\EditTxMessages.xaml.cs">
+      <DependentUpon>EditTxMessages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\MessageMonitor.xaml.cs">
+      <DependentUpon>MessageMonitor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\TransmitMessages.xaml.cs">
+      <DependentUpon>TransmitMessages.xaml</DependentUpon>
+    </Compile>
     <Compile Include="COM_PortDrv.cs" />
     <Compile Include="EnumDefines.cs" />
     <Compile Include="HighResolutionTimer.cs" />
     <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\COM_Connection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\EditRxMessages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\EditTxMessages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\MessageMonitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\TransmitMessages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

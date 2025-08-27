@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CAN_X_CAN_Analyzer.Components;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -122,13 +123,19 @@ namespace CAN_X_CAN_Analyzer
         {
             InitializeComponent();
 
-            dataGridRxWindow.DataContext = this;
+            messageMonitor.dataGridRxWindow.DataContext = this;
+            //    dataGridRxWindow.DataContext = this;
 
             // Values is item source for dataGridRxWindow
             Values = new ObservableCollection<CanRxData>();
 
             _viewModel = (ComPortViewModel)DataContext; // Get the instance set in XAML
             this.Closed += MainWindow_Closed;
+
+
+            TransmitMessages transmitMessagesUserControl = new TransmitMessages();
+            transmitMessagesUserControl.TransmitMessageSendEvent += TransmitMessages_SendEvent;
+
         }
         #endregion
 
@@ -420,7 +427,7 @@ namespace CAN_X_CAN_Analyzer
                 AddToDataGrid(canRxData, isTransmitMessage, scrollMessagesFlag);
 
                 // update the progress bar and remove first row if we are at MAX_ROW_COUNT
-                if (UpdateProgressBar()) dataGridRxWindow.Items.RemoveAt(0);
+                if (UpdateProgressBar()) messageMonitor.dataGridRxWindow.Items.RemoveAt(0);
                 //if (UpdateProgressBar()) Values.RemoveAt(0);
             }));
         }
@@ -609,7 +616,7 @@ namespace CAN_X_CAN_Analyzer
                         break;
                     }
                 }
-                if (!is_CAN_ID_Match || dataGridRxWindow.Items.Count == 0)// no match, so add new data
+                if (!is_CAN_ID_Match || messageMonitor.dataGridRxWindow.Items.Count == 0)// no match, so add new data
                 {
                     if (!transmitFlag)
                     {
@@ -621,16 +628,16 @@ namespace CAN_X_CAN_Analyzer
                     }
                     Values.Add(canRxData); // adds data to next row on data grid/gui
 
-                    dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty); // clear data grid/gui, is needed before using dataGridRxWindow.Items.Add
-                    dataGridRxWindow.Items.Add(canRxData);
+                    messageMonitor.dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty); // clear data grid/gui, is needed before using dataGridRxWindow.Items.Add
+                    messageMonitor.dataGridRxWindow.Items.Add(canRxData);
 
                     masterDataGridRx.Add(canRxData); // do we need master list?
                 }
             }
             else // scroll
             {
-                dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty); // clear data grid/gui, is needed before using dataGridRxWindow.Items.Add
-                dataGridRxWindow.Items.Add(canRxData);
+                messageMonitor.dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty); // clear data grid/gui, is needed before using dataGridRxWindow.Items.Add
+                messageMonitor.dataGridRxWindow.Items.Add(canRxData);
 
                 masterDataGridRx.Add(canRxData); // do we need master list?
             }
@@ -638,9 +645,9 @@ namespace CAN_X_CAN_Analyzer
             // scrolls to end of data grid, if not paused
             if (pauseMessagesFlag == false && scrollFlag == true)
             {
-                if (dataGridRxWindow.Items.Count > 0)
+                if (messageMonitor.dataGridRxWindow.Items.Count > 0)
                 {
-                    var border = VisualTreeHelper.GetChild(dataGridRxWindow, 0) as Decorator;
+                    var border = VisualTreeHelper.GetChild(messageMonitor.dataGridRxWindow, 0) as Decorator;
                     if (border != null)
                     {
                         var scroll = border.Child as ScrollViewer;
@@ -663,6 +670,17 @@ namespace CAN_X_CAN_Analyzer
             this.Dispatcher.BeginInvoke(msg);
         }
 
+        private void TransmitMessages_SendEvent(object sender, EventArgs e)
+        {
+            SendMessage msg = new SendMessage(SendTxMsgToDataGridAndCanBus);
+            this.Dispatcher.BeginInvoke(msg);
+        }
+
+        public void TransmitMessages_Send()
+        {
+            SendTxMsgToDataGridAndCanBus();
+        }
+
         // send Tx message to device and update data grid
         private void SendTxMsgToDataGridAndCanBus()
         {
@@ -670,7 +688,7 @@ namespace CAN_X_CAN_Analyzer
             string dateNow = now.ToString("HH:mm:ss.ffff");
 
             // get the current selected row data
-            CanTxData canTxData = dataGridTxWindow.SelectedItem as CanTxData;
+            CanTxData canTxData = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData;
 
             // formatting canRxData with canTxData and adding line count, time, tx
             CanRxData canRxData = new CanRxData(canTxData); // make copy before calling SendCanData below. Really only a problem with AutoTx, but we'll follow the same procedure here as well.
@@ -844,10 +862,10 @@ namespace CAN_X_CAN_Analyzer
         #region clear receive window, ClearStatusBar
         private void ButtonClear_Click(object sender, RoutedEventArgs e)
         {
-            dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
-            while (dataGridRxWindow.Items.Count != 0)
+            messageMonitor.dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+            while (messageMonitor.dataGridRxWindow.Items.Count != 0)
             {
-                dataGridRxWindow.Items.RemoveAt(0);
+                messageMonitor.dataGridRxWindow.Items.RemoveAt(0);
             }
             Values.Clear();
             while (masterDataGridRx.Count != 0)
@@ -983,15 +1001,15 @@ namespace CAN_X_CAN_Analyzer
         #region main Window loaded
         private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
         {
-            MainWindow1.Title = USB_CAN_Interface.Properties.Settings.Default.titleWindow;
+            MainWindow1.Title = CAN_X_CAN_Analyzer.Properties.Settings.Default.titleWindow;
             mainWindowTitle = MainWindow1.Title; // make a copy
-            if (File.Exists(USB_CAN_Interface.Properties.Settings.Default.lastFilePath))
+            if (File.Exists(CAN_X_CAN_Analyzer.Properties.Settings.Default.lastFilePath))
             {
-                ReadXml(USB_CAN_Interface.Properties.Settings.Default.lastFilePath);
-                MainWindow1.Title = mainWindowTitle + " - " + Path.GetFileName(USB_CAN_Interface.Properties.Settings.Default.lastFilePath);
+                ReadXml(CAN_X_CAN_Analyzer.Properties.Settings.Default.lastFilePath);
+                MainWindow1.Title = mainWindowTitle + " - " + Path.GetFileName(CAN_X_CAN_Analyzer.Properties.Settings.Default.lastFilePath);
             }
 
-            CheckBoxBlind.IsChecked = USB_CAN_Interface.Properties.Settings.Default.imBlind;
+            CheckBoxBlind.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.imBlind;
             ResizeDataGridRx();
 
             InitPopulateBaudRateListBox();
@@ -1010,8 +1028,8 @@ namespace CAN_X_CAN_Analyzer
             sw = new System.Diagnostics.Stopwatch();
 
             // get checkbox states
-            CheckBoxAscii.IsChecked = USB_CAN_Interface.Properties.Settings.Default.ascii;
-            CheckBoxNotes.IsChecked = USB_CAN_Interface.Properties.Settings.Default.notes;
+            CheckBoxAscii.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.ascii;
+            CheckBoxNotes.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.notes;
             // now format datagrid if needed
             FormatDataGridColumns();
 
@@ -1093,7 +1111,7 @@ namespace CAN_X_CAN_Analyzer
             dataGridEditTxMessages.Items.Add(canTxData);
 
             // TODO - figure out why this doesn't update the tx window
-            dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
+            transmitMessages.dataGridTxWindow.Items.Add(canTxData); // the Tx dataGrid
         }
 
         private void ButtonDeleteEditTxRow_Click(object sender, RoutedEventArgs e)
@@ -1106,7 +1124,7 @@ namespace CAN_X_CAN_Analyzer
                 {
                     // If adding new Tx row doesn't update Tx Window, then this index won't exist.
                     // So catch exception to avoid crash.
-                    dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
+                    transmitMessages.dataGridTxWindow.Items.RemoveAt(rowIndexEditTx);
                 }
                 catch(Exception ex) 
                 {
@@ -1198,7 +1216,7 @@ namespace CAN_X_CAN_Analyzer
 
                 dataGridEditTxMessages.Items.Add(newCanTxData);
 
-                dataGridTxWindow.Items.Add(newCanTxData);
+                transmitMessages.dataGridTxWindow.Items.Add(newCanTxData);
             }
         }
 
@@ -1489,7 +1507,7 @@ namespace CAN_X_CAN_Analyzer
 
             }
             dataGridEditTxMessages.Items.Refresh();
-            dataGridTxWindow.Items.Refresh();
+            transmitMessages.dataGridTxWindow.Items.Refresh();
         }
         #endregion
 
@@ -1821,10 +1839,10 @@ namespace CAN_X_CAN_Analyzer
         {
             dataGridEditTxMessages.Items.Clear();
             dataGridEditRxMessages.Items.Clear();
-            dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
-            dataGridRxWindow.Items.Clear();
-            dataGridTxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
-            dataGridTxWindow.Items.Clear();
+            messageMonitor.dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+            messageMonitor.dataGridRxWindow.Items.Clear();
+            transmitMessages.dataGridTxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+            transmitMessages.dataGridTxWindow.Items.Clear();
             masterDataGridRx.Clear();
             lineCount = 1;
         }
@@ -1935,8 +1953,8 @@ namespace CAN_X_CAN_Analyzer
             };
             if (openFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                USB_CAN_Interface.Properties.Settings.Default.lastFilePath = openFile.FileName;
-                USB_CAN_Interface.Properties.Settings.Default.Save();
+                CAN_X_CAN_Analyzer.Properties.Settings.Default.lastFilePath = openFile.FileName;
+                CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
                 if (!File.Exists(openFile.FileName))
                 {
                     StatusBarStatus.Text = "File does not exist!";
@@ -1979,9 +1997,9 @@ namespace CAN_X_CAN_Analyzer
                             {
                                 dataGridEditTxMessages.Items.RemoveAt(0);
                             }
-                            while (dataGridTxWindow.Items.Count != 0)
+                            while (transmitMessages.dataGridTxWindow.Items.Count != 0)
                             {
-                                dataGridTxWindow.Items.RemoveAt(0);
+                                transmitMessages.dataGridTxWindow.Items.RemoveAt(0);
                             }
                             break;
                         case "edit_tx_messages":
@@ -2212,7 +2230,7 @@ namespace CAN_X_CAN_Analyzer
                                 canTxData.Notes = result;
 
                                 dataGridEditTxMessages.Items.Add(canTxData);
-                                dataGridTxWindow.Items.Add(canTxData);
+                                transmitMessages.dataGridTxWindow.Items.Add(canTxData);
                                 canTxData = new CanTxData();
                             }
                             else
@@ -2249,12 +2267,12 @@ namespace CAN_X_CAN_Analyzer
             data.Node = comboBox.SelectionBoxItem.ToString();
             dataGridEditTxMessages.Items.Refresh();
             // update dataGridTx
-            foreach (CanTxData canTxData in dataGridTxWindow.Items)
+            foreach (CanTxData canTxData in transmitMessages.dataGridTxWindow.Items)
             {
                 if (data.Key == canTxData.Key)
                 {
                     canTxData.Node = comboBox.SelectionBoxItem.ToString();
-                    dataGridTxWindow.Items.Refresh();
+                    transmitMessages.dataGridTxWindow.Items.Refresh();
                     break;
                 }
             }
@@ -2315,10 +2333,10 @@ namespace CAN_X_CAN_Analyzer
             // no longer scrolling so clear screen so active messages show on gui.
             if (!scrollMessagesFlag)
             {
-                dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
-                while (dataGridRxWindow.Items.Count != 0)
+                messageMonitor.dataGridRxWindow.ClearValue(ItemsControl.ItemsSourceProperty);
+                while (messageMonitor.dataGridRxWindow.Items.Count != 0)
                 {
-                    dataGridRxWindow.Items.RemoveAt(0);
+                    messageMonitor.dataGridRxWindow.Items.RemoveAt(0);
                 }
                 Values.Clear();
                 ButtonPauseMessages.IsEnabled = false;
@@ -2390,12 +2408,12 @@ namespace CAN_X_CAN_Analyzer
             }
             dataGridEditTxMessages.Items.Refresh();
             // now update dataGridTx
-            foreach (CanTxData row in dataGridTxWindow.Items)
+            foreach (CanTxData row in transmitMessages.dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
                     row.RTR = data.RTR;
-                    dataGridTxWindow.Items.Refresh();
+                    transmitMessages.dataGridTxWindow.Items.Refresh();
                 }
             }
         }
@@ -2410,10 +2428,10 @@ namespace CAN_X_CAN_Analyzer
                 rowStyle.TargetType = typeof(DataGridRow);
                 rowStyle.Setters.Add(new Setter() { Property = FontSizeProperty, Value = 20D });
                 rowStyle.Setters.Add(new Setter() { Property = HeightProperty, Value = 30D });
-                dataGridRxWindow.RowStyle = rowStyle;
+                messageMonitor.dataGridRxWindow.RowStyle = rowStyle;
 
-                USB_CAN_Interface.Properties.Settings.Default.imBlind = true;
-                USB_CAN_Interface.Properties.Settings.Default.Save();
+                CAN_X_CAN_Analyzer.Properties.Settings.Default.imBlind = true;
+                CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
             }
             else
             {
@@ -2421,25 +2439,26 @@ namespace CAN_X_CAN_Analyzer
                 rowStyle.TargetType = typeof(DataGridRow);
                 rowStyle.Setters.Add(new Setter() { Property = FontSizeProperty, Value = 12D });
                 rowStyle.Setters.Add(new Setter() { Property = HeightProperty, Value = 18D });
-                dataGridRxWindow.RowStyle = rowStyle;
+                messageMonitor.dataGridRxWindow.RowStyle = rowStyle;
                 // resize columns
-                foreach (DataGridColumn c in dataGridRxWindow.Columns)
+                foreach (DataGridColumn c in messageMonitor.dataGridRxWindow.Columns)
                 {
                     c.Width = 0;
                 }
-                foreach (DataGridColumn c in dataGridRxWindow.Columns)
+                foreach (DataGridColumn c in messageMonitor.dataGridRxWindow.Columns)
                 {
                     c.Width = DataGridLength.Auto;
                 }
-                dataGridRxWindow.UpdateLayout();
+                messageMonitor.dataGridRxWindow.UpdateLayout();
 
-                USB_CAN_Interface.Properties.Settings.Default.imBlind = false;
-                USB_CAN_Interface.Properties.Settings.Default.Save();
+                CAN_X_CAN_Analyzer.Properties.Settings.Default.imBlind = false;
+                CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
             }
         }
         #endregion
 
         #region CheckBoxEditTxAutoTx checked
+
         private void CheckBoxEditTxAutoTx_Checked(object sender, RoutedEventArgs e)
         {
             CanTxData data = dataGridEditTxMessages.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
@@ -2450,7 +2469,7 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
             // need to update the dataGridTx
-            foreach (CanTxData row in dataGridTxWindow.Items)
+            foreach (CanTxData row in transmitMessages.dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
@@ -2458,7 +2477,7 @@ namespace CAN_X_CAN_Analyzer
                     row.AutoTx = true;
 
                     dataGridEditTxMessages.Items.Refresh();
-                    dataGridTxWindow.Items.Refresh();
+                    transmitMessages.dataGridTxWindow.Items.Refresh();
                 }
             }
         }
@@ -2473,25 +2492,23 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
             // need to update the dataGridTx
-            foreach (CanTxData row in dataGridTxWindow.Items)
+            foreach (CanTxData row in transmitMessages.dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
-                    dataGridTxWindow.UnselectAll();
+                    transmitMessages.dataGridTxWindow.UnselectAll();
                     data.AutoTx = false;
                     row.AutoTx = false;
 
                     dataGridEditTxMessages.Items.Refresh();
-                    dataGridTxWindow.Items.Refresh();
+                    transmitMessages.dataGridTxWindow.Items.Refresh();
                 }
             }
         }
-        #endregion
 
-        #region CheckBoxAutoTx Checked
-        private void CheckBoxAutoTx_Checked(object sender, RoutedEventArgs e)
+        public void TransmitMessages_AutoTx_Checked()
         {
-            CanTxData data = dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
             CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
 
             if (data == null)
@@ -2517,10 +2534,42 @@ namespace CAN_X_CAN_Analyzer
                 }
             }
         }
+        #endregion
 
+        #region CheckBoxAutoTx Checked
+        /*
+        private void CheckBoxAutoTx_Checked(object sender, RoutedEventArgs e)
+        {
+            CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
+
+            if (data == null)
+            {
+                //   StatusBarStatus.Text = "Please select an ArbID to modify";
+                return;
+            }
+            // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
+            foreach (CanTxData row in dataGridEditTxMessages.Items)
+            {
+                if (row.Key == data.Key)
+                {
+                    if (dataEdit != null)
+                    {
+                        data.AutoTx = true;
+                        if (dataEdit.Key == row.Key)
+                        {
+                            CheckBoxEditTxAutoTx.IsChecked = true;
+                        }
+                    }
+                    row.AutoTx = true;
+                    dataGridEditTxMessages.Items.Refresh();
+                }
+            }
+        }
+ 
         private void CheckBoxAutoTx_Unchecked(object sender, RoutedEventArgs e)
         {
-            CanTxData data = dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
             CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
 
             if (data == null)
@@ -2544,6 +2593,34 @@ namespace CAN_X_CAN_Analyzer
                 }
             }
         }
+        */
+        public void TransmitMessages_AutoTx_Unchecked()
+        {
+            CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
+            CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
+
+            if (data == null)
+            {
+                //   StatusBarStatus.Text = "Please select an ArbID to modify";
+                return;
+            }
+            // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
+            foreach (CanTxData row in dataGridEditTxMessages.Items)
+            {
+                if (row.Key == data.Key)
+                {
+                    data.AutoTx = false;
+                    if (dataEdit != null)
+                    {
+                        dataGridEditTxMessages.UnselectAll();
+                        CheckBoxEditTxAutoTx.IsChecked = false;
+                    }
+                    row.AutoTx = false;
+                    dataGridEditTxMessages.Items.Refresh();
+                }
+            }
+        }
+
         #endregion
 
         #region OnComboBoxTxRateTextChanged
@@ -2565,12 +2642,12 @@ namespace CAN_X_CAN_Analyzer
             data.Rate = ComboBoxEditTxRate.Text;
             dataGridEditTxMessages.Items.Refresh();
             // update dataGridTx
-            foreach (CanTxData canTxData in dataGridTxWindow.Items)
+            foreach (CanTxData canTxData in transmitMessages.dataGridTxWindow.Items)
             {
                 if (data.Key == canTxData.Key)
                 {
                     canTxData.Rate = ComboBoxEditTxRate.Text;
-                    dataGridTxWindow.Items.Refresh();
+                    transmitMessages.dataGridTxWindow.Items.Refresh();
                     break;
                 }
             }
@@ -2625,7 +2702,7 @@ namespace CAN_X_CAN_Analyzer
                 long mod = (ElapsedMilliseconds % Tick);
                 if (OldElapsedMilliseconds != ElapsedMilliseconds && (mod == 0 || ElapsedMilliseconds > Tick))
                 {
-                    foreach (CanTxData row in dataGridTxWindow.Items)
+                    foreach (CanTxData row in transmitMessages.dataGridTxWindow.Items)
                     {
                         if (row.AutoTx == true)
                         {
@@ -2675,7 +2752,7 @@ namespace CAN_X_CAN_Analyzer
         private void MenuItemSaveRx_Click_1(object sender, RoutedEventArgs e)
         {
             // StatusBarStatus.Text = "Save to Rx";
-            CanRxData data = dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            CanRxData data = messageMonitor.dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
             if (data == null)
             {
                 StatusBarStatus.Text = "Please select an ArbID to save";
@@ -2703,7 +2780,7 @@ namespace CAN_X_CAN_Analyzer
         private void MenuItemSaveTx_Click(object sender, RoutedEventArgs e)
         {
             // StatusBarStatus.Text = "Save to Tx";
-            CanRxData data = dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
+            CanRxData data = messageMonitor.dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
             if (data == null)
             {
                 StatusBarStatus.Text = "Please select an ArbID to save";
@@ -2727,29 +2804,29 @@ namespace CAN_X_CAN_Analyzer
             // add to message editor Tx datagrid
             dataGridEditTxMessages.Items.Add(canTxData);
             // add to main Tx datagrid
-            dataGridTxWindow.Items.Add(canTxData);
+            transmitMessages.dataGridTxWindow.Items.Add(canTxData);
         }
         #endregion
 
         #region CheckBox Blind, Ascii and Notes
         private void CheckBoxBlind_Click(object sender, RoutedEventArgs e)
         {
-            USB_CAN_Interface.Properties.Settings.Default.imBlind = (bool)CheckBoxBlind.IsChecked;
-            USB_CAN_Interface.Properties.Settings.Default.Save();
+            CAN_X_CAN_Analyzer.Properties.Settings.Default.imBlind = (bool)CheckBoxBlind.IsChecked;
+            CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
             ResizeDataGridRx();
         }
 
         private void CheckBoxAscii_Click(object sender, RoutedEventArgs e)
         {
-            USB_CAN_Interface.Properties.Settings.Default.ascii = (bool)CheckBoxAscii.IsChecked;
-            USB_CAN_Interface.Properties.Settings.Default.Save();
+            CAN_X_CAN_Analyzer.Properties.Settings.Default.ascii = (bool)CheckBoxAscii.IsChecked;
+            CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
             FormatDataGridColumns();
         }
 
         private void CheckBoxNotes_Click(object sender, RoutedEventArgs e)
         {
-            USB_CAN_Interface.Properties.Settings.Default.notes = (bool)CheckBoxNotes.IsChecked;
-            USB_CAN_Interface.Properties.Settings.Default.Save();
+            CAN_X_CAN_Analyzer.Properties.Settings.Default.notes = (bool)CheckBoxNotes.IsChecked;
+            CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
             FormatDataGridColumns();
         }
 
@@ -2757,20 +2834,20 @@ namespace CAN_X_CAN_Analyzer
         {
             if (CheckBoxAscii.IsChecked == true)
             {
-                dataGridRxWindow.Columns[20].Visibility = Visibility.Visible;
+                messageMonitor.dataGridRxWindow.Columns[20].Visibility = Visibility.Visible;
             }
             else
             {
-                dataGridRxWindow.Columns[20].Visibility = Visibility.Hidden;
+                messageMonitor.dataGridRxWindow.Columns[20].Visibility = Visibility.Hidden;
             }
 
             if (CheckBoxNotes.IsChecked == true)
             {
-                dataGridRxWindow.Columns[21].Visibility = Visibility.Visible;
+                messageMonitor.dataGridRxWindow.Columns[21].Visibility = Visibility.Visible;
             }
             else
             {
-                dataGridRxWindow.Columns[21].Visibility = Visibility.Hidden;
+                messageMonitor.dataGridRxWindow.Columns[21].Visibility = Visibility.Hidden;
             }
         }
         #endregion

@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="CAN_X_CAN_Analyzer.Components.TransmitMessages"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CAN_X_CAN_Analyzer.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid Grid.ColumnSpan="2">
+
+            <DataGrid x:Name="dataGridTxWindow" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Description" Binding="{Binding Path='Description'}" />
+                    <DataGridTemplateColumn Header="TX" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Name="bthnView" Content="Send" Click="ButtonTxMessage_Click"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="AutoTx" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Name="CheckBoxAutoTx" IsChecked="{Binding Path='AutoTx', Mode=TwoWay}" Checked="CheckBoxAutoTx_Checked" Unchecked="CheckBoxAutoTx_Unchecked"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Rate" Binding="{Binding Path='Rate', Mode=OneWay}" />
+                    <DataGridTextColumn Header="IDE" Binding="{Binding Path='IDE', Mode=OneWay}" />
+                    <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID', Mode=TwoWay}" />
+                    <DataGridTextColumn Header="RTR" Binding="{Binding Path='RTR', Mode=OneWay}" />
+                    <DataGridTextColumn Header="DLC" Binding="{Binding Path='DLC', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte1" Binding="{Binding Path='Byte1', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte2" Binding="{Binding Path='Byte2', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte3" Binding="{Binding Path='Byte3', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte4" Binding="{Binding Path='Byte4', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte5" Binding="{Binding Path='Byte5', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte6" Binding="{Binding Path='Byte6', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte7" Binding="{Binding Path='Byte7', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Byte8" Binding="{Binding Path='Byte8', Mode=OneWay}" />
+                    <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</UserControl>

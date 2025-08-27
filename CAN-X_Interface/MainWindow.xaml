@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CAN_X_CAN_Analyzer" 
+        xmlns:components="clr-namespace:CAN_X_CAN_Analyzer.Components"
         mc:Ignorable="d" 
         Title="CAN-X" WindowStartupLocation="CenterScreen" Margin="0" Height="735.5" Width="1186" Closing="Window_Closing" Loaded="MainWindow1_Loaded" ResizeMode="CanResizeWithGrip">
     <Window.DataContext>
@@ -243,10 +244,6 @@
                 </TabControl.Resources>
                 <TabItem Header="Message Monitor">
                     <Grid>
-                        <!--<Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="89*"/>
-                            <ColumnDefinition Width="405*"/>
-                        </Grid.ColumnDefinitions>-->
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/> <!-- Buttons -->
                             <RowDefinition Height="*"/> <!-- Receive -->
@@ -283,13 +280,14 @@
 
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
-                        <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,0,0,5" Grid.ColumnSpan="2" Grid.RowSpan="2">
+
+                        <!--<DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,0,0,5" Grid.ColumnSpan="2" Grid.RowSpan="2">
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem x:Name="MenuItemSaveRx" Header="Save to Rx" Click="MenuItemSaveRx_Click_1"/>
-                                    <!-- <MenuItem x:Name="MenuItemSaveRxWithData" Header="Save to Rx with data" IsEnabled="False"/> -->
+                                    --><!-- <MenuItem x:Name="MenuItemSaveRxWithData" Header="Save to Rx with data" IsEnabled="False"/> --><!--
                                     <MenuItem x:Name="MenuItemSaveTx" Header="Save to Tx" Click="MenuItemSaveTx_Click"/>
-                                    <!--<MenuItem x:Name="MenuItemSaveTxWithData" Header="Save to Tx with data" IsEnabled="False"/>-->
+                                    --><!--<MenuItem x:Name="MenuItemSaveTxWithData" Header="Save to Tx with data" IsEnabled="False"/>--><!--
                                 </ContextMenu>
                             </DataGrid.ContextMenu>
                             <DataGrid.Background>
@@ -375,11 +373,14 @@
                                 <DataGridTextColumn Header="ASCII" Binding="{Binding ASCII, Mode=OneWay}" />
                                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=OneWay}" />
                             </DataGrid.Columns>
-                        </DataGrid>
+                        </DataGrid>-->
+
+                        <components:MessageMonitor Grid.Row="1" x:Name="messageMonitor"/>
 
                         <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
 
-                        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages"/>
+                        <!--<Grid Grid.Row="3" Grid.ColumnSpan="2">
 
                             <DataGrid x:Name="dataGridTxWindow" GridLinesVisibility="All" IsReadOnly="True" AutoGenerateColumns="False" Margin="0" Background="White" Grid.ColumnSpan="3">
                                 <DataGrid.Columns>
@@ -415,7 +416,7 @@
                                     <DataGridTextColumn Header="Node" Binding="{Binding Path='Node', Mode=OneWay}" />
                                 </DataGrid.Columns>
                             </DataGrid>
-                        </Grid>
+                        </Grid>-->
 
                         <!--<Grid x:Name="GridSpacer" Grid.Row="4" Margin="0,0,0,0">
                             <StackPanel Orientation="Horizontal">

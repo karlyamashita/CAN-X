@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="CAN_X_CAN_Analyzer.Components.MessageMonitor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:components="clr-namespace:CAN_X_CAN_Analyzer.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBlock}" x:Key="MyStyle">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <SolidColorBrush Color="Transparent"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                    <BeginStoryboard HandoffBehavior="Compose">
+                        <Storyboard TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)">
+                            <ColorAnimation Duration="0:0:0.1" To="LightGreen" AutoReverse="True"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,0,0,5" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="MenuItemSaveRx" Header="Save to Rx" Click="MenuItemSaveRx_Click"/>
+                    <MenuItem x:Name="MenuItemSaveTx" Header="Save to Tx" Click="MenuItemSaveTx_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Background>
+                <ImageBrush/>
+            </DataGrid.Background>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="Height" Value="18"/>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Line" Binding="{Binding Line, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                <DataGridTextColumn Header="RxCnt" Binding="{Binding RxCount, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                <DataGridTextColumn Header="TxCnt" Binding="{Binding TxCount, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+
+                <DataGridTextColumn Header="TimeAbs" Binding="{Binding TimeAbs, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                <DataGridTemplateColumn Header="Tx" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="15" Width="15">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Tx}" Value="true">
+                                                <Setter Property="Source" Value="/Resources/green_icon.png" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Err" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="15" Width="15">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Err}" Value="true">
+                                                <Setter Property="Source" Value="/Resources/red_icon.png" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="RTR" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="15" Width="15">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RTR}" Value="true">
+                                                <Setter Property="Source" Value="/Resources/blue_icon.png" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Description"  Binding="{Binding Description, Mode=OneWay}" />
+                <DataGridTextColumn Header="IDE" Binding="{Binding IDE, Mode=OneWay}" />
+                <DataGridTextColumn Header="ArbID" Binding="{Binding ArbID, Mode=OneWay}" />
+                <DataGridTextColumn Header="DLC" Binding="{Binding DLC, Mode=OneWay, NotifyOnTargetUpdated=True}" />
+                <DataGridTextColumn Header="Byte1" Binding="{Binding Byte1, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Byte2" Binding="{Binding Byte2, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Byte3" Binding="{Binding Byte3, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Byte4" Binding="{Binding Byte4, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Byte5" Binding="{Binding Byte5, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Byte6" Binding="{Binding Byte6, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Byte7" Binding="{Binding Byte7, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Byte8" Binding="{Binding Byte8, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+                <DataGridTextColumn Header="Node" Binding="{Binding Node, Mode=OneWay}" />
+                <DataGridTextColumn Header="ASCII" Binding="{Binding ASCII, Mode=OneWay}" />
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=OneWay}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

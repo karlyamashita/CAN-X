@@ -11,9 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using USB_CAN_Interface.Properties;
 
-namespace USB_CAN_Interface
+namespace CAN_X_CAN_Analyzer
 {
     /// <summary>
     /// Interaction logic for About.xaml
