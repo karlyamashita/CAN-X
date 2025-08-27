@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -204,12 +205,12 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (canTxData == null)
             {
-                //StatusBarStatus.Text = "You need to select a row";
+                mainWindow.statusBar.StatusBarStatus.Text = "You need to select a row";
                 return;
             }
             else
             {
-                //StatusBarStatus.Text = "";
+                mainWindow.statusBar.StatusBarStatus.Text = "";
             }
 
             TextBox obj = sender as TextBox;
@@ -228,16 +229,16 @@ namespace CAN_X_CAN_Analyzer.Components
                     if (id == 1)
                     {
                         canTxData.IDE = "X";
-                        //StatusBarStatus.Text = "";
+                        mainWindow.statusBar.StatusBarStatus.Text = "";
                     }
                     else if (id == 0)
                     {
                         canTxData.IDE = "S";
-                        //StatusBarStatus.Text = "";
+                        mainWindow.statusBar.StatusBarStatus.Text = "";
                     }
                     else
                     {
-                       // StatusBarStatus.Text = "ArbID should be between 0x000 - 0x1FFFFFFF";
+                        mainWindow.statusBar.StatusBarStatus.Text = "ArbID should be between 0x000 - 0x1FFFFFFF";
                         break;
                     }
                     canTxData.ArbID = tempStr;
@@ -348,7 +349,8 @@ namespace CAN_X_CAN_Analyzer.Components
 
         private void TextBoxTx_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-
+            int hexNumber;
+            e.Handled = !int.TryParse(e.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out hexNumber);
         }
 
         private void ComboBoxTxNode_DropDownClosed(object sender, EventArgs e)
@@ -358,7 +360,7 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
                 {
-                   // StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                   mainWindow.statusBar.StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
                 }
                 catch (NullReferenceException)
                 {
@@ -393,7 +395,8 @@ namespace CAN_X_CAN_Analyzer.Components
 
         private void TextBoxTxDLC_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text); ;
         }
 
         private void CheckBoxEditTxAutoTx_Unchecked(object sender, RoutedEventArgs e)
@@ -402,7 +405,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (data == null)
             {
-                //StatusBarStatus.Text = "Please select an ArbID to modify";
+                mainWindow.statusBar.StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
             // need to update the dataGridTx
@@ -426,7 +429,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (data == null)
             {
-               // StatusBarStatus.Text = "Please select an ArbID to modify";
+               mainWindow.statusBar.StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
             // need to update the dataGridTx
@@ -450,7 +453,7 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
                 {
-                    //StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
+                    mainWindow.statusBar.StatusBarStatus.Text = "Select an ArbID first and try selecting the node again";
                 }
                 catch (NullReferenceException)
                 {
@@ -478,7 +481,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (data == null)
             {
-                //StatusBarStatus.Text = "Please select an ArbID to modify";
+                mainWindow.statusBar.StatusBarStatus.Text = "Please select an ArbID to modify";
                 return;
             }
 

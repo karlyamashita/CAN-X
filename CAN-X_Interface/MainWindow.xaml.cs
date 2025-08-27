@@ -128,11 +128,6 @@ namespace CAN_X_CAN_Analyzer
 
             _viewModel = (ComPortViewModel)DataContext; // Get the instance set in XAML
             this.Closed += MainWindow_Closed;
-
-
-            TransmitMessages transmitMessagesUserControl = new TransmitMessages();
-            transmitMessagesUserControl.TransmitMessageSendEvent += TransmitMessages_SendEvent;
-
         }
         #endregion
 
@@ -244,54 +239,54 @@ namespace CAN_X_CAN_Analyzer
 
         #region Button Connect/Disconnect
         // button event to connect to device
-        private void ButtonConnect_Click(object sender, RoutedEventArgs e)
+        public void ButtonConnect()
         {
-            if (ComboBoxCOM.Text == string.Empty)
+            if (com_connection.ComboBoxCOM.Text == string.Empty)
             {
-                LabelConnectionStatus.Content = "Select a COM Port";
+                com_connection.LabelConnectionStatus.Content = "Select a COM Port";
                 return;
             }
-            string com = ComboBoxCOM.SelectedValue.ToString();
+            string com = com_connection.ComboBoxCOM.SelectedValue.ToString();
             comPort = new COM_PortDrv(com); // Replace with your port name and baud rate
             comPort.DataReceived += ComPortManager_DataReceived;
             try
             {
                 comPort.Open();
 
-                LabelConnectionStatus.Content = comPort.portName + " is Opened";
+                com_connection.LabelConnectionStatus.Content = comPort.portName + " is Opened";
 
-                Console.WriteLine(comPort.portName + " is Opened");           
+                Console.WriteLine(comPort.portName + " is Opened");
 
                 GetInfo();
 
-                ButtonDisconnect.IsEnabled = true;
-                ButtonConnect.IsEnabled = false;
+                com_connection.ButtonDisconnect.IsEnabled = true;
+                com_connection.ButtonConnect.IsEnabled = false;
 
                 ClearStatusBarStatus();
             }
             catch (Exception ex) // TODO - make this and the button close call a function
             {
 
-                LabelConnectionStatus.Content = comPort.portName + " is not valid";
+                com_connection.LabelConnectionStatus.Content = comPort.portName + " is not valid";
 
-                Console.WriteLine(comPort.portName + " is not valid");               
+                Console.WriteLine(comPort.portName + " is not valid");
             }
         }
 
-        private void ButtonDisconnect_Click(object sender, RoutedEventArgs e)
+        public void ButtonDisconnect()
         {
             try
             {
                 comPort.Close();
 
-                LabelConnectionStatus.Content = comPort.portName + " is Closed";
+                com_connection.LabelConnectionStatus.Content = comPort.portName + " is Closed";
 
                 Console.WriteLine(comPort.portName + " is Closed");
 
                 ClearStatusSoftwareHarHardware();
 
-                ButtonConnect.IsEnabled = true;
-                ButtonDisconnect.IsEnabled = false;
+                com_connection.ButtonConnect.IsEnabled = true;
+                com_connection.ButtonDisconnect.IsEnabled = false;
 
                 if (threadAutoTx != null)
                 {
@@ -299,15 +294,15 @@ namespace CAN_X_CAN_Analyzer
                     threadAutoTx = null;
                 }
                 sw.Stop(); // for auto tx
-                toggleButtonAutoTx.IsChecked = false;
+                com_connection.toggleButtonAutoTx.IsChecked = false;
 
                 ClearStatusBarStatus();
             }
             catch (Exception ex)
             {
-                LabelConnectionStatus.Content = "No COM Opened";
+                com_connection.LabelConnectionStatus.Content = "No COM Opened";
 
-                Console.WriteLine("No COM Opened");              
+                Console.WriteLine("No COM Opened");
             }
         }
 
@@ -320,17 +315,17 @@ namespace CAN_X_CAN_Analyzer
             switch (command)
             {
                 case COMMAND_VERSION:
-                    StatusBarStatusVersion.Dispatcher.BeginInvoke(new Action(delegate ()
+                    statusBar.StatusBarStatusVersion.Dispatcher.BeginInvoke(new Action(delegate ()
                     {
                         //StatusBarStatusVersion.Text = "FW: " + GetStringFromData(data);
-                        StatusBarStatusVersion.Text = "FW: " + Encoding.ASCII.GetString(data);
+                        statusBar.StatusBarStatusVersion.Text = "FW: " + Encoding.ASCII.GetString(data);
                     }));
                     break;
                 case COMMAND_HARDWARE:
-                    StatusBarStatusVersion.Dispatcher.BeginInvoke(new Action(delegate ()
+                    statusBar.StatusBarStatusVersion.Dispatcher.BeginInvoke(new Action(delegate ()
                     {
                         //StatusBarStatusHardware.Text = "HW: " + GetStringFromData(data);
-                        StatusBarStatusHardware.Text = "HW: " + Encoding.ASCII.GetString(data);
+                        statusBar.StatusBarStatusHardware.Text = "HW: " + Encoding.ASCII.GetString(data);
                     }));
                     break;
             }
@@ -358,31 +353,31 @@ namespace CAN_X_CAN_Analyzer
             btrValue = (UInt32)(data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3]);
 
             // TODO - show selected baud rate in combobox
-            TextBoxBtrValue.Dispatcher.BeginInvoke(new Action(delegate ()
+            com_connection.TextBoxBtrValue.Dispatcher.BeginInvoke(new Action(delegate ()
             {
-                TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
+                com_connection.TextBoxBtrValue.Text = "0x" + btrValue.ToString("X8");
             }));
 
-            ComboBoxMode.Dispatcher.BeginInvoke(new Action(delegate ()
+            com_connection.ComboBoxMode.Dispatcher.BeginInvoke(new Action(delegate ()
             {
                 if ((btrValue & 0x80000000) == 0x80000000) // silent
                 {
-                    ComboBoxMode.SelectedIndex = 2;
+                    com_connection.ComboBoxMode.SelectedIndex = 2;
                 }
                 else if ((btrValue & 0x40000000) == 0x40000000) // loopback
                 {
-                    ComboBoxMode.SelectedIndex = 1;
+                    com_connection.ComboBoxMode.SelectedIndex = 1;
                 }
                 else // normal
                 {
-                    ComboBoxMode.SelectedIndex = 0;
+                    com_connection.ComboBoxMode.SelectedIndex = 0;
                 }
             }));
 
-            ComboBoxAPB1.Dispatcher.BeginInvoke(new Action(delegate ()
+            com_connection.ComboBoxAPB1.Dispatcher.BeginInvoke(new Action(delegate ()
             {
                 int i = 0;
-                string comboBoxAPB1Name = ComboBoxAPB1.SelectedValue.ToString();
+                string comboBoxAPB1Name = com_connection.ComboBoxAPB1.SelectedValue.ToString();
                 CAN_BaudRate can_baudRate = new CAN_BaudRate(comboBoxAPB1Name);
 
                 foreach (var item in can_baudRate.baudList)
@@ -391,7 +386,7 @@ namespace CAN_X_CAN_Analyzer
                     UInt32 _textBox = btrValue & 0x3FFFFFFF;
                     if (_item == _textBox)
                     {
-                        ComboBoxBaudRate.SelectedIndex = i;
+                        com_connection.ComboBoxBaudRate.SelectedIndex = i;
 
                         return;
                     }
@@ -433,9 +428,9 @@ namespace CAN_X_CAN_Analyzer
         #region Parse ASCII from data
         private void ParseAscii(ref CanRxData canRxData)
         {
-            CheckBoxAscii.Dispatcher.BeginInvoke(new Action(delegate ()
+            com_connection.CheckBoxAscii.Dispatcher.BeginInvoke(new Action(delegate ()
             {
-                if (CheckBoxAscii.IsChecked != true) return;
+                if (com_connection.CheckBoxAscii.IsChecked != true) return;
             }));
             
             byte[] data = new byte[8];
@@ -490,9 +485,9 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (en == frequency)
                 {
-                    ComboBoxAPB1.Dispatcher.BeginInvoke(new Action(delegate ()
+                    com_connection.ComboBoxAPB1.Dispatcher.BeginInvoke(new Action(delegate ()
                     {
-                        ComboBoxAPB1.SelectedIndex = i;
+                        com_connection.ComboBoxAPB1.SelectedIndex = i;
                     }));
                     break;
                 }
@@ -520,17 +515,17 @@ namespace CAN_X_CAN_Analyzer
         private bool UpdateProgressBar()
         {
             // update progress bar
-            ProgressBar.Value = lineCount;
+            statusBar.ProgressBar.Value = lineCount;
 
-            TextBoxBufferPercentage.Text = lineCount.ToString() + "/" + MAX_ROW_COUNT.ToString();
+            statusBar.TextBoxBufferPercentage.Text = lineCount.ToString() + "/" + MAX_ROW_COUNT.ToString();
 
             // remove data from datagrid if we reach max amount of rows
             if (lineCount >= MAX_ROW_COUNT)
             {
-                ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
+                statusBar.ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
                 return true;
             }
-            ProgressBar.Foreground = new SolidColorBrush(Colors.PaleGreen);
+            statusBar.ProgressBar.Foreground = new SolidColorBrush(Colors.PaleGreen);
             return false;
         }
         #endregion
@@ -655,23 +650,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region Button event to send CAN Tx message and to update DataGrid. Starts delegate
-        private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
-        {
-            if ((comPort == null) || (comPort.IsOpen == false))
-            {
-                StatusBarStatus.Text = "Device Not Connected";
-                return;
-            }
-            SendMessage msg = new SendMessage(SendTxMsgToDataGridAndCanBus);
-            this.Dispatcher.BeginInvoke(msg);
-        }
-
-        private void TransmitMessages_SendEvent(object sender, EventArgs e)
-        {
-            SendMessage msg = new SendMessage(SendTxMsgToDataGridAndCanBus);
-            this.Dispatcher.BeginInvoke(msg);
-        }
+        #region Button Send CAN message
 
         public void TransmitMessages_Send()
         {
@@ -869,35 +848,35 @@ namespace CAN_X_CAN_Analyzer
             {
                 masterDataGridRx.RemoveAt(0);
             }
-            ProgressBar.Value = 0;
+            statusBar.ProgressBar.Value = 0;
             lineCount = 0;
             ClearStatusBarStatus();
         }
 
         private void ClearStatusBarStatus()
         {
-            StatusBarStatus.Text = "";
+            statusBar.StatusBarStatus.Text = "";
         }
 
         private void ClearStatusSoftwareHarHardware()
         {
-            StatusBarStatusHardware.Text = "";
-            StatusBarStatusVersion.Text = "";
+            statusBar.StatusBarStatusHardware.Text = "";
+            statusBar.StatusBarStatusVersion.Text = "";
         }
         #endregion
 
         #region ButtonBtr click. Sends new baud rate to device and/or Listen mode
-        // Todo - this modifies CAN1, need to make another button  or another approach to modify CAN2, SWCAN, etc
-        private void ButtonBtrValue_Click(object sender, RoutedEventArgs e)
+
+        public void ButtonBtrClicked()
         {
             if ((comPort == null) || (comPort.IsOpen == false))
             {
-                StatusBarStatus.Text = "Device Not Connected";
+                statusBar.StatusBarStatus.Text = "Device Not Connected";
                 return;
             }
 
             byte[] tmp_buf = new byte[DATA_SIZE];
-            string myString = TextBoxBtrValue.Text;
+            string myString = com_connection.TextBoxBtrValue.Text;
             UInt32 btrValue;
             try
             {
@@ -906,7 +885,7 @@ namespace CAN_X_CAN_Analyzer
             catch (FormatException)
             {
                 // we should never get here
-                StatusBarStatus.Text = "Hex value is not in correct format";
+                statusBar.StatusBarStatus.Text = "Hex value is not in correct format";
                 return;
             }
 
@@ -932,33 +911,20 @@ namespace CAN_X_CAN_Analyzer
 
             foreach (var item in can_baudRate.baudList)
             {
-                ComboBoxBaudRate.Items.Add(item.baud);
+                com_connection.ComboBoxBaudRate.Items.Add(item.baud);
             }
-            ComboBoxBaudRate.SelectedIndex = 1;
+            com_connection.ComboBoxBaudRate.SelectedIndex = 1;
 
-            ComboBoxAPB1.ItemsSource = Enum.GetNames(typeof(EnumDefines.APB1_Freq));
-            ComboBoxAPB1.SelectedIndex = 0;
-        }
-
-        private void ComboBoxBaudRate_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            CalculateBTR();
-        }
-        private void ComboBoxAPB1_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            CalculateBTR();
-        }
-        private void ComboBoxMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            CalculateBTR();
+            com_connection.ComboBoxAPB1.ItemsSource = Enum.GetNames(typeof(EnumDefines.APB1_Freq));
+            com_connection.ComboBoxAPB1.SelectedIndex = 0;
         }
 
-        private void CalculateBTR()
+        public void CalculateBTR()
         {
             // baud rate change
-            if (ComboBoxBaudRate.Items.Count == 0 || ComboBoxAPB1.Items.Count == 0) return;
-            string comboBoxItemName = ComboBoxBaudRate.SelectedValue.ToString();
-            string comboBoxAPB1Name = ComboBoxAPB1.SelectedValue.ToString();
+            if (com_connection.ComboBoxBaudRate.Items.Count == 0 || com_connection.ComboBoxAPB1.Items.Count == 0) return;
+            string comboBoxItemName = com_connection.ComboBoxBaudRate.SelectedValue.ToString();
+            string comboBoxAPB1Name = com_connection.ComboBoxAPB1.SelectedValue.ToString();
 
             CAN_BaudRate can_baudRate = new CAN_BaudRate(comboBoxAPB1Name);
             string value = "";
@@ -972,7 +938,7 @@ namespace CAN_X_CAN_Analyzer
             }
 
             // CAN mode change
-            int mode = ComboBoxMode.SelectedIndex;
+            int mode = com_connection.ComboBoxMode.SelectedIndex;
             UInt32 currentBTRValue = Convert.ToUInt32(value, 16);
 
             if (mode == 1)
@@ -986,13 +952,10 @@ namespace CAN_X_CAN_Analyzer
 
             string finalStrValue = string.Format("{0}{1}", "0x", currentBTRValue.ToString("X8"));
 
-            TextBoxBtrValue.Text = finalStrValue;
+            com_connection.TextBoxBtrValue.Text = finalStrValue;
 
         }
-        private void ComboBoxNodeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
 
-        }
         #endregion
 
         #region main Window loaded
@@ -1006,15 +969,15 @@ namespace CAN_X_CAN_Analyzer
                 MainWindow1.Title = mainWindowTitle + " - " + Path.GetFileName(CAN_X_CAN_Analyzer.Properties.Settings.Default.lastFilePath);
             }
 
-            CheckBoxBlind.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.imBlind;
+            com_connection.CheckBoxBlind.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.imBlind;
             ResizeDataGridRx();
 
             InitPopulateBaudRateListBox();
 
             editRxMessages.ComboBoxRxNode.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
             
-            // TODO - need to fix xml
-  //          ComboBoxTxNode_DropDownClosed.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
+            // TODO - fix
+            //ComboBoxTxNode_DropDownClosed.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
 
             // need to remove "_" in the enum
             List<string> txRateList = new List<string>();
@@ -1022,18 +985,17 @@ namespace CAN_X_CAN_Analyzer
             {
                 txRateList.Add(en.Replace("_", ""));
             }
-            // TODO -need to fix
-//            ComboBoxEditTxRate.ItemsSource = txRateList;
+            editTxMessages.ComboBoxEditTxRate.ItemsSource = txRateList;
 
             sw = new System.Diagnostics.Stopwatch();
 
             // get checkbox states
-            CheckBoxAscii.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.ascii;
-            CheckBoxNotes.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.notes;
+            com_connection.CheckBoxAscii.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.ascii;
+            com_connection.CheckBoxNotes.IsChecked = CAN_X_CAN_Analyzer.Properties.Settings.Default.notes;
             // now format datagrid if needed
             FormatDataGridColumns();
 
-            ProgressBar.Maximum = MAX_ROW_COUNT;
+            statusBar.ProgressBar.Maximum = MAX_ROW_COUNT;
 
         }
         #endregion
@@ -1069,79 +1031,6 @@ namespace CAN_X_CAN_Analyzer
         {
             _viewModel?.Dispose(); // Dispose the watcher when the window closes
         }
-
-        #endregion
-
-        #region add and edit messages
-        /*
-         * function: Insert a new row. Routine will go through 
-         * all rows for next open key number to use.
-         * 
-         */
-        
-
-
-
-        #endregion
-
-        #region copy tx/rx messages
-       
-
-        
-        #endregion
-
-        #region On mouse button up will update TextBoxes from current selected data grid row
-
-        
-
-
-
-        #endregion
-
-        #region On Transmit text change from TextBox will update dataGridTx
-
-        #endregion
-
-        #region previews mouse left button down for which row index is selected and stores in variable
-        // gets the current row index for Tx and saves in variable.
-
-
-        #endregion
-
-        #region preview text input for hex numbers
-        /*
- * function: Checks for valid ArbID. Also trims spaces in the ArbID
- * input: the ArbID
- * output: 11bit = 0, 29bit = 1, id is greater than 0x1fffffff = -1
- */
-        private int GetIs29BitID(string ArbID, ref string trimmedID)
-        {
-            trimmedID = Regex.Replace(ArbID, @"\s", "");
-            if (trimmedID == "") return -1; // just in case person backspaces
-            UInt32 id = Convert.ToUInt32(trimmedID.ToString(), 16);
-            if (id > 0x7ff && id < 0x1fffffff)
-            {
-                return 1;
-            }
-            else if (id <= 0x7FF)
-            {
-                return 0;
-            }
-            return -1;
-        }
-
-        private void TextBoxTxDLC_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text); ;
-        }
-
-        private void TextBoxTx_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            int hexNumber;
-            e.Handled = !int.TryParse(e.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out hexNumber);
-        }
-
 
         #endregion
 
@@ -1218,7 +1107,7 @@ namespace CAN_X_CAN_Analyzer
                 {
                     File.WriteAllText(saveFile.FileName, strBuilder.ToString());
                     string filename = saveFile.FileName;
-                    StatusBarStatus.Text = "Successfully saved " + filename;
+                    statusBar.StatusBarStatus.Text = "Successfully saved " + filename;
                 }
                 catch (IOException)
                 {
@@ -1229,7 +1118,7 @@ namespace CAN_X_CAN_Analyzer
 
                     System.Windows.MessageBox.Show(messageBoxText, dialogTitle, button, icon);
 
-                    StatusBarStatus.Text = messageBoxText;
+                    statusBar.StatusBarStatus.Text = messageBoxText;
                 }
             }
         }
@@ -1341,7 +1230,7 @@ namespace CAN_X_CAN_Analyzer
 
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
-            StatusBarStatus.Text = "File saved successfully";
+            statusBar.StatusBarStatus.Text = "File saved successfully";
         }
         #endregion
 
@@ -1359,7 +1248,7 @@ namespace CAN_X_CAN_Analyzer
                 CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
                 if (!File.Exists(openFile.FileName))
                 {
-                    StatusBarStatus.Text = "File does not exist!";
+                    statusBar.StatusBarStatus.Text = "File does not exist!";
                 }
                 else
                 {
@@ -1649,12 +1538,6 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region ComboBox Node selection
-
-
-
-        #endregion
-
         #region pause and scroll buttons
 
         private void ButtonPauseMessages_Click(object sender, RoutedEventArgs e)
@@ -1685,14 +1568,10 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region Checkbox RTR click event
-        
-        #endregion
-
         #region Resize DataGridRx
-        private void ResizeDataGridRx()
+        public void ResizeDataGridRx()
         {
-            if (CheckBoxBlind.IsChecked == true)
+            if (com_connection.CheckBoxBlind.IsChecked == true)
             {
                 Style rowStyle = new Style();
                 rowStyle.TargetType = typeof(DataGridRow);
@@ -1729,10 +1608,6 @@ namespace CAN_X_CAN_Analyzer
 
         #region CheckBoxEditTxAutoTx checked
 
-       
-
-
-
         public void TransmitMessages_AutoTx_Checked()
         {
             CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
@@ -1764,63 +1639,7 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region CheckBoxAutoTx Checked
-        /*
-        private void CheckBoxAutoTx_Checked(object sender, RoutedEventArgs e)
-        {
-            CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
-            CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
 
-            if (data == null)
-            {
-                //   StatusBarStatus.Text = "Please select an ArbID to modify";
-                return;
-            }
-            // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
-            foreach (CanTxData row in dataGridEditTxMessages.Items)
-            {
-                if (row.Key == data.Key)
-                {
-                    if (dataEdit != null)
-                    {
-                        data.AutoTx = true;
-                        if (dataEdit.Key == row.Key)
-                        {
-                            CheckBoxEditTxAutoTx.IsChecked = true;
-                        }
-                    }
-                    row.AutoTx = true;
-                    dataGridEditTxMessages.Items.Refresh();
-                }
-            }
-        }
- 
-        private void CheckBoxAutoTx_Unchecked(object sender, RoutedEventArgs e)
-        {
-            CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
-            CanTxData dataEdit = dataGridEditTxMessages.SelectedItem as CanTxData;
-
-            if (data == null)
-            {
-                //   StatusBarStatus.Text = "Please select an ArbID to modify";
-                return;
-            }
-            // need to update the dataGridEditRxMessages and CheckBoxEditTxAutoTx
-            foreach (CanTxData row in dataGridEditTxMessages.Items)
-            {
-                if (row.Key == data.Key)
-                {
-                    data.AutoTx = false;
-                    if (dataEdit != null)
-                    {
-                        dataGridEditTxMessages.UnselectAll();
-                        CheckBoxEditTxAutoTx.IsChecked = false;
-                    }
-                    row.AutoTx = false;
-                    dataGridEditTxMessages.Items.Refresh();
-                }
-            }
-        }
-        */
         public void TransmitMessages_AutoTx_Unchecked()
         {
             CanTxData data = transmitMessages.dataGridTxWindow.SelectedItem as CanTxData; // grabs the current selected row, which you can get the items
@@ -1850,19 +1669,17 @@ namespace CAN_X_CAN_Analyzer
 
         #endregion
 
-        #region OnComboBoxTxRateTextChanged
-
-        #endregion
 
         #region ToggleButtonAutoTx click
-        private void ToggleButtonAutoTx_Click(object sender, RoutedEventArgs e)
+
+        public void ToggleButtonAutoTx()
         {
-            if (toggleButtonAutoTx.IsChecked == true)
+            if (com_connection.toggleButtonAutoTx.IsChecked == true)
             {
                 if ((comPort == null) || (comPort.IsOpen == false))
                 {
-                    StatusBarStatus.Text = "Device Not Connected";
-                    toggleButtonAutoTx.IsChecked = false;
+                    statusBar.StatusBarStatus.Text = "Device Not Connected";
+                    com_connection.toggleButtonAutoTx.IsChecked = false;
                     return;
                 }
 
@@ -1871,13 +1688,13 @@ namespace CAN_X_CAN_Analyzer
                     threadAutoTx = new Thread(TxSendThread);
                     threadAutoTx.Start();
                 }
-                
+
                 sw.Start();
             }
             else
             {
                 if (threadAutoTx != null)
-                { 
+                {
                     threadAutoTx.Abort();
                     threadAutoTx = null;
                 }
@@ -1955,7 +1772,7 @@ namespace CAN_X_CAN_Analyzer
             CanRxData data = messageMonitor.dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
             if (data == null)
             {
-                StatusBarStatus.Text = "Please select an ArbID to save";
+                statusBar.StatusBarStatus.Text = "Please select an ArbID to save";
                 return;
             }
 
@@ -1983,7 +1800,7 @@ namespace CAN_X_CAN_Analyzer
             CanRxData data = messageMonitor.dataGridRxWindow.SelectedItem as CanRxData; // grabs the current selected row, which you can get the items
             if (data == null)
             {
-                StatusBarStatus.Text = "Please select an ArbID to save";
+                statusBar.StatusBarStatus.Text = "Please select an ArbID to save";
                 return;
             }
 
@@ -2008,31 +1825,11 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region CheckBox Blind, Ascii and Notes
-        private void CheckBoxBlind_Click(object sender, RoutedEventArgs e)
-        {
-            CAN_X_CAN_Analyzer.Properties.Settings.Default.imBlind = (bool)CheckBoxBlind.IsChecked;
-            CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
-            ResizeDataGridRx();
-        }
+        #region FormatDataGridColumns
 
-        private void CheckBoxAscii_Click(object sender, RoutedEventArgs e)
+        public void FormatDataGridColumns()
         {
-            CAN_X_CAN_Analyzer.Properties.Settings.Default.ascii = (bool)CheckBoxAscii.IsChecked;
-            CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
-            FormatDataGridColumns();
-        }
-
-        private void CheckBoxNotes_Click(object sender, RoutedEventArgs e)
-        {
-            CAN_X_CAN_Analyzer.Properties.Settings.Default.notes = (bool)CheckBoxNotes.IsChecked;
-            CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
-            FormatDataGridColumns();
-        }
-
-        private void FormatDataGridColumns()
-        {
-            if (CheckBoxAscii.IsChecked == true)
+            if (com_connection.CheckBoxAscii.IsChecked == true)
             {
                 messageMonitor.dataGridRxWindow.Columns[20].Visibility = Visibility.Visible;
             }
@@ -2041,7 +1838,7 @@ namespace CAN_X_CAN_Analyzer
                 messageMonitor.dataGridRxWindow.Columns[20].Visibility = Visibility.Hidden;
             }
 
-            if (CheckBoxNotes.IsChecked == true)
+            if (com_connection.CheckBoxNotes.IsChecked == true)
             {
                 messageMonitor.dataGridRxWindow.Columns[21].Visibility = Visibility.Visible;
             }
