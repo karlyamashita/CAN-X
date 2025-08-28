@@ -130,6 +130,10 @@ namespace CAN_X_CAN_Analyzer
             editTxMessages.EditTxMessagesUpdateStatusEvent += UserControl_EditTxMessagesUpdateStatusEvent;
             editRxMessages.EditRxMessagesUpdateStatusEvent += UserControl_EditRxMessagesUpdateStatusEvent;
 
+
+
+
+
         }
 
         private void UserControl_EditRxMessagesUpdateStatusEvent(object sender, EditRxMessages.EditRxMessagesEventArgs e)
@@ -1945,9 +1949,10 @@ namespace CAN_X_CAN_Analyzer
         }
 
 
+
         #endregion
 
-
+ 
     }
 }
 

@@ -24,12 +24,17 @@ namespace CAN_X_CAN_Analyzer.Components
 
         public class TransmitMessagesEventArgs : EventArgs
         {
-            public string EventType { get; set; }
+            public string EventType { get; }
             // Add other properties as needed
+
+            public TransmitMessagesEventArgs(string eventType)
+            {
+                EventType = eventType;
+            }
         }
 
         // Helper method to raise the event
-        protected virtual void OnMyCustomEvent(TransmitMessagesEventArgs e)
+        protected virtual void OnTransmitMessagesEvent(TransmitMessagesEventArgs e)
         {
             TransmitMessagesEvent?.Invoke(this, e);
         }
@@ -41,17 +46,17 @@ namespace CAN_X_CAN_Analyzer.Components
 
         private void ButtonTxMessage_Click(object sender, RoutedEventArgs e)
         {
-            OnMyCustomEvent(new TransmitMessagesEventArgs { EventType = "ButtonTxMessage_Click" });
+            OnTransmitMessagesEvent(new TransmitMessagesEventArgs("ButtonTxMessage_Click"));
         }
 
         private void CheckBoxAutoTx_Checked(object sender, RoutedEventArgs e)
         {
-            OnMyCustomEvent(new TransmitMessagesEventArgs { EventType = "CheckBoxAutoTx_Checked" });
+            OnTransmitMessagesEvent(new TransmitMessagesEventArgs("CheckBoxAutoTx_Checked"));
         }
 
         private void CheckBoxAutoTx_Unchecked(object sender, RoutedEventArgs e)
         {
-            OnMyCustomEvent(new TransmitMessagesEventArgs { EventType = "CheckBoxAutoTx_Unchecked" });
+            OnTransmitMessagesEvent(new TransmitMessagesEventArgs("CheckBoxAutoTx_Unchecked"));
         }
 
         private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
@@ -66,21 +71,31 @@ namespace CAN_X_CAN_Analyzer.Components
         {
             if (e.Data.GetDataPresent(typeof(TransmitMessages)))
             {
-                TransmitMessages draggedControl = e.Data.GetData(typeof(TransmitMessages)) as TransmitMessages;
-
-                // Optional: Remove from original parent if moving
-                if (draggedControl.Parent is Panel parentPanel)
+                if (e.Data.GetData(typeof(TransmitMessages)) is TransmitMessages draggedControl)
                 {
-                    parentPanel.Children.Remove(draggedControl);
+                    if (draggedControl.Parent is Panel parentPanel)
+                    {
+                        parentPanel.Children.Remove(draggedControl);
+                    }
+
+                    Window newWindow = new Window
+                    {
+                        Content = draggedControl,
+                        Width = draggedControl.ActualWidth + 20,
+                        Height = draggedControl.ActualHeight + 20,
+                        Title = "Transmit Messages",
+                    //    Owner = Window.GetWindow(this) // Set owner if possible
+                    };
+                    newWindow.Show();
+                    newWindow.Closed += (s, args) =>
+                    {
+                        // Optionally, you can add the control back to its original parent when the window is closed
+                        if (this.Parent is Panel originalParent)
+                        {
+                            originalParent.Children.Add(draggedControl);
+                        }
+                    };
                 }
-
-                Window newWindow = new Window();
-                newWindow.Content = draggedControl;
-                newWindow.Width = draggedControl.ActualWidth + 20; // Adjust as needed
-                newWindow.Height = draggedControl.ActualHeight + 20; // Adjust as needed
-                newWindow.Title = "Transmit Messages";
-                newWindow.Show();
-
             }
         }
 

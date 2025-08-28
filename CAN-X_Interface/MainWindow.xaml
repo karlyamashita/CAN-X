@@ -138,8 +138,8 @@
             <components:EditTxMessages EditTxMessagesUpdateStatusEvent="UserControl_EditTxMessagesUpdateStatusEvent"/>
             <components:EditRxMessages EditRxMessagesUpdateStatusEvent="UserControl_EditRxMessagesUpdateStatusEvent"/>
         </Grid>
-        <DockPanel Grid.ColumnSpan="3" Margin="0,0,0,25">
-            <StackPanel x:Name="Menu_Bar"   DockPanel.Dock="Top" Height="25" Margin="0">
+        <DockPanel Grid.ColumnSpan="3" Margin="0,0,0,25"> <!-- Leave space for status bar -->
+            <StackPanel x:Name="Menu_Bar"   DockPanel.Dock="Top" Height="25" Margin="0" >
                 <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
                     <MenuItem x:Name="MenuItemFile" Header="File">
                         <MenuItem x:Name="MenuItemNew" Header="New" Click="MenuItemNew_Click"/>
@@ -152,9 +152,9 @@
                 </Menu>
             </StackPanel>
 
-            <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right"/>
+            <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="0,25,0,0"  />
 
-            <TabControl >
+            <TabControl x:Name="TabControlMain" ><!-- Should fill the remaining DockPanel area -->
                 <!--<TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
@@ -224,12 +224,9 @@
 
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
-
                         <components:MessageMonitor Grid.Row="1" x:Name="messageMonitor"/>
-
-                        <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
-
-                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages" AllowDrop="True"/>
+                            <GridSplitter x:Name="GridSplitter" Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
+                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Messages Editor" Template="{StaticResource TableColor1}">
@@ -251,6 +248,7 @@
                 </TabItem>
             </TabControl>
         </DockPanel>
+        <!-- Status Bar -->
         <components:StatusBar x:Name="statusBar" />
     </Grid>
 </Window>

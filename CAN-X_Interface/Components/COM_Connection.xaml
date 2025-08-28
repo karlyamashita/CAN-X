@@ -4,28 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CAN_X_CAN_Analyzer"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" d:DesignWidth="800" Height="576">
     <UserControl.DataContext>
         <local:ComPortViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
-        <Style TargetType="{x:Type TextBlock}" x:Key="MyStyle">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <SolidColorBrush Color="Transparent"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                    <BeginStoryboard HandoffBehavior="Compose">
-                        <Storyboard TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)">
-                            <ColorAnimation Duration="0:0:0.3" To="LightGreen" AutoReverse="True"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
         <ControlTemplate x:Key="RoundedButtonTemplate" TargetType="{x:Type Button}">
             <Border x:Name="border" 
                 CornerRadius="10" 
@@ -87,8 +70,27 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
     </UserControl.Resources>
-    <Grid>
-        <StackPanel x:Name="COM_Port"  DockPanel.Dock="Right" Width="192" Background="#FFEEEEEE">
+    <Grid Width="192" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <!-- For Title and close-->
+            <RowDefinition Height="auto"/>
+            <!-- For Connect button -->
+            <RowDefinition Height="auto"/>
+            <!-- For baud -->
+            <RowDefinition Height="auto"/>
+            <!-- For Misc -->
+            <RowDefinition Height="auto"/>
+            <!-- For AutoTx -->
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="TitleClose" Grid.Row="0">
+            <Grid Background="LightGray">
+                <TextBlock Text="Device Connection" Margin="5" VerticalAlignment="Center"/>
+                <Button x:Name="ButtonClose" Content="X" HorizontalAlignment="Right" Margin="5" Width="20" Height="20" Click="ButtonClose_Click"/>
+            </Grid>
+        </StackPanel>
+        <StackPanel x:Name="COM_Port"  Grid.Row="1" DockPanel.Dock="Right" Background="#FFEEEEEE">
             <StackPanel Height="25" Margin="0,5,0,5">
                 <Label x:Name="LabelConnectionStatus" FontSize="14" FontFamily="Arial Rounded MT Bold" Content="Press Connect Button"/>
             </StackPanel>
@@ -105,21 +107,20 @@
                     <ComboBox x:Name="ComboBoxCOM" SelectedIndex="0" ItemsSource="{Binding AvailablePorts}" DisplayMemberPath="FullName" SelectedValuePath="PortName" SelectedValue="{Binding SelectedComPort}"/>
                 </StackPanel>
             </StackPanel>
-            <StackPanel>
+            <StackPanel x:Name="Baud" Grid.Row="2">
                 <GroupBox Header="Baud" BorderBrush="#FFABAFB2" Margin="0,0,0,10">
                     <StackPanel Margin="0,10,0,10">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <StackPanel x:Name="Clock_Freq" Orientation="Horizontal" HorizontalAlignment="Left">
                             <ComboBox x:Name="ComboBoxAPB1" Margin="0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBoxAPB1_SelectionChanged" SelectedIndex="0" HorizontalAlignment="Right" IsEnabled="False" />
                             <Label Content="APB1 Clock" />
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-
+                        <StackPanel x:Name="BaudRate" Orientation="Horizontal" HorizontalAlignment="Right">
                             <ComboBox x:Name="ComboBoxBaudRate" Margin="0" VerticalAlignment="Top" SelectionChanged="ComboBoxBaudRate_SelectionChanged" Width="75" HorizontalAlignment="Right"/>
                             <Label Content="Baud Rate (Kbit/s)" />
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Left">
+                        <StackPanel x:Name="CAN_Mode" Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Left">
                             <ComboBox x:Name="ComboBoxMode" HorizontalAlignment="Left" SelectionChanged="ComboBoxMode_SelectionChanged" >
                                 <ComboBoxItem Content="Normal" IsSelected="True"/>
                                 <ComboBoxItem Content="Loopback"/>
@@ -127,7 +128,7 @@
                             </ComboBox>
                             <Label Content="CAN Mode" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel x:Name="BTR_Reg" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBox x:Name="TextBoxBtrValue" MaxLength="10" Height="23" Margin="0" TextWrapping="Wrap" Text="0x001A001D" VerticalAlignment="Top" Width="120" HorizontalAlignment="Left" IsEnabled="False"/>
                             <Label Content="BTR Reg" />
                         </StackPanel>
@@ -143,41 +144,44 @@
                                 </StackPanel>
                             </Button.ToolTip>
                         </Button>
-
                     </StackPanel>
-
                 </GroupBox>
             </StackPanel>
-            <GroupBox Header="Misc" Height="113" BorderBrush="#FFABAFB2">
-                <StackPanel Margin="10,10,0,0">
-                    <CheckBox x:Name="CheckBoxBlind" Content="Large Text" Click="CheckBoxBlind_Click" />
-                    <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="Hex" GroupName="DataType" IsChecked="True" />
-                        <RadioButton Content="Binary" GroupName="DataType" IsEnabled="False" />
-                        <RadioButton GroupName="DataType" Content="Decimal" IsEnabled="False" />
+            <StackPanel x:Name="Misc" Grid.Row="3">
+                <GroupBox Header="Misc" Height="113" BorderBrush="#FFABAFB2">
+                    <StackPanel Margin="10,10,0,0">
+                        <CheckBox x:Name="CheckBoxBlind" Content="Large Text" Click="CheckBoxBlind_Click" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Hex" GroupName="DataType" IsChecked="True" />
+                            <RadioButton Content="Binary" GroupName="DataType" IsEnabled="False" />
+                            <RadioButton GroupName="DataType" Content="Decimal" IsEnabled="False" />
+                        </StackPanel>
+                        <CheckBox x:Name="CheckBoxAscii" Content="ASCII" Click="CheckBoxAscii_Click" />
+                        <CheckBox x:Name="CheckBoxNotes" Content="Notes" Click="CheckBoxNotes_Click" />
                     </StackPanel>
-                    <CheckBox x:Name="CheckBoxAscii" Content="ASCII" Click="CheckBoxAscii_Click" />
-                    <CheckBox x:Name="CheckBoxNotes" Content="Notes" Click="CheckBoxNotes_Click" />
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="Auto Tx" BorderBrush="#FFABAFB2">
-                <StackPanel Margin="0,10,0,20">
-                    <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}" Height="20" IsEnabled="True">
-                        <ToggleButton.ToolTip>
-                            <StackPanel>
-                                <TextBlock FontWeight="Bold" FontSize="14">
+                </GroupBox>
+            </StackPanel>
+            <StackPanel x:Name="AutoTx" Grid.Row="4">
+                <GroupBox Header="Auto Tx" BorderBrush="#FFABAFB2">
+                    <StackPanel Margin="0,10,0,20">
+                        <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}" Height="20" IsEnabled="True">
+                            <ToggleButton.ToolTip>
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" FontSize="14">
                             Auto Transmit
-                                </TextBlock>
-                                <TextBlock>
+                                    </TextBlock>
+                                    <TextBlock>
                             Automatically transmit messages in list that are checked
-                                </TextBlock>
-                            </StackPanel>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
-                </StackPanel>
-
-            </GroupBox>
-
+                                    </TextBlock>
+                                </StackPanel>
+                            </ToggleButton.ToolTip>
+                        </ToggleButton>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            <StackPanel Grid.Row="5" Height="500">
+                
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
