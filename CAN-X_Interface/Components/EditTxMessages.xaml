@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CAN_X_CAN_Analyzer.Components"
+             xmlns:components="clr-namespace:CAN_X_CAN_Analyzer.Components"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -15,6 +15,9 @@
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="80"/>
                 </Grid.RowDefinitions>
+                <Grid x:Name="Events" Visibility="Hidden">
+                    <components:TransmitMessages x:Name="transmitMessages"/>
+                </Grid>
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Text="Transmit Messages" FontWeight="Bold" />
                     <Button x:Name="ButtonAddEditTxRow" Width="25" Height="25"  Margin="20,0,0,0" Click="ButtonAddEditTxRow_Click" FontSize="18" FontWeight="Bold" Background="{x:Null}" BorderBrush="{x:Null}">

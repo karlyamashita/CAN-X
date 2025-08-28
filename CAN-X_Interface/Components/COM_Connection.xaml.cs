@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace CAN_X_CAN_Analyzer.Components
     /// </summary>
     public partial class COM_Connection : UserControl
     {
+        private ComPortViewModel _viewModel;
+
         public event EventHandler<COM_ConnectionEventArgs> COM_ConnectionEvent;
 
         public class COM_ConnectionEventArgs : EventArgs
@@ -38,6 +41,8 @@ namespace CAN_X_CAN_Analyzer.Components
         public COM_Connection()
         {
             InitializeComponent();
+
+            _viewModel = (ComPortViewModel)DataContext; // Get the instance set in XAML
         }
 
         private void ButtonConnect_Click(object sender, RoutedEventArgs e)
@@ -95,5 +100,6 @@ namespace CAN_X_CAN_Analyzer.Components
         {
             OnMyCustomEvent(new COM_ConnectionEventArgs { EventType = "ToggleButtonAutoTx" });
         }
+
     }
 }

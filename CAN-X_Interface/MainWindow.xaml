@@ -87,6 +87,44 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <ControlTemplate x:Key="TableColor1" TargetType="{x:Type TabItem}">
+            <Border Name="Border" BorderThickness="1,1,1,1" BorderBrush="Black" CornerRadius="5,5,0,0" Margin="0,0" >
+                <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="LightBlue" />
+                    <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,1"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="False">
+                    <Setter TargetName="Border" Property="Background" Value="#FFD1D1D1" />
+                    <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="TableColor2" TargetType="{x:Type TabItem}">
+            <Border Name="Border" BorderThickness="1,1,1,1" BorderBrush="Black" CornerRadius="5,5,0,0" Margin="0,0,0,0" >
+                <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="15,2"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="Orange" />
+                    <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,1"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="False">
+                    <Setter TargetName="Border" Property="Background" Value="#FFD1D1D1" />
+                    <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
     </Window.Resources>
 
 
@@ -117,7 +155,7 @@
             <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right"/>
 
             <TabControl >
-                <TabControl.Resources>
+                <!--<TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
                             <Setter.Value>
@@ -143,8 +181,8 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </TabControl.Resources>
-                <TabItem Header="Message Monitor">
+                </TabControl.Resources>-->
+                <TabItem Header="Messages Monitor" Template="{StaticResource TableColor1}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
@@ -191,21 +229,21 @@
 
                         <GridSplitter Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
 
-                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages"/>
+                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages" AllowDrop="True"/>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Message Editor">
+                <TabItem Header="Messages Editor" Template="{StaticResource TableColor1}">
                     <Grid Margin="0,0,0,0">
                         <TabControl TabStripPlacement="Top">
                             <TabControl.Resources>
                                 <Style TargetType="TabPanel">
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
                                 </Style>
                             </TabControl.Resources>
-                            <TabItem x:Name="TabItemReceiveMessages" Header="Receive Messages">
+                            <TabItem x:Name="TabItemReceiveMessages" Header="Receive" Template="{StaticResource TableColor2}">
                                 <components:EditRxMessages x:Name="editRxMessages"/>
                             </TabItem>
-                            <TabItem x:Name="TabItemTransmitMessages" Header="Transmit Messages">
+                            <TabItem x:Name="TabItemTransmitMessages" Header="Transmit" Template="{StaticResource TableColor2}">
                                 <components:EditTxMessages x:Name="editTxMessages"/>
                             </TabItem>
                         </TabControl>

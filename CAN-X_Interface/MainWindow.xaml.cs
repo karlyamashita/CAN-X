@@ -111,8 +111,6 @@ namespace CAN_X_CAN_Analyzer
 
         COM_PortDrv comPort;
 
-        private ComPortViewModel _viewModel;
-
         #endregion
 
         #region MainWindow
@@ -126,16 +124,11 @@ namespace CAN_X_CAN_Analyzer
             // Values is item source for dataGridRxWindow
             Values = new ObservableCollection<CanRxData>();
 
-            _viewModel = (ComPortViewModel)DataContext; // Get the instance set in XAML
-            this.Closed += MainWindow_Closed;
-
-
             transmitMessages.TransmitMessagesEvent += UserControl_TransmitMessagesEvent;
             com_connection.COM_ConnectionEvent += UserControl_COM_ConnectionEvent;
 
             editTxMessages.EditTxMessagesUpdateStatusEvent += UserControl_EditTxMessagesUpdateStatusEvent;
             editRxMessages.EditRxMessagesUpdateStatusEvent += UserControl_EditRxMessagesUpdateStatusEvent;
-
 
         }
 
@@ -365,10 +358,9 @@ namespace CAN_X_CAN_Analyzer
             }
             catch (Exception ex) // TODO - make this and the button close call a function
             {
-
                 com_connection.LabelConnectionStatus.Content = comPort.portName + " is not valid";
 
-                Console.WriteLine(comPort.portName + " is not valid");
+                Console.WriteLine("Error: " + ex.Message);
             }
         }
 
@@ -401,7 +393,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 com_connection.LabelConnectionStatus.Content = "No COM Opened";
 
-                Console.WriteLine("No COM Opened");
+                Console.WriteLine("Error: " + ex.Message);
             }
         }
 
@@ -1125,10 +1117,6 @@ namespace CAN_X_CAN_Analyzer
                 }
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
-        }
-        private void MainWindow_Closed(object sender, EventArgs e)
-        {
-            _viewModel?.Dispose(); // Dispose the watcher when the window closes
         }
 
         #endregion
@@ -1955,6 +1943,7 @@ namespace CAN_X_CAN_Analyzer
             About about = new About();
             about.Show();
         }
+
 
         #endregion
 

@@ -24,8 +24,6 @@ namespace CAN_X_CAN_Analyzer.Components
     {
         int rowIndexEditTx = 0;
 
-        MainWindow mainWindow;
-
         public event EventHandler<EditTxMessagesEventArgs> EditTxMessagesUpdateStatusEvent;
 
         public class EditTxMessagesEventArgs : EventArgs
@@ -53,8 +51,6 @@ namespace CAN_X_CAN_Analyzer.Components
         public EditTxMessages()
         {
             InitializeComponent();
-
-            mainWindow = Application.Current.MainWindow as MainWindow;
         }
 
         private void ButtonAddEditTxRow_Click(object sender, RoutedEventArgs e)
@@ -107,7 +103,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 }
                 catch (Exception ex)
                 {
-
+                    ex.ToString();
                 }
             }
         }
@@ -394,7 +390,7 @@ namespace CAN_X_CAN_Analyzer.Components
             data.Node = comboBox.SelectionBoxItem.ToString();
             dataGridEditTxMessages.Items.Refresh();
             // update dataGridTx
-            foreach (CanTxData canTxData in mainWindow.transmitMessages.dataGridTxWindow.Items)
+            foreach (CanTxData canTxData in transmitMessages.dataGridTxWindow.Items)
             {
                 if (data.Key == canTxData.Key)
                 {
@@ -431,7 +427,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 return;
             }
             // need to update the dataGridTx
-            foreach (CanTxData row in mainWindow.transmitMessages.dataGridTxWindow.Items)
+            foreach (CanTxData row in transmitMessages.dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
@@ -457,7 +453,7 @@ namespace CAN_X_CAN_Analyzer.Components
             }
             // need to update the dataGridTx
             // TODO figure out how to get datagrid item using Dependency Properties and Data Binding
-            foreach (CanTxData row in mainWindow.transmitMessages.dataGridTxWindow.Items)
+            foreach (CanTxData row in transmitMessages.dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
@@ -488,7 +484,7 @@ namespace CAN_X_CAN_Analyzer.Components
             data.Rate = ComboBoxEditTxRate.Text;
             dataGridEditTxMessages.Items.Refresh();
             // update dataGridTx
-            foreach (CanTxData canTxData in mainWindow.transmitMessages.dataGridTxWindow.Items)
+            foreach (CanTxData canTxData in transmitMessages.dataGridTxWindow.Items)
             {
                 if (data.Key == canTxData.Key)
                 {
@@ -557,7 +553,7 @@ namespace CAN_X_CAN_Analyzer.Components
             }
             dataGridEditTxMessages.Items.Refresh();
             // now update dataGridTx
-            foreach (CanTxData row in mainWindow.transmitMessages.dataGridTxWindow.Items)
+            foreach (CanTxData row in transmitMessages.dataGridTxWindow.Items)
             {
                 if (row.Key == data.Key)
                 {
