@@ -1297,14 +1297,14 @@ namespace CAN_X_CAN_Analyzer
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
-            settings.OmitXmlDeclaration = true;
+            settings.OmitXmlDeclaration = false;
 
             XmlWriter xmlWriter = XmlWriter.Create(saveFile, settings);
 
             xmlWriter.WriteStartDocument();
 
-            xmlWriter.WriteStartElement("CANX");
-            xmlWriter.WriteElementString("Created_by", "CAN-X software by Karl Yamashita on 12/07/2019. (github.com/karlyamashita/CAN-X)");
+            xmlWriter.WriteStartElement("CAN-X");
+            xmlWriter.WriteElementString("Created_by", "CAN-X software by Karl Yamashita. (github.com/karlyamashita/CAN-X)");
             xmlWriter.WriteElementString("Project_Filename", Path.GetFileName(saveFile));
 
             // edit tx messages
@@ -1333,7 +1333,7 @@ namespace CAN_X_CAN_Analyzer
                 xmlWriter.WriteElementString("Notes", item.Notes);
                 xmlWriter.WriteEndElement();
             }
-            // xmlWriter.WriteEndElement();
+             xmlWriter.WriteEndElement();
 
             // edit rx messages
             xmlWriter.WriteStartElement("edit_rx_messages");
@@ -1358,8 +1358,8 @@ namespace CAN_X_CAN_Analyzer
                 xmlWriter.WriteEndElement();
             }
             xmlWriter.WriteEndElement();
-
             xmlWriter.WriteEndDocument();
+
             xmlWriter.Close();
             statusBar.StatusBarStatus.Text = "File saved successfully";
         }
@@ -1383,6 +1383,7 @@ namespace CAN_X_CAN_Analyzer
                 }
                 else
                 {
+                    MenuItemNew_Clicked(); // clear current data
                     ReadXml(openFile.FileName);
                     MainWindow1.Title = mainWindowTitle + " - " + Path.GetFileName(openFile.FileName);
                 }
