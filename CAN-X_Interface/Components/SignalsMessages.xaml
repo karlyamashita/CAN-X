@@ -1,0 +1,326 @@
+﻿<UserControl x:Class="CAN_X_CAN_Analyzer.Components.SignalsMessages"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CAN_X_CAN_Analyzer.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="850">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Signals" Grid.Row="0"/>
+        <Separator Margin="0,0,0,5" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="2" Background="Black"/>
+        <StackPanel x:Name="Buttons" Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,0">
+            <Button Content="Add Signal" Grid.Column="0"  Width="100" Height="20" />
+            <Button Content="Remove Signal" Width="100" Height="20" />
+            <StackPanel Width="100"/>
+            <Button Content="Edit Signal" Width="100"/>
+        </StackPanel>
+
+        <DataGrid x:Name="CanGrid" Grid.Row="3"
+                  AutoGenerateColumns="False"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="All"
+                  CanUserAddRows="False"
+                  CanUserResizeColumns="False"
+                  CanUserResizeRows="False"
+                  CanUserSortColumns="True"
+                  SelectionMode="Single"
+                  SelectionUnit="CellOrRowHeader"
+                  BorderThickness="1"
+                  BorderBrush="Black"
+                  RowHeaderWidth="120"
+                  FontSize="11">
+
+            <!-- Description column -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="150"/>
+                <DataGridComboBoxColumn Header="Type" 
+                               ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.AvailableItems}" 
+                                DisplayMemberPath="Name"
+                                SelectedValuePath="Id"
+                                SelectedItemBinding="{Binding SelectedItemId}"  
+                                CanUserSort="False"       />
+                <!-- Byte 1 -->
+                <DataGridTemplateColumn Header="Byte 1" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte1Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Byte 2" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte2Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Byte 3" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte3Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Byte 4" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte4Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Byte 5" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte5Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Byte 6" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte6Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Byte 7" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte7Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Byte 8" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Columns="8" Rows="1">
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit7}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit6}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit5}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit4}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit3}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit2}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit1}" TextAlignment="Center"/>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness="0.5">
+                                    <TextBlock Text="{Binding Byte8Bit0}" TextAlignment="Center"/>
+                                </Border>
+                            </UniformGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Repeat for Byte 2 … Byte 8 -->
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</UserControl>

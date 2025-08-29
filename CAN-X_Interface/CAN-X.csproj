@@ -95,8 +95,14 @@
     <Compile Include="Components\EditTxMessages.xaml.cs">
       <DependentUpon>EditTxMessages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Components\MenuBar.xaml.cs">
+      <DependentUpon>MenuBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\MessageMonitor.xaml.cs">
       <DependentUpon>MessageMonitor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\SignalsMessages.xaml.cs">
+      <DependentUpon>SignalsMessages.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
@@ -123,7 +129,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Components\MenuBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Components\MessageMonitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\SignalsMessages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

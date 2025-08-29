@@ -25,7 +25,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" Grid.Row="1" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,0,0,5" Grid.ColumnSpan="2" Grid.RowSpan="2">
+        <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,0,0,5" Grid.ColumnSpan="2" Grid.RowSpan="2">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="MenuItemSaveRx" Header="Save to Rx" Click="MenuItemSaveRx_Click"/>
@@ -38,7 +38,7 @@
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="FontSize" Value="12"/>
-                    <Setter Property="Height" Value="18"/>
+                    <Setter Property="Height" Value="25"/>
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>

@@ -119,7 +119,6 @@ namespace CAN_X_CAN_Analyzer
             InitializeComponent();
 
             messageMonitor.dataGridRxWindow.DataContext = this;
-            //    dataGridRxWindow.DataContext = this;
 
             // Values is item source for dataGridRxWindow
             Values = new ObservableCollection<CanRxData>();
@@ -130,12 +129,46 @@ namespace CAN_X_CAN_Analyzer
             editTxMessages.EditTxMessagesUpdateStatusEvent += UserControl_EditTxMessagesUpdateStatusEvent;
             editRxMessages.EditRxMessagesUpdateStatusEvent += UserControl_EditRxMessagesUpdateStatusEvent;
 
-
-
-
+            menuBar.MenuBarEvent += UserControl_MenuBarEvent;
 
         }
+        #endregion
 
+        #region UserControl_MenuBarEvent
+        private void UserControl_MenuBarEvent(object sender, MenuBar.MenuBarEventArgs e)
+        {
+            if (e.EventType == "MenuItemTxPanel")
+            {
+                transmitMessages.Visibility = Visibility.Visible;
+            }
+            else if (e.EventType == "MenuItemCOM_Panel")
+            {
+                com_connection.Visibility = Visibility.Visible;
+            }
+            else if (e.EventType == "MenuItemNew")
+            {
+                MenuItemNew_Clicked();
+            }
+            else if (e.EventType == "MenuItemOpen")
+            {
+                MenuItemOpenProject_Clicked();
+            }
+            else if (e.EventType == "MenuItemSave")
+            {
+                MenuItemSaveProject_Clicked();
+            }
+            else if (e.EventType == "MenuItemExit")
+            {
+                MenuItemExit_Clicked();
+            }
+            else if(e.EventType == "MenuItemAbout")
+            {
+                MenuItemAbout_Clicked();
+            }
+        }
+        #endregion
+
+        #region UserControl_EditRxMessagesUpdateStatusEvent
         private void UserControl_EditRxMessagesUpdateStatusEvent(object sender, EditRxMessages.EditRxMessagesEventArgs e)
         {
             if ((e.EventType == "status_bar"))
@@ -145,6 +178,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
+        #region UserControl_EditTxMessagesUpdateStatusEvent
         private void UserControl_EditTxMessagesUpdateStatusEvent(object sender, EditTxMessages.EditTxMessagesEventArgs e)
         {
             if(e.EventType == "dataGridTxWindow_Items_Add")
@@ -168,6 +202,7 @@ namespace CAN_X_CAN_Analyzer
                 statusBar.StatusBarStatus.Text = e.statusBar;
             }
         }
+        #endregion
 
         #region UserControl_COM_ConnectionEvent
         private void UserControl_COM_ConnectionEvent(object sender, COM_Connection.COM_ConnectionEventArgs e)
@@ -227,6 +262,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
+        #region Properties for CanRxData Data Binding
         private ObservableCollection<CanRxData> _values;
 
         public ObservableCollection<CanRxData> Values
@@ -248,9 +284,9 @@ namespace CAN_X_CAN_Analyzer
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
+        #endregion
 
-        #region parse the USB data received.
-
+        #region ComPortManager_DataReceived
         private void ComPortManager_DataReceived(object sender, byte[] data)
         {
             byte[,] twoDByteArray = new byte[COM_PORT_QUEUE_SIZE, data.Length];
@@ -270,7 +306,9 @@ namespace CAN_X_CAN_Analyzer
                 ParseUsbData(ref singleDimByteArray);
             }
         }
+        #endregion
 
+        #region QueueCOM_PortData
         /*
          * Description: Parse message(s) from COM buffer into it's own queue. 
          */
@@ -297,7 +335,9 @@ namespace CAN_X_CAN_Analyzer
 
             msgCount = idxPtr; // return queue size
         }
+        #endregion
 
+        #region ParseUsbData
         public void ParseUsbData(ref byte[] data)
         {
             int command = data[0];
@@ -1095,12 +1135,14 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region exit program
-        private void MenuItemExit_Click(object sender, RoutedEventArgs e)
+        #region MenuItemexit
+        private void MenuItemExit_Clicked()
         {
             this.Close();
         }
+        #endregion
 
+        #region Window Closing
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var response = System.Windows.MessageBox.Show("Do you really want to exit?", "Exiting...",
@@ -1122,7 +1164,6 @@ namespace CAN_X_CAN_Analyzer
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
         }
-
         #endregion
 
         #region saves receive data to file
@@ -1217,7 +1258,7 @@ namespace CAN_X_CAN_Analyzer
 
         #region MenuItemNew
 
-        private void MenuItemNew_Click(object sender, RoutedEventArgs e)
+        private void MenuItemNew_Clicked()
         {
             editTxMessages.dataGridEditTxMessages.Items.Clear();
             editRxMessages.dataGridEditRxMessages.Items.Clear();
@@ -1231,8 +1272,7 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region MenuItem Save project
-        // TODO - save Edit messages Tx and Rx datagrid to xml file
-        private void MenuItemSaveProject_Click(object sender, RoutedEventArgs e)
+        private void MenuItemSaveProject_Clicked()
         {
             SaveFileDialog saveFile = new SaveFileDialog
             {
@@ -1326,7 +1366,7 @@ namespace CAN_X_CAN_Analyzer
         #endregion
 
         #region MenuItem Open project
-        private void MenuItemOpenProject_Click(object sender, RoutedEventArgs e)
+        private void MenuItemOpenProject_Clicked()
         {
             OpenFileDialog openFile = new OpenFileDialog()
             {
@@ -1760,7 +1800,6 @@ namespace CAN_X_CAN_Analyzer
 
         #endregion
 
-
         #region ToggleButtonAutoTx click
 
         public void ToggleButtonAutoTx()
@@ -1856,7 +1895,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region MenuItemSave
+        #region ContextMenuItemSaveToRx
         private void MenuItemSaveRx_Click_1(object sender, RoutedEventArgs e)
         {
             // StatusBarStatus.Text = "Save to Rx";
@@ -1940,19 +1979,15 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region about
-        private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
+        #region About Dialog
+
+        private void MenuItemAbout_Clicked()
         {
-            // TODO - show about
             About about = new About();
             about.Show();
         }
-
-
-
         #endregion
 
- 
     }
 }
 

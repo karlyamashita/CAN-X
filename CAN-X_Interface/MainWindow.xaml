@@ -137,51 +137,15 @@
             <components:COM_Connection COM_ConnectionEvent="UserControl_COM_ConnectionEvent"/>
             <components:EditTxMessages EditTxMessagesUpdateStatusEvent="UserControl_EditTxMessagesUpdateStatusEvent"/>
             <components:EditRxMessages EditRxMessagesUpdateStatusEvent="UserControl_EditRxMessagesUpdateStatusEvent"/>
+            <components:MenuBar MenuBarEvent="UserControl_MenuBarEvent"/>
         </Grid>
         <DockPanel Grid.ColumnSpan="3" Margin="0,0,0,25"> <!-- Leave space for status bar -->
-            <StackPanel x:Name="Menu_Bar"   DockPanel.Dock="Top" Height="25" Margin="0" >
-                <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
-                    <MenuItem x:Name="MenuItemFile" Header="File">
-                        <MenuItem x:Name="MenuItemNew" Header="New" Click="MenuItemNew_Click"/>
-                        <MenuItem x:Name="MenuItemOpenProject" Header="Open Project" Click="MenuItemOpenProject_Click"/>
-                        <MenuItem x:Name="MenuItemSaveProject" Header="Save Project" Click="MenuItemSaveProject_Click"/>
-                        <Separator/>
-                        <MenuItem x:Name="MenuItemExit" Header="Exit" Click="MenuItemExit_Click"/>
-                    </MenuItem>
-                    <MenuItem x:Name="MenuItemAbout" Header="About" Click="MenuItemAbout_Click"/>
-                </Menu>
-            </StackPanel>
-
+            <!-- MenuBar -->
+            <components:MenuBar x:Name="menuBar" DockPanel.Dock="Top"/>
+            <!-- COM_Connection -->
             <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="0,25,0,0"  />
-
+            <!-- TabControl Main -->
             <TabControl x:Name="TabControlMain" ><!-- Should fill the remaining DockPanel area -->
-                <!--<TabControl.Resources>
-                    <Style TargetType="TabItem">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="TabItem">
-                                    <Border Name="Border" BorderThickness="1,1,1,1" BorderBrush="Black" CornerRadius="5,5,0,0" Margin="0,0" >
-                                        <ContentPresenter x:Name="ContentSite"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        ContentSource="Header"
-                                        Margin="10,2"/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Border" Property="Background" Value="LightSkyBlue" />
-                                            <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,1"/>
-                                        </Trigger>
-                                        <Trigger Property="IsSelected" Value="False">
-                                            <Setter TargetName="Border" Property="Background" Value="#FFD1D1D1" />
-                                            <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </TabControl.Resources>-->
                 <TabItem Header="Messages Monitor" Template="{StaticResource TableColor1}">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -224,11 +188,16 @@
 
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
+                        <!-- MessageMonitor -->
                         <components:MessageMonitor Grid.Row="1" x:Name="messageMonitor"/>
-                            <GridSplitter x:Name="GridSplitter" Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
-                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages"/>
+                        <!-- GridSplitter -->
+                        <GridSplitter x:Name="GridSplitter" Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
+                        <!-- TransmitMessages -->
+                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages" />
+                      
                     </Grid>
                 </TabItem>
+                <!-- Messages Editor Tab -->
                 <TabItem Header="Messages Editor" Template="{StaticResource TableColor1}">
                     <Grid Margin="0,0,0,0">
                         <TabControl TabStripPlacement="Top">
@@ -238,15 +207,18 @@
                                 </Style>
                             </TabControl.Resources>
                             <TabItem x:Name="TabItemReceiveMessages" Header="Receive" Template="{StaticResource TableColor2}">
+                                <!-- EditRxMessages Tab -->
                                 <components:EditRxMessages x:Name="editRxMessages"/>
                             </TabItem>
                             <TabItem x:Name="TabItemTransmitMessages" Header="Transmit" Template="{StaticResource TableColor2}">
+                                <!-- EditTxMessages Tab -->
                                 <components:EditTxMessages x:Name="editTxMessages"/>
                             </TabItem>
                         </TabControl>
                     </Grid>
                 </TabItem>
             </TabControl>
+            
         </DockPanel>
         <!-- Status Bar -->
         <components:StatusBar x:Name="statusBar" />
