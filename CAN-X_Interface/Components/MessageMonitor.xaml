@@ -115,6 +115,16 @@
                 <DataGridTextColumn Header="ASCII" Binding="{Binding ASCII, Mode=OneWay}" />
                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=OneWay}" />
             </DataGrid.Columns>
+            
+            <!--<DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding HexDump}"
+                               FontFamily="Consolas"
+                               Margin="20,4,4,4"
+                               TextWrapping="Wrap"/>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>-->
+            
         </DataGrid>
     </Grid>
 </UserControl>

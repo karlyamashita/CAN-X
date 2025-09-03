@@ -259,6 +259,10 @@ namespace CAN_X_CAN_Analyzer
             {
                 TransmitMessages_AutoTx_Unchecked();
             }
+            else if (e.EventType == "ToggleButtonAutoTx_Clicked")
+            {
+                TransmitWindowToggleButtonAutoTx();
+            }
         }
         #endregion
 
@@ -429,7 +433,7 @@ namespace CAN_X_CAN_Analyzer
                     threadAutoTx = null;
                 }
                 sw.Stop(); // for auto tx
-                com_connection.toggleButtonAutoTx.IsChecked = false;
+                transmitMessages.ToggleButtonAutoTx.IsChecked = false;
 
                 ClearStatusBarStatus();
             }
@@ -1805,12 +1809,12 @@ namespace CAN_X_CAN_Analyzer
 
         public void ToggleButtonAutoTx()
         {
-            if (com_connection.toggleButtonAutoTx.IsChecked == true)
+            if (transmitMessages.ToggleButtonAutoTx.IsChecked == true)
             {
                 if ((comPort == null) || (comPort.IsOpen == false))
                 {
                     statusBar.StatusBarStatus.Text = "Device Not Connected";
-                    com_connection.toggleButtonAutoTx.IsChecked = false;
+                    transmitMessages.ToggleButtonAutoTx.IsChecked = false;
                     return;
                 }
 
@@ -1832,6 +1836,37 @@ namespace CAN_X_CAN_Analyzer
                 sw.Stop();
             }
         }
+
+        public void TransmitWindowToggleButtonAutoTx()
+        {
+            if (transmitMessages.ToggleButtonAutoTx.IsChecked == true)
+            {
+                if ((comPort == null) || (comPort.IsOpen == false))
+                {
+                    statusBar.StatusBarStatus.Text = "Device Not Connected";
+                    transmitMessages.ToggleButtonAutoTx.IsChecked = false;
+                    return;
+                }
+
+                if (threadAutoTx == null)
+                {
+                    threadAutoTx = new Thread(TxSendThread);
+                    threadAutoTx.Start();
+                }
+
+                sw.Start();
+            }
+            else
+            {
+                if (threadAutoTx != null)
+                {
+                    threadAutoTx.Abort();
+                    threadAutoTx = null;
+                }
+                sw.Stop();
+            }
+        }
+
         #endregion
 
         #region TxSendThread

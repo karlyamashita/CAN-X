@@ -96,11 +96,6 @@ namespace CAN_X_CAN_Analyzer.Components
             OnMyCustomEvent(new COM_ConnectionEventArgs { EventType = "FormatDataGridColumns" });
         }
 
-        private void ToggleButtonAutoTx_Click(object sender, RoutedEventArgs e)
-        {
-            OnMyCustomEvent(new COM_ConnectionEventArgs { EventType = "ToggleButtonAutoTx" });
-        }
-
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
             this.Visibility = Visibility.Collapsed;

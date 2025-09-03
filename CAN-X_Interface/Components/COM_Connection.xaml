@@ -161,25 +161,8 @@
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
-            <StackPanel x:Name="AutoTx" Grid.Row="4">
-                <GroupBox Header="Auto Tx" BorderBrush="#FFABAFB2">
-                    <StackPanel Margin="0,10,0,20">
-                        <ToggleButton x:Name="toggleButtonAutoTx" Width="60" Margin="20,0,0,0" Content="AutoTx" Click="ToggleButtonAutoTx_Click" Template="{StaticResource RoundedToggleButtonTemplate}" Height="20" IsEnabled="True">
-                            <ToggleButton.ToolTip>
-                                <StackPanel>
-                                    <TextBlock FontWeight="Bold" FontSize="14">
-                            Auto Transmit
-                                    </TextBlock>
-                                    <TextBlock>
-                            Automatically transmit messages in list that are checked
-                                    </TextBlock>
-                                </StackPanel>
-                            </ToggleButton.ToolTip>
-                        </ToggleButton>
-                    </StackPanel>
-                </GroupBox>
-            </StackPanel>
-            <StackPanel Grid.Row="5" Height="500">
+            
+            <StackPanel Grid.Row="4" Height="500">
                 
             </StackPanel>
         </StackPanel>

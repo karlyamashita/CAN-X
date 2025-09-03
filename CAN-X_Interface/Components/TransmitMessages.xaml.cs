@@ -61,10 +61,12 @@ namespace CAN_X_CAN_Analyzer.Components
 
         private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            /*
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragDrop.DoDragDrop(this, this, DragDropEffects.Move);
             }
+            */
         }
 
         private void UserControl_Drop(object sender, DragEventArgs e)
@@ -99,6 +101,9 @@ namespace CAN_X_CAN_Analyzer.Components
             }
         }
 
-
+        private void ToggleButtonAutoTx_Click(object sender, RoutedEventArgs e)
+        {
+            OnTransmitMessagesEvent(new TransmitMessagesEventArgs("ToggleButtonAutoTx_Clicked"));
+        }
     }
 }

@@ -61,5 +61,25 @@ namespace CAN_X_CAN_Analyzer
             _42000000,
             _36000000
         }
+
+        public enum FDCAN_Data_Length
+        {
+            FDCAN_DLC_BYTES_0,
+            FDCAN_DLC_BYTES_1,
+            FDCAN_DLC_BYTES_2,
+            FDCAN_DLC_BYTES_3,
+            FDCAN_DLC_BYTES_4,
+            FDCAN_DLC_BYTES_5,
+            FDCAN_DLC_BYTES_6,
+            FDCAN_DLC_BYTES_7,
+            FDCAN_DLC_BYTES_8,
+            FDCAN_DLC_BYTES_12,
+            FDCAN_DLC_BYTES_16,
+            FDCAN_DLC_BYTES_20,
+            FDCAN_DLC_BYTES_24,
+            FDCAN_DLC_BYTES_32,
+            FDCAN_DLC_BYTES_48,
+            FDCAN_DLC_BYTES_64
+        }
     }
 }
