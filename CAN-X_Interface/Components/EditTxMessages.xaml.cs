@@ -264,7 +264,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 case "TextBoxTxDLC":
                     if (TextBoxTxDLC.Text != string.Empty)
                     {
-                        canTxData.DLC = uint.Parse(TextBoxTxDLC.Text.ToUpper()).ToString("X2");
+                        canTxData.DLC = uint.Parse(TextBoxTxDLC.Text.ToUpper()).ToString();
                     }
                     else
                     {

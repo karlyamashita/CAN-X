@@ -669,7 +669,7 @@ namespace CAN_X_CAN_Analyzer
         }
         #endregion
 
-        #region Add formatted data to datagrid
+        #region AddToDataGrid
         private void AddToDataGrid(CanRxData canRxData, bool transmitFlag, bool scrollFlag)
         {
             CanRxData canRxDataNew = new CanRxData();
@@ -1995,6 +1995,7 @@ namespace CAN_X_CAN_Analyzer
 
         public void FormatDataGridColumns()
         {
+            /*
             if (com_connection.CheckBoxAscii.IsChecked == true)
             {
                 messageMonitor.dataGridRxWindow.Columns[20].Visibility = Visibility.Visible;
@@ -2012,6 +2013,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 messageMonitor.dataGridRxWindow.Columns[21].Visibility = Visibility.Hidden;
             }
+            */
         }
         #endregion
 

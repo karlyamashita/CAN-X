@@ -309,7 +309,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (line == value) return;
                 line = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Line"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Line"));
+                OnPropertyChanged(nameof(Line));
             }
         }
 
@@ -324,7 +325,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (timeAbs == value) return;
                 timeAbs = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("TimeAbs"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("TimeAbs"));
+                OnPropertyChanged(nameof(TimeAbs));
             }
         }
         public bool Tx { get; set; } = false;
@@ -345,7 +347,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (dlc == value) return;
                 dlc = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("DLC"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("DLC"));
+                OnPropertyChanged(nameof(DLC));
             }
         }
         //data bytes
@@ -361,7 +364,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte1 == value) return;
                 byte1 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte1"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte1"));
+                OnPropertyChanged(nameof(Byte1));
             }
         }
 
@@ -376,7 +380,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte2 == value) return;
                 byte2 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte2"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte2"));
+                OnPropertyChanged(nameof(Byte2));
             }
         }
 
@@ -391,7 +396,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte3 == value) return;
                 byte3 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte3"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte3"));
+                OnPropertyChanged(nameof(Byte3));
             }
         }
 
@@ -406,7 +412,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte4 == value) return;
                 byte4 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte4"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte4"));
+                OnPropertyChanged(nameof(Byte4));
             }
         }
 
@@ -421,7 +428,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte5 == value) return;
                 byte5 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte5"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte5"));
+                OnPropertyChanged(nameof(Byte5));
             }
         }
 
@@ -436,7 +444,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte6 == value) return;
                 byte6 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte6"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte6"));
+                OnPropertyChanged(nameof(Byte6));
             }
         }
 
@@ -451,7 +460,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte7 == value) return;
                 byte7 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte7"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte7"));
+                OnPropertyChanged(nameof(Byte7));
             }
         }
 
@@ -466,7 +476,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (byte8 == value) return;
                 byte8 = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Byte8"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("Byte8"));
+                OnPropertyChanged(nameof(Byte8));
             }
         }
 
@@ -542,7 +553,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (_RxCount == value) return;
                 _RxCount = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("RxCount"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("RxCount"));
+                OnPropertyChanged(nameof(RxCount));
             }
         }
         public string RxCountSaved { get; set; } = String.Empty;
@@ -558,7 +570,8 @@ namespace CAN_X_CAN_Analyzer
             {
                 if (_TxCount == value) return;
                 _TxCount = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("TxCount"));
+                //OnPropertyChanged(new PropertyChangedEventArgs("TxCount"));
+                OnPropertyChanged(nameof(TxCount));
             }
         }
         public string TxCountSaved { get; set; } = String.Empty;
@@ -929,6 +942,8 @@ namespace CAN_X_CAN_Analyzer
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+#if OLDWAY
         public void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             if (PropertyChanged != null)
@@ -936,5 +951,9 @@ namespace CAN_X_CAN_Analyzer
                 PropertyChanged(this, e);
             }
         }
+#else
+        protected void OnPropertyChanged(string name) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+#endif
     }
 }

@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:components="clr-namespace:CAN_X_CAN_Analyzer.Components"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type TextBlock}" x:Key="MyStyle">
+             d:DesignHeight="450" d:DesignWidth="800" Background="White">
+    <!--<UserControl.Resources>
+        <Style TargetType="{x:Type TextBlock}" x:Key="FlashByteStyle">
             <Setter Property="Background">
                 <Setter.Value>
                     <SolidColorBrush Color="Transparent"/>
@@ -17,12 +17,15 @@
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                     <BeginStoryboard HandoffBehavior="Compose">
                         <Storyboard TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)">
-                            <ColorAnimation Duration="0:0:0.1" To="LightGreen" AutoReverse="True"/>
+                            <ColorAnimation Duration="0:0:0.3" To="LightGreen" AutoReverse="True"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
             </Style.Triggers>
         </Style>
+    </UserControl.Resources>-->
+    <UserControl.Resources>
+        <QuadraticEase x:Key="SmoothEase" EasingMode="EaseInOut"/>
     </UserControl.Resources>
     <Grid>
         <DataGrid x:Name="dataGridRxWindow" ItemsSource="{Binding Values}" CanUserAddRows="True" GridLinesVisibility="None" AutoGenerateColumns="False" Margin="0,0,0,5" Grid.ColumnSpan="2" Grid.RowSpan="2">
@@ -103,14 +106,63 @@
                 <DataGridTextColumn Header="IDE" Binding="{Binding IDE, Mode=OneWay}" />
                 <DataGridTextColumn Header="ArbID" Binding="{Binding ArbID, Mode=OneWay}" />
                 <DataGridTextColumn Header="DLC" Binding="{Binding DLC, Mode=OneWay, NotifyOnTargetUpdated=True}" />
-                <DataGridTextColumn Header="Byte1" Binding="{Binding Byte1, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                <DataGridTextColumn Header="Byte2" Binding="{Binding Byte2, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                <DataGridTextColumn Header="Byte3" Binding="{Binding Byte3, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                <DataGridTextColumn Header="Byte4" Binding="{Binding Byte4, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                <DataGridTextColumn Header="Byte5" Binding="{Binding Byte5, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                <DataGridTextColumn Header="Byte6" Binding="{Binding Byte6, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                <DataGridTextColumn Header="Byte7" Binding="{Binding Byte7, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
-                <DataGridTextColumn Header="Byte8" Binding="{Binding Byte8, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource MyStyle}" />
+
+                <DataGridTemplateColumn Header="DataBytes">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Resources>
+                                    <Style TargetType="Run">
+                                        <Style.Triggers>
+                                            <!-- Flash background when this Run's binding updates -->
+                                            <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation
+                                                        Storyboard.TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)"
+                                                        From="Transparent"
+                                                            To="LightGreen"
+                                                        Duration="0:0:0.2"
+                                                        AutoReverse="True"
+                                                            EasingFunction="{StaticResource SmoothEase}"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Resources>
+
+                                <!-- 8 bytes (each flashes when changed) -->
+                                <Run Text="{Binding Byte1, NotifyOnTargetUpdated=True}" Background="Transparent" />                              
+                                <Run Text=" "/>
+                                <Run Text="{Binding Byte2, NotifyOnTargetUpdated=True}" Background="Transparent"/>
+                                <Run Text=" "/>
+                                <Run Text="{Binding Byte3, NotifyOnTargetUpdated=True}" Background="Transparent"/>
+                                <Run Text=" "/>
+                                <Run Text="{Binding Byte4, NotifyOnTargetUpdated=True}" Background="Transparent"/>
+                                <Run Text=" "/>
+                                <Run Text="{Binding Byte5, NotifyOnTargetUpdated=True}" Background="Transparent"/>
+                                <Run Text=" "/>
+                                <Run Text="{Binding Byte6, NotifyOnTargetUpdated=True}" Background="Transparent"/>
+                                <Run Text=" "/>
+                                <Run Text="{Binding Byte7, NotifyOnTargetUpdated=True}" Background="Transparent"/>                     
+                                <Run Text=" "/>
+                                <Run Text="{Binding Byte8, NotifyOnTargetUpdated=True}" Background="Transparent"/>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--<DataGridTextColumn Header="Byte1" Binding="{Binding Byte1, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                <DataGridTextColumn Header="Byte2" Binding="{Binding Byte2, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                <DataGridTextColumn Header="Byte3" Binding="{Binding Byte3, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                <DataGridTextColumn Header="Byte4" Binding="{Binding Byte4, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                <DataGridTextColumn Header="Byte5" Binding="{Binding Byte5, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                <DataGridTextColumn Header="Byte6" Binding="{Binding Byte6, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                <DataGridTextColumn Header="Byte7" Binding="{Binding Byte7, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                <DataGridTextColumn Header="Byte8" Binding="{Binding Byte8, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
+                -->
+                
                 <DataGridTextColumn Header="Node" Binding="{Binding Node, Mode=OneWay}" />
                 <DataGridTextColumn Header="ASCII" Binding="{Binding ASCII, Mode=OneWay}" />
                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=OneWay}" />
