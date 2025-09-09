@@ -48,7 +48,7 @@ namespace CAN_X_CAN_Analyzer
                 baud_500 = new BaudStructure("500", "0x001E0003");
                 baud_250 = new BaudStructure("250", "0x001C0008");
                 baud_125 = new BaudStructure("125", "0x001C0011");
-                baud_100 = new BaudStructure("100", " 0x001B0017");
+                baud_100 = new BaudStructure("100", "0x001B0017");
                 baud_83_333 = new BaudStructure("83.333", "0x001C001A");
                 baud_50 = new BaudStructure("50", "0x001C002C");
                 baud_33_333 = new BaudStructure("33.333", "0x001B0047");

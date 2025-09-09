@@ -64,17 +64,27 @@ namespace CAN_X_CAN_Analyzer
         const byte COMMAND_NAK = 0x15; // not acknowlege
 
         // custom commands
-        const byte COMMAND_MESSAGE = 0x80; // CAN message structure over USB
+        const byte COMMAND_CAN1_MESSAGE = 0x80; // CAN message structure over USB
 
-        const byte COMMAND_ENABLE_MESSAGES = 0xB0; // enable hardware to send messages on USB data
-        const byte COMMAND_DISABLE_MESSAGES = 0xB1; // disable hardware from sending messages on USB data
-        const byte COMMAND_CAN_MODE = 0x30;
         const byte COMMAND_INFO = 0x90; // get information from hardware, fw version, BTC value, type hardware
         const byte COMMAND_CAN_BTR = 0x91; // the CAN_BTC value from interface
         const byte COMMAND_VERSION = 0x92;
         const byte COMMAND_HARDWARE = 0x93; // 
         const byte COMMAND_FREQUENCY = 0x94; // the APB1 Frequency
-        const byte COMMAND_BAUD = 0x95; // set the baud and mode
+        const byte COMMAND_CAN1_BAUD = 0x95; // set the baud and mode
+
+        // CAN Jammer defines
+        const byte COMMAND_CAN1_ADD_MOD = 0x40;
+        const byte COMMAND_CAN2_ADD_MOD = 0x41;
+        const byte COMMAND_CAN1_DEL_MOD = 0x42;
+        const byte COMMAND_CAN2_DEL_MOD = 0x43;
+        const byte COMMAND_CAN2_MESSAGE = 0x81;
+        const byte COMMAND_CAN2_BAUD = 0x96;
+        const byte COMMAND_CAN2_BTR = 0x98;
+
+
+        // UID
+        const byte COMMAND_UID = 0xEF; // get the unique ID of the device
         /// </summary>
 
         // const defines
@@ -352,7 +362,10 @@ namespace CAN_X_CAN_Analyzer
 
             switch (command)
             {
-                case COMMAND_MESSAGE:
+                case COMMAND_CAN1_MESSAGE:
+                    ParseDeviceCAN_Message(ref newArray);
+                    break;
+                case COMMAND_CAN2_MESSAGE:
                     ParseDeviceCAN_Message(ref newArray);
                     break;
                 case COMMAND_ACK:
@@ -680,7 +693,7 @@ namespace CAN_X_CAN_Analyzer
             {
                 foreach (CanRxData row in Values)
                 {
-                    if (row.ArbID == canRxData.ArbID)
+                    if (row.ArbID == canRxData.ArbID && row.Node == canRxData.Node)
                     {
                         if (!transmitFlag)
                         {
@@ -874,8 +887,17 @@ namespace CAN_X_CAN_Analyzer
         private void SendCanData(ref CanTxData canData)
         {
             byte[] usbPacket = new byte[DATA_SIZE + 4]; // original was 17, but we have 4 more bytes that are reserved
+            int result = 0;
 
-            usbPacket[0] = COMMAND_MESSAGE;
+            Int32.TryParse(canData.Node, out result);
+            if (result == (int)EnumDefines.Nodes.CAN1)
+            {
+                usbPacket[0] = COMMAND_CAN1_MESSAGE;
+            }
+            else if (result == (int)EnumDefines.Nodes.CAN2)
+            {
+                usbPacket[0] = COMMAND_CAN2_MESSAGE;
+            }
 
             // index 1-3 are reserved.
 
@@ -1028,7 +1050,7 @@ namespace CAN_X_CAN_Analyzer
                 return;
             }
 
-            tmp_buf[0] = COMMAND_BAUD;
+            tmp_buf[0] = COMMAND_CAN1_BAUD;
             // 3 bytes reserved
             tmp_buf[4] = (byte)(btrValue >> 24);
             tmp_buf[5] = (byte)(btrValue >> 16);
