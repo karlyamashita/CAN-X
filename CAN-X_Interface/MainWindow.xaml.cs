@@ -806,6 +806,7 @@ namespace CAN_X_CAN_Analyzer
 
         private void TransmitMessages_Send()
         {
+            if (comPort == null || !comPort.IsOpen) return;
             SendTxMsgToDataGridAndCanBus();
         }
 
@@ -887,16 +888,19 @@ namespace CAN_X_CAN_Analyzer
         private void SendCanData(ref CanTxData canData)
         {
             byte[] usbPacket = new byte[DATA_SIZE + 4]; // original was 17, but we have 4 more bytes that are reserved
-            int result = 0;
 
-            Int32.TryParse(canData.Node, out result);
-            if (result == (int)EnumDefines.Nodes.CAN1)
+            if(canData.Node == "CAN1")
             {
                 usbPacket[0] = COMMAND_CAN1_MESSAGE;
             }
-            else if (result == (int)EnumDefines.Nodes.CAN2)
+            else if(canData.Node == "CAN2")
             {
                 usbPacket[0] = COMMAND_CAN2_MESSAGE;
+            }
+            else
+            {
+                // should never get here
+                return;
             }
 
             // index 1-3 are reserved.
@@ -1010,6 +1014,7 @@ namespace CAN_X_CAN_Analyzer
                 masterDataGridRx.RemoveAt(0);
             }
             statusBar.ProgressBar.Value = 0;
+            statusBar.TextBoxBufferPercentage.Text = String.Empty;
             lineCount = 0;
             ClearStatusBarStatus();
         }
@@ -1137,10 +1142,8 @@ namespace CAN_X_CAN_Analyzer
 
             editRxMessages.ComboBoxRxNode.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
             
-            // TODO - fix
-            //ComboBoxTxNode_DropDownClosed.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
+            editTxMessages.ComboBoxTxNode.ItemsSource = Enum.GetNames(typeof(EnumDefines.Nodes));
 
-            // need to remove "_" in the enum
             List<string> txRateList = new List<string>();
             foreach (var en in Enum.GetNames(typeof(EnumDefines.TxRate)))
             {

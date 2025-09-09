@@ -105,7 +105,7 @@
                         <Label Content="Remote Transmit"/>
                         <CheckBox x:Name="CheckBoxRemoteTransmit" Content="RTR" Margin="5,0,0,0" Click="CheckBoxRemoteTransmit_Click"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="3" Margin="20,0,0,0" IsEnabled="False">
+                    <StackPanel Grid.Column="3" Margin="20,0,0,0">
                         <Label Content="Node"/>
                         <ComboBox x:Name="ComboBoxTxNode" SelectedIndex="0" MinHeight="25" DropDownClosed="ComboBoxTxNode_DropDownClosed" />
                     </StackPanel>

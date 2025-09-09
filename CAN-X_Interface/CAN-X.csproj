@@ -85,7 +85,11 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="CAN_BaudRate.cs" />
+    <Compile Include="CAN_Jam.cs" />
     <Compile Include="Clock.cs" />
+    <Compile Include="Components\CAN_Jammer.xaml.cs">
+      <DependentUpon>CAN_Jammer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\COM_Connection.xaml.cs">
       <DependentUpon>COM_Connection.xaml</DependentUpon>
     </Compile>
@@ -114,6 +118,10 @@
     <Compile Include="EnumDefines.cs" />
     <Compile Include="HighResolutionTimer.cs" />
     <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\CAN_Jammer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
