@@ -13,10 +13,12 @@ namespace CAN_X_CAN_Analyzer
         
         }
 
-        public UInt32 CAN_Jam_Node { get; set; }
+        public UInt32 Key { get; set; }
 
-        public UInt32 Index { get; set; }
+        public string Description { get; set; }
         public UInt32 ARB_ID { get; set; }
+
+        public UInt32 CAN_Jam_Node { get; set; }
 
         public UInt32 ModType { get; set; }
 
@@ -133,7 +135,7 @@ namespace CAN_X_CAN_Analyzer
         {
             List<byte> bytes = new List<byte>();
             bytes.Add((byte)(CAN_Jam_Node & 0xFF));
-            bytes.Add((byte)(Index & 0xFF));
+            bytes.Add((byte)(Key & 0xFF));
             bytes.Add((byte)((CAN_Jam_Node >> 8) & 0xFF));
             bytes.Add((byte)((CAN_Jam_Node >> 16) & 0xFF));
             bytes.Add((byte)((CAN_Jam_Node >> 24) & 0xFF));
