@@ -23,6 +23,25 @@ namespace CAN_X_CAN_Analyzer.Components
 
         List<CAN_Jam> can_jam_list = new List<CAN_Jam>();
 
+        public event EventHandler<CAN_JammerEventArgs> CAN_JammerEvent;
+
+        public class CAN_JammerEventArgs : EventArgs
+        {
+            public string EventType { get; set; }
+            // Add other properties as needed
+
+            public CAN_JammerEventArgs(string eventType)
+            {
+                EventType = eventType;
+            }
+        }
+
+        // Helper method to raise the event
+        protected virtual void OnMyCustomEvent(CAN_JammerEventArgs e)
+        {
+            CAN_JammerEvent?.Invoke(this, e);
+        }
+
         public CAN_Jammer()
         {
             InitializeComponent();

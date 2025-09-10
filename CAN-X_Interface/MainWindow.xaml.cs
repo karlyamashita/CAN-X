@@ -177,8 +177,15 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+        #region UserControl_CAN_JammerEvent
+        private void UserControl_CAN_JammerEvent(object sender, CAN_Jammer.CAN_JammerEventArgs e)
+        {
 
-        #region UserControl_EditRxMessagesUpdateStatusEvent
+        }
+
+        #endregion
+
+            #region UserControl_EditRxMessagesUpdateStatusEvent
         private void UserControl_EditRxMessagesUpdateStatusEvent(object sender, EditRxMessages.EditRxMessagesEventArgs e)
         {
             if ((e.EventType == "status_bar"))

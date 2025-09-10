@@ -138,6 +138,7 @@
             <components:EditTxMessages EditTxMessagesUpdateStatusEvent="UserControl_EditTxMessagesUpdateStatusEvent"/>
             <components:EditRxMessages EditRxMessagesUpdateStatusEvent="UserControl_EditRxMessagesUpdateStatusEvent"/>
             <components:MenuBar MenuBarEvent="UserControl_MenuBarEvent"/>
+            <components:CAN_Jammer CAN_JammerEvent="UserControl_CAN_JammerEvent" />
         </Grid>
         <DockPanel Grid.ColumnSpan="3" Margin="0,0,0,25"> <!-- Leave space for status bar -->
             <!-- MenuBar -->
@@ -216,6 +217,9 @@
                             </TabItem>
                         </TabControl>
                     </Grid>
+                </TabItem>
+                <TabItem Header="CAN Jammer" Template="{StaticResource TableColor1}" >
+                    <components:CAN_Jammer x:Name="canJammer"/>
                 </TabItem>
             </TabControl>
             
