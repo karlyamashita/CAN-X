@@ -74,6 +74,7 @@ namespace CAN_X_CAN_Analyzer.Components
             TextBox textBox = sender as TextBox;
             string originalText = textBox.Text;
             int caretPosition = textBox.CaretIndex;
+            UInt32 result = 0;
 
             // Remove non-hex characters and convert to uppercase
             string newText = Regex.Replace(originalText, "[^0-9A-Fa-f]", "").ToUpper();
@@ -84,6 +85,40 @@ namespace CAN_X_CAN_Analyzer.Components
                 // Adjust caret position if characters were removed before it
                 textBox.CaretIndex = Math.Min(caretPosition, newText.Length);
             }
+
+
+            CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+
+            if (can_jam_data == null)
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "You need to select a row" });
+                return;
+            }
+            else
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
+            }
+
+            string senderName = textBox.Name;
+
+            //todo - figure out which text box is changing then edit the correct one below
+            switch (senderName)
+            {
+                case "TextBoxTxDescription":
+                    can_jam_data.Description = TextBoxTxDescription.Text;
+                    break;
+                case "TextBoxArbID":
+                    UInt32.TryParse(TextBoxArbID.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out result);
+                    can_jam_data.Arb_ID = result;
+                    break;
+                case "TextBoxModifyByte1":
+                    UInt32.TryParse(TextBoxArbID.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out result);
+                    can_jam_data.ByteValues[0] = (byte)result;
+                    break;
+
+
+            }
+            dataGridCAN_Jam.Items.Refresh();
         }
 
         private void ButtonAddCAN_JamRow_Click(object sender, RoutedEventArgs e)
@@ -139,7 +174,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 {
 
                     Description = selectedItem.Description,
-                    ARB_ID = selectedItem.ARB_ID,
+                    Arb_ID = selectedItem.Arb_ID,
                     CAN_Jam_Node = selectedItem.CAN_Jam_Node,
                     ModType = selectedItem.ModType,
                     ByteToModify = selectedItem.ByteToModify,
@@ -160,6 +195,21 @@ namespace CAN_X_CAN_Analyzer.Components
 
                 dataGridCAN_Jam.Items.Add(newCAN_JamData);
             }
+        }
+
+        private void dataGridCAN_Jam_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DataGridRow dgr = null;
+
+            var visParent = VisualTreeHelper.GetParent(e.OriginalSource as FrameworkElement);
+            while (dgr == null && visParent != null)
+            {
+                dgr = visParent as DataGridRow;
+                visParent = VisualTreeHelper.GetParent(visParent);
+            }
+            if (dgr == null) { return; }
+
+            rowIndex = dgr.GetIndex();
         }
     }
 

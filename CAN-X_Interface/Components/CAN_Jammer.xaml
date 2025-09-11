@@ -76,7 +76,7 @@
                     </Button>
                     <Label Content="For use with CAN Jammer Device Only. * In Progress *" VerticalAlignment="Center" Margin="25,0,0,0"  />
                 </StackPanel>
-                <DataGrid x:Name="dataGridCAN_Jam" Grid.Row="1" Background="White" IsReadOnly="True" >
+                <DataGrid x:Name="dataGridCAN_Jam" Grid.Row="1" Background="White" IsReadOnly="True" PreviewMouseLeftButtonDown="dataGridCAN_Jam_PreviewMouseLeftButtonDown" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                         <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=TwoWay}" />
@@ -108,7 +108,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="ArbID"/>
-                        <TextBox x:Name="TextBoxTxArbID" Height="25" MaxLength="8" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxArbID" Height="25" MaxLength="8" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="20,0,0,0">
                         <Label Content="Node"/>
@@ -242,35 +242,35 @@
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="15,0,0,0" >
                         <Label Content="BYTE1"/>
-                        <TextBox x:Name="TextBoxTxByte1" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte1" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE2"/>
-                        <TextBox x:Name="TextBoxTxByte2" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte2" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE3"/>
-                        <TextBox x:Name="TextBoxTxByte3" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte3" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE4"/>
-                        <TextBox x:Name="TextBoxTxByte4" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte4" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxTxByte5" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte5" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxTxByte6" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte6" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxTxByte7" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte7" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxTxByte8" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte8" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                 </StackPanel>
             </Grid>
