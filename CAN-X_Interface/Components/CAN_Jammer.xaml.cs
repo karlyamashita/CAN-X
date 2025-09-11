@@ -69,6 +69,82 @@ namespace CAN_X_CAN_Analyzer.Components
             e.Handled = !HexRegex.IsMatch(e.Text);
         }
 
+        private void TextBox_TextChanged_IsBinary(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            string originalText = textBox.Text;
+            int caretPosition = textBox.CaretIndex;
+
+            textBox.CaretIndex = Math.Min(caretPosition, originalText.Length);
+
+            CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+
+            if (can_jam_data == null)
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "You need to select a row" });
+                return;
+            }
+            else
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
+            }
+
+
+            string senderName = textBox.Name;
+
+            //todo - figure out which text box is changing then edit the correct one below
+            switch (senderName)
+            {
+                case "TextBoxBytesToModify":
+                    can_jam_data.ByteToModify = TextBoxBytesToModify.Text;
+                    break;
+                case "TextBoxBitsToggleByte1":
+                case "TextBoxBitsToggleByte2":
+                case "TextBoxBitsToggleByte3":
+                case "TextBoxBitsToggleByte4":
+                case "TextBoxBitsToggleByte5":
+                case "TextBoxBitsToggleByte6":
+                case "TextBoxBitsToggleByte7":
+                case "TextBoxBitsToggleByte8":
+                    can_jam_data.BitsToToggle = TextBoxBitsToggleByte1.Text + " " + TextBoxBitsToggleByte2.Text
+                        + " " + TextBoxBitsToggleByte3.Text + " " + TextBoxBitsToggleByte4.Text
+                        + " " + TextBoxBitsToggleByte5.Text + " " + TextBoxBitsToggleByte6.Text
+                        + " " + TextBoxBitsToggleByte7.Text + " " + TextBoxBitsToggleByte8.Text;
+                    break;
+                case "TextBoxBitsToHighByte1":
+                case "TextBoxBitsToHighByte2":
+                case "TextBoxBitsToHighByte3":
+                case "TextBoxBitsToHighByte4":
+                case "TextBoxBitsToHighByte5":
+                case "TextBoxBitsToHighByte6":
+                case "TextBoxBitsToHighByte7":
+                case "TextBoxBitsToHighByte8":
+                    can_jam_data.BitsToHigh = TextBoxBitsToHighByte1.Text + " " + TextBoxBitsToHighByte2.Text
+                        + " " + TextBoxBitsToHighByte3.Text + " " + TextBoxBitsToHighByte4.Text
+                        + " " + TextBoxBitsToHighByte5.Text + " " + TextBoxBitsToHighByte6.Text
+                        + " " + TextBoxBitsToHighByte7.Text + " " + TextBoxBitsToHighByte8.Text;
+                    break;
+                case "TextBoxBitsToLowByte1":
+                case "TextBoxBitsToLowByte2":
+                case "TextBoxBitsToLowByte3":
+                case "TextBoxBitsToLowByte4":
+                case "TextBoxBitsToLowByte5":
+                case "TextBoxBitsToLowByte6":
+                case "TextBoxBitsToLowByte7":
+                case "TextBoxBitsToLowByte8":
+                    can_jam_data.BitsToLow = TextBoxBitsToLowByte1.Text + " " + TextBoxBitsToLowByte2.Text
+                        + " " + TextBoxBitsToLowByte3.Text + " " + TextBoxBitsToLowByte4.Text
+                        + " " + TextBoxBitsToLowByte5.Text + " " + TextBoxBitsToLowByte6.Text
+                        + " " + TextBoxBitsToLowByte7.Text + " " + TextBoxBitsToLowByte8.Text;
+                    break;
+
+
+
+            }
+            dataGridCAN_Jam.Items.Refresh();
+
+        }
+
         private void TextBox_TextChanged_IsHex(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -104,19 +180,22 @@ namespace CAN_X_CAN_Analyzer.Components
             //todo - figure out which text box is changing then edit the correct one below
             switch (senderName)
             {
-                case "TextBoxTxDescription":
-                    can_jam_data.Description = TextBoxTxDescription.Text;
-                    break;
                 case "TextBoxArbID":
-                    UInt32.TryParse(TextBoxArbID.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out result);
-                    can_jam_data.Arb_ID = result;
+                    can_jam_data.Arb_ID = TextBoxArbID.Text;
                     break;
                 case "TextBoxModifyByte1":
-                    UInt32.TryParse(TextBoxArbID.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out result);
-                    can_jam_data.ByteValues[0] = (byte)result;
+                case "TextBoxModifyByte2":
+                case "TextBoxModifyByte3":
+                case "TextBoxModifyByte4":
+                case "TextBoxModifyByte5":
+                case "TextBoxModifyByte6":
+                case "TextBoxModifyByte7":
+                case "TextBoxModifyByte8":
+                    can_jam_data.ByteValues = TextBoxModifyByte1.Text + " " + TextBoxModifyByte2.Text
+                        + " " + TextBoxModifyByte3.Text + " " + TextBoxModifyByte4.Text
+                        + " " + TextBoxModifyByte5.Text + " " + TextBoxModifyByte6.Text
+                        + " " + TextBoxModifyByte7.Text + " " + TextBoxModifyByte8.Text;
                     break;
-
-
             }
             dataGridCAN_Jam.Items.Refresh();
         }
@@ -127,7 +206,6 @@ namespace CAN_X_CAN_Analyzer.Components
             UInt32 newIndex = 0;
             CAN_Jam can_jam = new CAN_Jam();
 
-            // TODO - need to revist this. Forgot about Key order could be sorted out of order.
             // check for available key number
             while (matchFound)
             {
@@ -176,12 +254,12 @@ namespace CAN_X_CAN_Analyzer.Components
                     Description = selectedItem.Description,
                     Arb_ID = selectedItem.Arb_ID,
                     CAN_Jam_Node = selectedItem.CAN_Jam_Node,
-                    ModType = selectedItem.ModType,
-                    ByteToModify = selectedItem.ByteToModify,
-                    ByteValues = (byte[])selectedItem.ByteValues?.Clone(),
-                    BitsToToggle = (byte[])selectedItem.BitsToToggle?.Clone(),
-                    BitsToHigh = (byte[])selectedItem.BitsToHigh?.Clone(),
-                    BitsToLow = (byte[])selectedItem.BitsToLow?.Clone()
+                    RelayDisabled = selectedItem.RelayDisabled,
+                    ByteToModify = selectedItem.ByteToModify,               
+                    BitsToToggle = selectedItem.BitsToToggle,
+                    BitsToHigh =selectedItem.BitsToHigh,
+                    BitsToLow = selectedItem.BitsToLow,
+                    ByteValues = selectedItem.ByteValues,
                 };
 
                 foreach (CAN_Jam cj in dataGridCAN_Jam.Items)
@@ -210,7 +288,9 @@ namespace CAN_X_CAN_Analyzer.Components
             if (dgr == null) { return; }
 
             rowIndex = dgr.GetIndex();
+
         }
+
     }
 
 }

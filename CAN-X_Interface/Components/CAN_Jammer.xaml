@@ -104,11 +104,11 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Vertical" Margin="15,0,0,0" >
                         <Label Content="Description" />
-                        <TextBox x:Name="TextBoxTxDescription" MaxLength="32" Height="25" Margin="0"/>
+                        <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="ArbID"/>
-                        <TextBox x:Name="TextBoxArbID" Height="25" MaxLength="8" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxArbID" Height="25" CharacterCasing="Upper" MaxLength="8" TextChanged="TextBox_TextChanged_IsHex" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="20,0,0,0">
                         <Label Content="Node"/>
@@ -131,35 +131,35 @@
                     <Label Content="Bits to Toggle" VerticalAlignment="Center" Margin="10,0,15,0"  />
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 1" />
-                        <TextBox x:Name="TextBoxBitsToggleByte1" Height="25" Width="60" MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte1" Height="25" Width="60" MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 2"/>
-                        <TextBox x:Name="TextBoxBitsToggleByte2" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte2" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 3"/>
-                        <TextBox x:Name="TextBoxBitsToggleByte3" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte3" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 4"/>
-                        <TextBox x:Name="TextBoxBitsToggleByte4" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte4" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 5"/>
-                        <TextBox x:Name="TextBoxBitsToggleByte5" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte5" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 6"/>
-                        <TextBox x:Name="TextBoxBitsToggleByte6" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte6" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 7"/>
-                        <TextBox x:Name="TextBoxBitsToggleByte7" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte7" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 8"/>
-                        <TextBox x:Name="TextBoxBitsToggleByte8" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToggleByte8" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000"/>
                     </StackPanel>
                 </StackPanel>
                 <Separator Grid.Row="5" Margin="0,1,0,1"/>
@@ -167,35 +167,35 @@
                     <Label Content="Bits to High" VerticalAlignment="Center" Margin="10,0,25,0" />
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 1"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte1" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte1" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 2"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte2" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte2" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 3"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte3" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte3" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 4"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte4" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte4" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 5"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte5" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte5" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 6"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte6" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte6" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 7"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte7" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte7" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 8"/>
-                        <TextBox x:Name="TextBoxBitsToHighByte8" Height="25" Width="60"  MaxLength="8"/>
+                        <TextBox x:Name="TextBoxBitsToHighByte8" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                 </StackPanel>
                 <Separator Grid.Row="7" Margin="0,1,0,1"/>
@@ -203,74 +203,74 @@
                     <Label Content="Bits to Low" VerticalAlignment="Center" Margin="10,0,28,0"  />
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 1" />
-                        <TextBox x:Name="TextBoxBitsToLowByte1" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte1" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 2"/>
-                        <TextBox x:Name="TextBoxBitsToLowByte2" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte2" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 3"/>
-                        <TextBox x:Name="TextBoxBitsToLowByte3" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte3" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 4"/>
-                        <TextBox x:Name="TextBoxBitsToLowByte4" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte4" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 5"/>
-                        <TextBox x:Name="TextBoxBitsToLowByte5" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte5" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 6"/>
-                        <TextBox x:Name="TextBoxBitsToLowByte6" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte6" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 7"/>
-                        <TextBox x:Name="TextBoxBitsToLowByte7" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte7" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Byte 8"/>
-                        <TextBox x:Name="TextBoxBitsToLowByte8" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput"/>
+                        <TextBox x:Name="TextBoxBitsToLowByte8" Height="25" Width="60"  MaxLength="8" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                 </StackPanel>
                 <Separator Grid.Row="9" Margin="0,1,0,1"/>
                 <StackPanel x:Name="BytesToModify" Grid.Row="10" Orientation="Horizontal" Background="White" Margin="0,0,0,0" >
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Bytes to Modify"/>
-                        <TextBox x:Name="TextBoxBytesToModify" Height="25" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" MaxLength="8" />
+                        <TextBox x:Name="TextBoxBytesToModify" Height="25" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" MaxLength="8" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="15,0,0,0" >
                         <Label Content="BYTE1"/>
-                        <TextBox x:Name="TextBoxModifyByte1" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte1" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00"  />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE2"/>
-                        <TextBox x:Name="TextBoxModifyByte2" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte2" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE3"/>
-                        <TextBox x:Name="TextBoxModifyByte3" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte3" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE4"/>
-                        <TextBox x:Name="TextBoxModifyByte4" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte4" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxModifyByte5" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte5" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxModifyByte6" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte6" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxModifyByte7" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte7" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
-                        <TextBox x:Name="TextBoxModifyByte8" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxModifyByte8" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
                     </StackPanel>
                 </StackPanel>
             </Grid>

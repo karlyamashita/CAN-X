@@ -102,7 +102,7 @@
                 </Trigger>
                 <Trigger Property="IsSelected" Value="False">
                     <Setter TargetName="Border" Property="Background" Value="#FFD1D1D1" />
-                    <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
+                    <Setter TargetName="Border" Property="BorderThickness" Value="1,0,0,1"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>

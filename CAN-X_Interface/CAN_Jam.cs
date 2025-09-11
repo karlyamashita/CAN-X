@@ -16,31 +16,46 @@ namespace CAN_X_CAN_Analyzer
         public UInt32 Key { get; set; }
 
         public string Description { get; set; }
-        public UInt32 Arb_ID { get; set; }
 
-        public UInt32 CAN_Jam_Node { get; set; }
+        private string _arb_id { get; set; }
+        public string Arb_ID 
+        {
+            get 
+            {
+                return _arb_id;
+            }
+            set 
+            {
+                if(value != null)
+                {
+                    _arb_id = value;
+                }
+                else
+                {
+                    _arb_id = null;
+                }
+            }
+        }
 
-        public UInt32 ModType { get; set; }
+        public byte CAN_Jam_Node { get; set; }
 
-        public byte ByteToModify { get; set; }
+        public byte RelayDisabled { get; set; }
 
-        private byte[] _byteValues { get; set; }
+        public string ByteToModify { get; set; }
+
+        private string _byteValues { get; set; }
         
-        public byte[] ByteValues
+        public string ByteValues
         {
             get
             {
-                if (_byteValues == null)
-                {
-                    _byteValues = new byte[8];
-                }
                 return _byteValues;
             }
             set
             {
                 if(value != null)
                 {
-                    _byteValues = (byte[])value.Clone();
+                    _byteValues = value;
                 }
                 else
                 {
@@ -56,23 +71,19 @@ namespace CAN_X_CAN_Analyzer
             can_jam.DataBytes = null; // Set to null
          */
 
-        private byte[] _bitsToToggle { get; set; }
+        private string _bitsToToggle { get; set; }
 
-        public byte[] BitsToToggle
+        public string BitsToToggle
         {
             get
             {
-                if (_bitsToToggle == null)
-                {
-                    _bitsToToggle = new byte[8];
-                }
                 return _bitsToToggle;
             }
             set
             {
-                if (value != null)
+                if(value != null)
                 {
-                    _bitsToToggle = (byte[])value.Clone();
+                    _bitsToToggle = value;
                 }
                 else
                 {
@@ -81,23 +92,19 @@ namespace CAN_X_CAN_Analyzer
             }
         }
 
-        private byte[] _bitsToHigh { get; set; }
+        private string _bitsToHigh { get; set; }
 
-        public byte[] BitsToHigh
+        public string BitsToHigh
         {
             get
             {
-                if (_bitsToHigh == null)
-                {
-                    _bitsToHigh = new byte[8];
-                }
                 return _bitsToHigh;
             }
             set
             {
                 if (value != null)
                 {
-                    _bitsToHigh = (byte[])value.Clone();
+                    _bitsToHigh = value;
                 }
                 else
                 {
@@ -106,23 +113,19 @@ namespace CAN_X_CAN_Analyzer
             }
         }
 
-        private byte[] _bitsToLow { get; set; }
+        private string _bitsToLow { get; set; }
 
-        public byte[] BitsToLow
+        public string BitsToLow
         {
             get
             {
-                if (_bitsToLow == null)
-                {
-                    _bitsToLow = new byte[8];
-                }
                 return _bitsToLow;
             }
             set
             {
                 if (value != null)
                 {
-                    _bitsToLow = (byte[])value.Clone();
+                    _bitsToLow = value;
                 }
                 else
                 {
@@ -134,23 +137,18 @@ namespace CAN_X_CAN_Analyzer
         public byte[] GetBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.Add((byte)(CAN_Jam_Node & 0xFF));
+
+           // bytes.Add((byte)(Arb_ID & 0xFF));
+
+
             bytes.Add((byte)(Key & 0xFF));
-            bytes.Add((byte)((CAN_Jam_Node >> 8) & 0xFF));
-            bytes.Add((byte)((CAN_Jam_Node >> 16) & 0xFF));
-            bytes.Add((byte)((CAN_Jam_Node >> 24) & 0xFF));
-            bytes.Add((byte)(Arb_ID & 0xFF));
-            bytes.Add((byte)((Arb_ID >> 8) & 0xFF));
-            bytes.Add((byte)((Arb_ID >> 16) & 0xFF));
-            bytes.Add((byte)((Arb_ID >> 24) & 0xFF));
-            bytes.Add((byte)(ModType & 0xFF));
-            bytes.Add((byte)((ModType >> 8) & 0xFF));
-            bytes.Add((byte)((ModType >> 16) & 0xFF));
-            bytes.Add((byte)((ModType >> 24) & 0xFF));
-            bytes.Add(ByteToModify);
+            bytes.Add(CAN_Jam_Node);
+            bytes.Add(RelayDisabled);
+
+            bytes.Add((byte)Convert.ToInt32(ByteToModify,2));
             if (ByteValues != null && ByteValues.Length == 8)
             {
-                bytes.AddRange(ByteValues);
+               // bytes.AddRange(ByteValues);
             }
             else
             {
@@ -158,7 +156,7 @@ namespace CAN_X_CAN_Analyzer
             }
             if (BitsToToggle != null && BitsToToggle.Length == 8)
             {
-                bytes.AddRange(BitsToToggle);
+               // bytes.AddRange(BitsToToggle);
             }
             else
             {
@@ -166,7 +164,7 @@ namespace CAN_X_CAN_Analyzer
             }
             if (BitsToHigh != null && BitsToHigh.Length == 8)
             {
-                bytes.AddRange(BitsToHigh);
+               // bytes.AddRange(BitsToHigh);
             }
             else
             {
@@ -174,7 +172,7 @@ namespace CAN_X_CAN_Analyzer
             }
             if (BitsToLow != null && BitsToLow.Length == 8)
             {
-                bytes.AddRange(BitsToLow);
+               // bytes.AddRange(BitsToLow);
             }
             else
             {
