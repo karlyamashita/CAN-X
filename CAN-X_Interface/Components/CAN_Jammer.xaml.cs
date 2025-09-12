@@ -57,6 +57,16 @@ namespace CAN_X_CAN_Analyzer.Components
         public void Send_CAN_Jam_Parameters()
         {
             // todo: send parameters to device
+
+            if(dataGridCAN_Jam.ItemsSource is IEnumerable<CAN_Jam> items)
+            {
+                foreach(var item in items)
+                {
+                    byte[] data = new byte[40];
+                    item.GetBytes().CopyTo(data, item.Key * 40);
+                    Console.WriteLine(data.Length);
+                }
+            }
         }
 
         private void TextBoxBytesToModify_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -177,11 +187,11 @@ namespace CAN_X_CAN_Analyzer.Components
 
             string senderName = textBox.Name;
 
-            //todo - figure out which text box is changing then edit the correct one below
+
             switch (senderName)
             {
                 case "TextBoxArbID":
-                    can_jam_data.Arb_ID = TextBoxArbID.Text;
+                    can_jam_data.ArbID = TextBoxArbID.Text;
                     break;
                 case "TextBoxModifyByte1":
                 case "TextBoxModifyByte2":
@@ -252,7 +262,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 {
 
                     Description = selectedItem.Description,
-                    Arb_ID = selectedItem.Arb_ID,
+                    ArbID = selectedItem.ArbID,
                     CAN_Jam_Node = selectedItem.CAN_Jam_Node,
                     RelayDisabled = selectedItem.RelayDisabled,
                     ByteToModify = selectedItem.ByteToModify,               
@@ -291,6 +301,58 @@ namespace CAN_X_CAN_Analyzer.Components
 
         }
 
+        private void dataGridCAN_Jam_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            CAN_Jam data = dataGridCAN_Jam.SelectedItem as CAN_Jam; // grabs the current selected row
+            if (data == null) return;
+            TextBoxKey.Text = data.Key.ToString();
+            TextBoxDescription.Text = data.Description;
+            TextBoxArbID.Text = data.ArbID ?? "00000000";
+
+            TextBoxBitsToggleByte1.Text = data.BitsToToggle?.Split(' ')[0] ?? "00000000";
+            TextBoxBitsToggleByte2.Text = data.BitsToToggle?.Split(' ')[1] ?? "00000000";
+            TextBoxBitsToggleByte3.Text = data.BitsToToggle?.Split(' ')[2] ?? "00000000";
+            TextBoxBitsToggleByte4.Text = data.BitsToToggle?.Split(' ')[3] ?? "00000000";
+            TextBoxBitsToggleByte5.Text = data.BitsToToggle?.Split(' ')[4] ?? "00000000";
+            TextBoxBitsToggleByte6.Text = data.BitsToToggle?.Split(' ')[5] ?? "00000000";
+            TextBoxBitsToggleByte7.Text = data.BitsToToggle?.Split(' ')[6] ?? "00000000";
+            TextBoxBitsToggleByte8.Text = data.BitsToToggle?.Split(' ')[7] ?? "00000000";
+
+            TextBoxBitsToHighByte1.Text = data.BitsToHigh?.Split(' ')[0] ?? "00000000";
+            TextBoxBitsToHighByte2.Text = data.BitsToHigh?.Split(' ')[1] ?? "00000000";
+            TextBoxBitsToHighByte3.Text = data.BitsToHigh?.Split(' ')[2] ?? "00000000";
+            TextBoxBitsToHighByte4.Text = data.BitsToHigh?.Split(' ')[3] ?? "00000000";
+            TextBoxBitsToHighByte5.Text = data.BitsToHigh?.Split(' ')[4] ?? "00000000";
+            TextBoxBitsToHighByte6.Text = data.BitsToHigh?.Split(' ')[5] ?? "00000000";
+            TextBoxBitsToHighByte7.Text = data.BitsToHigh?.Split(' ')[6] ?? "00000000";
+            TextBoxBitsToHighByte8.Text = data.BitsToHigh?.Split(' ')[7] ?? "00000000";
+
+            TextBoxBitsToLowByte1.Text = data.BitsToLow?.Split(' ')[0] ?? "00000000";
+            TextBoxBitsToLowByte2.Text = data.BitsToLow?.Split(' ')[1] ?? "00000000";
+            TextBoxBitsToLowByte3.Text = data.BitsToLow?.Split(' ')[2] ?? "00000000";
+            TextBoxBitsToLowByte4.Text = data.BitsToLow?.Split(' ')[3] ?? "00000000";
+            TextBoxBitsToLowByte5.Text = data.BitsToLow?.Split(' ')[4] ?? "00000000";
+            TextBoxBitsToLowByte6.Text = data.BitsToLow?.Split(' ')[5] ?? "00000000";
+            TextBoxBitsToLowByte7.Text = data.BitsToLow?.Split(' ')[6] ?? "00000000";
+            TextBoxBitsToLowByte8.Text = data.BitsToLow?.Split(' ')[7] ?? "00000000";
+
+            TextBoxModifyByte1.Text = data.ByteValues?.Split(' ')[0] ?? "00";
+            TextBoxModifyByte2.Text = data.ByteValues?.Split(' ')[1] ?? "00";
+            TextBoxModifyByte3.Text = data.ByteValues?.Split(' ')[2] ?? "00";
+            TextBoxModifyByte4.Text = data.ByteValues?.Split(' ')[3] ?? "00";
+            TextBoxModifyByte5.Text = data.ByteValues?.Split(' ')[4] ?? "00";
+            TextBoxModifyByte6.Text = data.ByteValues?.Split(' ')[5] ?? "00";
+            TextBoxModifyByte7.Text = data.ByteValues?.Split(' ')[6] ?? "00";
+            TextBoxModifyByte8.Text = data.ByteValues?.Split(' ')[7] ?? "00";
+
+            TextBoxBytesToModify.Text = data.ByteToModify ?? "00000000";
+
+        }
+
+        private void Button_UpdateCANJam_Click(object sender, RoutedEventArgs e)
+        {
+            Send_CAN_Jam_Parameters();
+        }
     }
 
 }

@@ -74,15 +74,15 @@
                             </StackPanel>
                         </Button.ToolTip>
                     </Button>
+                    <Button x:Name="Button_UpdateCANJam" Content="Update" Height="25" Click="Button_UpdateCANJam_Click" ></Button>
                     <Label Content="For use with CAN Jammer Device Only. * In Progress *" VerticalAlignment="Center" Margin="25,0,0,0"  />
                 </StackPanel>
-                <DataGrid x:Name="dataGridCAN_Jam" Grid.Row="1" Background="White" IsReadOnly="True" PreviewMouseLeftButtonDown="dataGridCAN_Jam_PreviewMouseLeftButtonDown" >
+                <DataGrid x:Name="dataGridCAN_Jam" Grid.Row="1" Background="White" IsReadOnly="True" PreviewMouseLeftButtonDown="dataGridCAN_Jam_PreviewMouseLeftButtonDown" MouseLeftButtonUp="dataGridCAN_Jam_MouseLeftButtonUp" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                         <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=TwoWay}" />
                         <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID' , Mode=TwoWay}" />
                         <DataGridTextColumn Header="Node" Binding="{Binding Path='Node' , Mode=TwoWay}" />
-                        <DataGridTextColumn Header="ModifyType" Binding="{Binding Path='ModifyType', Mode=TwoWay}" />
                         <DataGridTextColumn Header="BitsToToggle" Binding="{Binding Path='BitsToToggle', Mode=TwoWay}" />
                         <DataGridTextColumn Header="BitsToHigh" Binding="{Binding Path='BitsToHigh', Mode=TwoWay}" />
                         <DataGridTextColumn Header="BitsToLow" Binding="{Binding Path='BitsToLow', Mode=TwoWay}" />
@@ -95,36 +95,33 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="250"/>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="110"/>
                         <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="110"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Margin="15,0,0,0" >
+                    <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                        <Label Content="Key"/>
+                        <TextBox x:Name="TextBoxKey" Height="25" Width="20" MaxLength="8" IsEnabled="False" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0" >
                         <Label Content="Description" />
                         <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
+                    <StackPanel Grid.Column="2" Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="ArbID"/>
-                        <TextBox x:Name="TextBoxArbID" Height="25" CharacterCasing="Upper" MaxLength="8" TextChanged="TextBox_TextChanged_IsHex" />
+                        <TextBox x:Name="TextBoxArbID" Height="25" CharacterCasing="Upper" MaxLength="8" TextChanged="TextBox_TextChanged_IsHex" Text="00000000" />
                     </StackPanel>
-                    <StackPanel Grid.Column="2" Margin="20,0,0,0">
+                    <StackPanel Grid.Column="3" Margin="20,0,0,0">
                         <Label Content="Node"/>
                         <ComboBox x:Name="ComboBoxNode" SelectedIndex="0" MinHeight="25" >
                             <ComboBoxItem Content="CAN1"/>
                             <ComboBoxItem Content="CAN2"/>
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Column="3" Margin="20,0,0,0">
-                        <Label Content="Modify Type"/>
-                        <ComboBox x:Name="ComboBoxModifyType" SelectedIndex="0" MinHeight="25" >
-                            <ComboBoxItem Content="Byte"/>
-                            <ComboBoxItem Content="Bits"/>
-                            <ComboBoxItem Content="Block"/>
-                        </ComboBox>
-                    </StackPanel>
+                    <StackPanel Grid.Column="4" Margin="20,0,0,0"/>
                 </Grid>
                 <Separator Grid.Row="3" Margin="0,1,0,1" />
                 <StackPanel x:Name="BitsToggle" Background="White" Grid.Row="4"  Orientation="Horizontal">
