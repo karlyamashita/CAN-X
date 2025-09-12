@@ -5,11 +5,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -78,6 +80,7 @@ namespace CAN_X_CAN_Analyzer
         const byte COMMAND_CAN2_ADD_MOD = 0x41;
         const byte COMMAND_CAN1_DEL_MOD = 0x42;
         const byte COMMAND_CAN2_DEL_MOD = 0x43;
+        const byte COMMAND_CAN_JAM_RELAY = 0x44;
         const byte COMMAND_CAN2_MESSAGE = 0x81;
         const byte COMMAND_CAN2_BAUD = 0x96;
         const byte COMMAND_CAN2_BTR = 0x98;
@@ -177,15 +180,47 @@ namespace CAN_X_CAN_Analyzer
             }
         }
         #endregion
+
         #region UserControl_CAN_JammerEvent
         private void UserControl_CAN_JammerEvent(object sender, CAN_Jammer.CAN_JammerEventArgs e)
         {
+            if (e.EventType == "CAN_Jam_Parameters")
+            {
+                int size = e.Data.Length;
+                byte[] usbPacket = new byte[size + 4];// add 4 for command, reserved bytes, size
 
+                if (e.Data[5] == 0) // index 5 is the CAN bus number
+                {
+                    usbPacket[0] = COMMAND_CAN1_ADD_MOD; // command
+                }
+                else if (e.Data[5] == 1)
+                {
+                    usbPacket[0] = COMMAND_CAN2_ADD_MOD; // command
+                }
+
+                usbPacket[3] = (byte)size; // size of data
+                Array.Copy(e.Data, 0, usbPacket, 4, e.Data.Length); // copy data to usb packet after command, reserved, size
+
+                comPort.WriteBytes(usbPacket, size + 4);// add 4 for command, reserved bytes, size
+            }
+            else if (e.EventType == "CAN_Jam_Relay")
+            {
+                int size = 2;
+                byte[] usbPacket = new byte[size + 4];// add 4 for command, reserved bytes, size
+
+                usbPacket[0] = COMMAND_CAN_JAM_RELAY; // command
+                usbPacket[3] = 2; // size of data
+
+                usbPacket[4] = (byte)e.Data[0]; // CAN bus number
+                usbPacket[5] = (byte)e.Data[1]; // relay state
+
+                comPort.WriteBytes(usbPacket, size + 4);// add 4 for command, reserved bytes, size
+            }
         }
 
         #endregion
 
-            #region UserControl_EditRxMessagesUpdateStatusEvent
+        #region UserControl_EditRxMessagesUpdateStatusEvent
         private void UserControl_EditRxMessagesUpdateStatusEvent(object sender, EditRxMessages.EditRxMessagesEventArgs e)
         {
             if ((e.EventType == "status_bar"))

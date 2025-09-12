@@ -37,9 +37,9 @@ namespace CAN_X_CAN_Analyzer
             }
         }
 
-        public byte CAN_Jam_Node { get; set; }
+        public string Node { get; set; }
 
-        public byte RelayDisabled { get; set; }
+        public string RelayDisabled { get; set; }
 
         public string ByteToModify { get; set; }
 
@@ -140,8 +140,8 @@ namespace CAN_X_CAN_Analyzer
             bytes.Add((byte)(hex >> 8));
             bytes.Add((byte)hex);
          
-            bytes.Add(CAN_Jam_Node);
-            bytes.Add(RelayDisabled);
+            bytes.Add((byte)Convert.ToInt32(Node, 2));
+            bytes.Add((byte)Convert.ToInt32(RelayDisabled, 2));
 
             bytes.Add((byte)Convert.ToInt32(ByteToModify, 2));
 

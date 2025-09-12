@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static CAN_X_CAN_Analyzer.Components.EditTxMessages;
 
 namespace CAN_X_CAN_Analyzer.Components
 {
@@ -24,7 +25,7 @@ namespace CAN_X_CAN_Analyzer.Components
     public partial class CAN_Jammer : UserControl
     {
         int rowIndex = 0;
-        List<CAN_Jam> can_jam_list = new List<CAN_Jam>();
+
         private static readonly Regex _binaryRegex = new Regex("[01]+");
         private static readonly Regex HexRegex = new Regex("^[0-9A-F]*$");
 
@@ -34,11 +35,7 @@ namespace CAN_X_CAN_Analyzer.Components
         {
             public string EventType { get; set; }
             // Add other properties as needed
-
-            public CAN_JammerEventArgs(string eventType)
-            {
-                EventType = eventType;
-            }
+            public byte[] Data { get; set; }
         }
 
         // Helper method to raise the event
@@ -50,22 +47,70 @@ namespace CAN_X_CAN_Analyzer.Components
         public CAN_Jammer()
         {
             InitializeComponent();
-
-            //can_jam_list.Add(new CAN_Jam { ARB_ID = 0x000, ModType = 0 });
         }
 
         public void Send_CAN_Jam_Parameters()
         {
             // todo: send parameters to device
+            //int count = 0;
 
-            if(dataGridCAN_Jam.ItemsSource is IEnumerable<CAN_Jam> items)
+            foreach (var items in dataGridCAN_Jam.Items)
             {
-                foreach(var item in items)
+                if (items is CAN_Jam item)
                 {
-                    byte[] data = new byte[40];
+                    int size = dataGridCAN_Jam.Items.Count;
+                    byte[] data = new byte[size * 40];
                     item.GetBytes().CopyTo(data, item.Key * 40);
-                    Console.WriteLine(data.Length);
+                    /*
+                    foreach(byte b in data)
+                    {
+                        Console.Write(b.ToString("X"));
+                        Console.Write(" ");
+                        ++count;
+                        if((count %= 40) == 0)
+                        {
+                            Console.WriteLine();
+                            count = 0;
+                        }
+                    }
+                    Console.WriteLine();
+                    */
+
+                    OnMyCustomEvent(new CAN_JammerEventArgs { EventType = "CAN_Jam_Parameters", Data = data });
                 }
+            }
+        }
+
+        private void RadioButton_RelayChecked(object sender, RoutedEventArgs e)
+        {
+            RadioButton selectedRadioButton = sender as RadioButton;
+            if (selectedRadioButton != null)
+            {
+                byte[] data = new byte[2];
+                string name = selectedRadioButton.Name;
+
+                switch (name)
+                {
+                    case "CAN1_RelayDisableFalse":
+                        data[0] = 0x00;
+                        data[1] = 0x00;
+                        break;
+                    case "CAN1_RelayDisableTrue":
+                        data[0] = 0x00;
+                        data[1] = 0x01;
+                        break;
+                    case "CAN2_RelayDisableFalse":
+                        data[0] = 0x01;
+                        data[1] = 0x00;
+                        break;
+                    case "CAN2_RelayDisableTrue":
+                        data[0] = 0x01;
+                        data[1] = 0x01;
+                        break;
+                }
+
+                OnMyCustomEvent(new CAN_JammerEventArgs { EventType = "CAN_Jam_Relay", Data = data});
+
             }
         }
 
@@ -160,7 +205,6 @@ namespace CAN_X_CAN_Analyzer.Components
             TextBox textBox = sender as TextBox;
             string originalText = textBox.Text;
             int caretPosition = textBox.CaretIndex;
-            UInt32 result = 0;
 
             // Remove non-hex characters and convert to uppercase
             string newText = Regex.Replace(originalText, "[^0-9A-Fa-f]", "").ToUpper();
@@ -263,7 +307,7 @@ namespace CAN_X_CAN_Analyzer.Components
 
                     Description = selectedItem.Description,
                     ArbID = selectedItem.ArbID,
-                    CAN_Jam_Node = selectedItem.CAN_Jam_Node,
+                    Node = selectedItem.Node,
                     RelayDisabled = selectedItem.RelayDisabled,
                     ByteToModify = selectedItem.ByteToModify,               
                     BitsToToggle = selectedItem.BitsToToggle,
@@ -308,6 +352,7 @@ namespace CAN_X_CAN_Analyzer.Components
             TextBoxKey.Text = data.Key.ToString();
             TextBoxDescription.Text = data.Description;
             TextBoxArbID.Text = data.ArbID ?? "00000000";
+            ComboBoxNode.SelectedIndex = int.TryParse(data.Node, out int node) ? node : 0;
 
             TextBoxBitsToggleByte1.Text = data.BitsToToggle?.Split(' ')[0] ?? "00000000";
             TextBoxBitsToggleByte2.Text = data.BitsToToggle?.Split(' ')[1] ?? "00000000";
@@ -353,6 +398,39 @@ namespace CAN_X_CAN_Analyzer.Components
         {
             Send_CAN_Jam_Parameters();
         }
-    }
 
+        private void ComboBoxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+
+            if(comboBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+            if (can_jam_data == null)
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "You need to select a row" });
+                return;
+            }
+            else
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
+            }
+            string senderName = comboBox.Name;
+            switch (senderName)
+            {
+                case "ComboBoxNode":
+                    can_jam_data.Node = comboBox.SelectedIndex.ToString();
+                    Console.WriteLine("ComboBox Selected Item: " + can_jam_data.Node);
+                    break;
+
+                    /*case "ComboBoxRelayDisabled":
+                        can_jam_data.RelayDisabled = (string)((ComboBoxItem)comboBox.SelectedItem).Content;
+                        break;*/  
+            }
+            dataGridCAN_Jam.Items.Refresh();
+        }
+    }
 }

@@ -74,8 +74,22 @@
                             </StackPanel>
                         </Button.ToolTip>
                     </Button>
-                    <Button x:Name="Button_UpdateCANJam" Content="Update" Height="25" Click="Button_UpdateCANJam_Click" ></Button>
-                    <Label Content="For use with CAN Jammer Device Only. * In Progress *" VerticalAlignment="Center" Margin="25,0,0,0"  />
+                    <Button x:Name="Button_UpdateCANJam" Content="Update" Height="25" Width="50" Click="Button_UpdateCANJam_Click" Margin="15,0,0,0" />
+                    <Button x:Name="Button_SaveCANJam" Content="Save" Height="25" Width="50" Margin="15,0,0,0" />
+                    <GroupBox x:Name="CAN1_RelayDisable" Header="CAN1 Relay Disable" Margin="15,0,0,0" >
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton x:Name="CAN1_RelayDisableFalse" Content="Off" IsChecked="True" Checked="RadioButton_RelayChecked"/>
+                            <RadioButton x:Name="CAN1_RelayDisableTrue" Content="On" Checked="RadioButton_RelayChecked"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox x:Name="CAN2_RelayDisable" Header="CAN2 Relay Disable" Margin="15,0,0,0" >
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton x:Name="CAN2_RelayDisableFalse" Content="Off" IsChecked="True" Checked="RadioButton_RelayChecked"/>
+                            <RadioButton x:Name="CAN2_RelayDisableTrue" Content="On" Checked="RadioButton_RelayChecked"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <Label Content="For use with CAN Jammer Device Only. * In Development *" VerticalAlignment="Center" Margin="25,0,0,0"  />
                 </StackPanel>
                 <DataGrid x:Name="dataGridCAN_Jam" Grid.Row="1" Background="White" IsReadOnly="True" PreviewMouseLeftButtonDown="dataGridCAN_Jam_PreviewMouseLeftButtonDown" MouseLeftButtonUp="dataGridCAN_Jam_MouseLeftButtonUp" >
                     <DataGrid.Columns>
@@ -116,7 +130,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="3" Margin="20,0,0,0">
                         <Label Content="Node"/>
-                        <ComboBox x:Name="ComboBoxNode" SelectedIndex="0" MinHeight="25" >
+                        <ComboBox x:Name="ComboBoxNode" SelectedIndex="0" MinHeight="25" SelectionChanged="ComboBoxNode_SelectionChanged" >
                             <ComboBoxItem Content="CAN1"/>
                             <ComboBoxItem Content="CAN2"/>
                         </ComboBox>

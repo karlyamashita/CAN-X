@@ -378,7 +378,7 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 try // this event happens before StatusBarStatus is generated in the window, so it is null. So using try/catch for now.
                 {
-                   OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "Select an ArbID first and try selecting the node again" });
+                //   OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "status_bar", statusBar = "Select an ArbID first and try selecting the node again" });
                 }
                 catch (NullReferenceException)
                 {
