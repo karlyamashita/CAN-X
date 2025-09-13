@@ -144,6 +144,8 @@ namespace CAN_X_CAN_Analyzer
 
             menuBar.MenuBarEvent += UserControl_MenuBarEvent;
 
+            canJammer.CAN_JammerEvent += UserControl_CAN_JammerEvent;
+
         }
         #endregion
 
@@ -184,6 +186,8 @@ namespace CAN_X_CAN_Analyzer
         #region UserControl_CAN_JammerEvent
         private void UserControl_CAN_JammerEvent(object sender, CAN_Jammer.CAN_JammerEventArgs e)
         {
+            if(comPort == null || !comPort.IsOpen) return;
+
             if (e.EventType == "CAN_Jam_Parameters")
             {
                 int size = e.Data.Length;

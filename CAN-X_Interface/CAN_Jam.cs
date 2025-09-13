@@ -131,15 +131,17 @@ namespace CAN_X_CAN_Analyzer
         {
             List<byte> bytes = new List<byte>();
 
-            bytes.Add((byte)Key);
+            
 
             UInt32 hex = Convert.ToUInt32(ArbID, 16);
 
-            bytes.Add((byte)(hex >> 24));
-            bytes.Add((byte)(hex >> 16));
-            bytes.Add((byte)(hex >> 8));
             bytes.Add((byte)hex);
-         
+            bytes.Add((byte)(hex >> 8));
+            bytes.Add((byte)(hex >> 16));
+            bytes.Add((byte)(hex >> 24));
+
+            bytes.Add((byte)Key); // index 4
+
             bytes.Add((byte)Convert.ToInt32(Node, 2));
             bytes.Add((byte)Convert.ToInt32(RelayDisabled, 2));
 
