@@ -110,7 +110,6 @@ namespace CAN_X_CAN_Analyzer.Components
                 }
 
                 OnMyCustomEvent(new CAN_JammerEventArgs { EventType = "CAN_Jam_Relay", Data = data});
-
             }
         }
 
@@ -144,8 +143,29 @@ namespace CAN_X_CAN_Analyzer.Components
                 //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
             }
 
-
             string senderName = textBox.Name;
+            string[] bitsToToggleValues = null;
+            string[] bitsToHighValues = null;
+            string[] bitsToLowValues = null;
+            bool bitToggleUpdated = false;
+            bool bitHighUpdated = false;
+            bool bitLowUpdated = false;
+
+            if (can_jam_data.BitsToToggle == null)
+            {
+                can_jam_data.BitsToToggle = "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000";
+            }
+            if (can_jam_data.BitsToHigh == null)
+            {
+                can_jam_data.BitsToHigh = "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000";
+            }
+            if (can_jam_data.BitsToLow == null)
+            {
+                can_jam_data.BitsToLow = "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000";
+            }
+            bitsToToggleValues = can_jam_data.BitsToToggle.Split(' ');
+            bitsToHighValues = can_jam_data.BitsToHigh.Split(' ');
+            bitsToLowValues = can_jam_data.BitsToLow.Split(' ');
 
             //todo - figure out which text box is changing then edit the correct one below
             switch (senderName)
@@ -153,51 +173,124 @@ namespace CAN_X_CAN_Analyzer.Components
                 case "TextBoxBytesToModify":
                     can_jam_data.ByteToModify = TextBoxBytesToModify.Text;
                     break;
+                // toggle bits
                 case "TextBoxBitsToggleByte1":
-                case "TextBoxBitsToggleByte2":
-                case "TextBoxBitsToggleByte3":
-                case "TextBoxBitsToggleByte4":
-                case "TextBoxBitsToggleByte5":
-                case "TextBoxBitsToggleByte6":
-                case "TextBoxBitsToggleByte7":
-                case "TextBoxBitsToggleByte8":
-                    can_jam_data.BitsToToggle = TextBoxBitsToggleByte1.Text + " " + TextBoxBitsToggleByte2.Text
-                        + " " + TextBoxBitsToggleByte3.Text + " " + TextBoxBitsToggleByte4.Text
-                        + " " + TextBoxBitsToggleByte5.Text + " " + TextBoxBitsToggleByte6.Text
-                        + " " + TextBoxBitsToggleByte7.Text + " " + TextBoxBitsToggleByte8.Text;
+                    bitsToToggleValues[0] = TextBoxBitsToggleByte1.Text;
+                    bitToggleUpdated = true;
                     break;
+                case "TextBoxBitsToggleByte2":
+                    bitsToToggleValues[1] = TextBoxBitsToggleByte2.Text;
+                    bitToggleUpdated = true;
+                    break;
+                case "TextBoxBitsToggleByte3":
+                    bitsToToggleValues[2] = TextBoxBitsToggleByte3.Text;
+                    bitToggleUpdated = true;
+                    break;
+                case "TextBoxBitsToggleByte4":
+                    bitsToToggleValues[3] = TextBoxBitsToggleByte4.Text;
+                    bitToggleUpdated = true;
+                    break;
+                case "TextBoxBitsToggleByte5":
+                    bitsToToggleValues[4] = TextBoxBitsToggleByte5.Text;
+                    bitToggleUpdated = true;
+                    break;
+                case "TextBoxBitsToggleByte6":
+                    bitsToToggleValues[5] = TextBoxBitsToggleByte6.Text;
+                    bitToggleUpdated = true;
+                    break;
+                case "TextBoxBitsToggleByte7":
+                    bitsToToggleValues[6] = TextBoxBitsToggleByte7.Text;
+                    bitToggleUpdated = true;
+                    break;
+                case "TextBoxBitsToggleByte8":
+                    bitsToToggleValues[7] = TextBoxBitsToggleByte8.Text;
+                    bitToggleUpdated = true;
+                    break;
+                // high bits
                 case "TextBoxBitsToHighByte1":
+                    bitsToHighValues[0] = TextBoxBitsToHighByte1.Text;
+                    bitHighUpdated = true;
+                    break;
                 case "TextBoxBitsToHighByte2":
+                    bitsToHighValues[1] = TextBoxBitsToHighByte2.Text;
+                    bitHighUpdated = true;
+                    break;
                 case "TextBoxBitsToHighByte3":
+                    bitsToHighValues[2] = TextBoxBitsToHighByte3.Text;
+                    bitHighUpdated = true;
+                    break;
                 case "TextBoxBitsToHighByte4":
+                    bitsToHighValues[3] = TextBoxBitsToHighByte4.Text;
+                    bitHighUpdated = true;
+                    break;
                 case "TextBoxBitsToHighByte5":
+                    bitsToHighValues[4] = TextBoxBitsToHighByte5.Text;
+                    bitHighUpdated = true;
+                    break;
                 case "TextBoxBitsToHighByte6":
+                    bitsToHighValues[5] = TextBoxBitsToHighByte6.Text;
+                    bitHighUpdated = true;
+                    break;
                 case "TextBoxBitsToHighByte7":
+                    bitsToHighValues[6] = TextBoxBitsToHighByte7.Text;
+                    bitHighUpdated = true;
+                    break;
                 case "TextBoxBitsToHighByte8":
-                    can_jam_data.BitsToHigh = TextBoxBitsToHighByte1.Text + " " + TextBoxBitsToHighByte2.Text
-                        + " " + TextBoxBitsToHighByte3.Text + " " + TextBoxBitsToHighByte4.Text
-                        + " " + TextBoxBitsToHighByte5.Text + " " + TextBoxBitsToHighByte6.Text
-                        + " " + TextBoxBitsToHighByte7.Text + " " + TextBoxBitsToHighByte8.Text;
+                    bitsToHighValues[7] = TextBoxBitsToHighByte8.Text;
+                    bitHighUpdated = true;
                     break;
                 case "TextBoxBitsToLowByte1":
-                case "TextBoxBitsToLowByte2":
-                case "TextBoxBitsToLowByte3":
-                case "TextBoxBitsToLowByte4":
-                case "TextBoxBitsToLowByte5":
-                case "TextBoxBitsToLowByte6":
-                case "TextBoxBitsToLowByte7":
-                case "TextBoxBitsToLowByte8":
-                    can_jam_data.BitsToLow = TextBoxBitsToLowByte1.Text + " " + TextBoxBitsToLowByte2.Text
-                        + " " + TextBoxBitsToLowByte3.Text + " " + TextBoxBitsToLowByte4.Text
-                        + " " + TextBoxBitsToLowByte5.Text + " " + TextBoxBitsToLowByte6.Text
-                        + " " + TextBoxBitsToLowByte7.Text + " " + TextBoxBitsToLowByte8.Text;
+                    bitsToLowValues[0] = TextBoxBitsToLowByte1.Text;
+                    bitLowUpdated = true;
                     break;
-
-
-
+                // low bits
+                case "TextBoxBitsToLowByte2":
+                    bitsToLowValues[1] = TextBoxBitsToLowByte2.Text;
+                    bitLowUpdated = true;
+                    break;
+                case "TextBoxBitsToLowByte3":
+                    bitsToLowValues[2] = TextBoxBitsToLowByte3.Text;
+                    bitLowUpdated = true;
+                    break;
+                case "TextBoxBitsToLowByte4":
+                    bitsToLowValues[3] = TextBoxBitsToLowByte4.Text;
+                    bitLowUpdated = true;
+                    break;
+                case "TextBoxBitsToLowByte5":
+                    bitsToLowValues[4] = TextBoxBitsToLowByte5.Text;
+                    bitLowUpdated = true;
+                    break;
+                case "TextBoxBitsToLowByte6":
+                    bitsToLowValues[5] = TextBoxBitsToLowByte6.Text;
+                    bitLowUpdated = true;
+                    break;
+                case "TextBoxBitsToLowByte7":
+                    bitsToLowValues[6] = TextBoxBitsToLowByte7.Text;
+                    bitLowUpdated = true;
+                    break;
+                case "TextBoxBitsToLowByte8":
+                    bitsToLowValues[7] = TextBoxBitsToLowByte8.Text;
+                    bitLowUpdated = true;
+                    break;
             }
-            dataGridCAN_Jam.Items.Refresh();
 
+            if (bitToggleUpdated)
+            {
+                can_jam_data.BitsToToggle = bitsToToggleValues[0] + ' ' + bitsToToggleValues[1] + ' ' + bitsToToggleValues[2] + ' ' + bitsToToggleValues[3]
+                    + ' ' + bitsToToggleValues[4] + ' ' + bitsToToggleValues[5] + ' ' + bitsToToggleValues[6] + ' ' + bitsToToggleValues[7];
+            }
+            else if (bitHighUpdated)
+            {
+                can_jam_data.BitsToHigh = bitsToHighValues[0] + ' ' + bitsToHighValues[1] + ' ' + bitsToHighValues[2] + ' ' + bitsToHighValues[3]
+                    + ' ' + bitsToHighValues[4] + ' ' + bitsToHighValues[5] + ' ' + bitsToHighValues[6] + ' ' + bitsToHighValues[7];
+            }
+            else if (bitLowUpdated)
+            {
+                can_jam_data.BitsToLow = bitsToLowValues[0] + ' ' + bitsToLowValues[1] + ' ' + bitsToLowValues[2] + ' ' + bitsToLowValues[3]
+                    + ' ' + bitsToLowValues[4] + ' ' + bitsToLowValues[5] + ' ' + bitsToLowValues[6] + ' ' + bitsToLowValues[7];
+            }
+
+            dataGridCAN_Jam.Items.Refresh();
         }
 
         private void TextBox_TextChanged_IsHex(object sender, TextChangedEventArgs e)
@@ -216,7 +309,6 @@ namespace CAN_X_CAN_Analyzer.Components
                 textBox.CaretIndex = Math.Min(caretPosition, newText.Length);
             }
 
-
             CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
 
             if (can_jam_data == null)
@@ -230,7 +322,6 @@ namespace CAN_X_CAN_Analyzer.Components
             }
 
             string senderName = textBox.Name;
-
             string[] hexValues = null;
             bool updated = false;
 
@@ -245,6 +336,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 case "TextBoxArbID":
                     can_jam_data.ArbID = TextBoxArbID.Text;
                     break;
+                // modify bytes
                 case "TextBoxModifyByte1":            
                     hexValues[0] = TextBoxModifyByte1.Text;
                     updated = true;
@@ -376,7 +468,6 @@ namespace CAN_X_CAN_Analyzer.Components
             if (dgr == null) { return; }
 
             rowIndex = dgr.GetIndex();
-
         }
 
         private void dataGridCAN_Jam_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -425,7 +516,6 @@ namespace CAN_X_CAN_Analyzer.Components
             TextBoxModifyByte8.Text = data.ByteValues?.Split(' ')[7] ?? "00";
 
             TextBoxBytesToModify.Text = data.ByteToModify ?? "00000000";
-
         }
 
         private void Button_UpdateCANJam_Click(object sender, RoutedEventArgs e)
