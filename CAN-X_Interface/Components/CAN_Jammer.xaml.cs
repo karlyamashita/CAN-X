@@ -231,25 +231,59 @@ namespace CAN_X_CAN_Analyzer.Components
 
             string senderName = textBox.Name;
 
+            string[] hexValues = null;
+            bool updated = false;
+
+            if(can_jam_data.ByteValues == null)
+            {
+                can_jam_data.ByteValues = "00 00 00 00 00 00 00 00";
+            }
+            hexValues = can_jam_data.ByteValues.Split(' ');
 
             switch (senderName)
             {
                 case "TextBoxArbID":
                     can_jam_data.ArbID = TextBoxArbID.Text;
                     break;
-                case "TextBoxModifyByte1":
-                case "TextBoxModifyByte2":
-                case "TextBoxModifyByte3":
-                case "TextBoxModifyByte4":
-                case "TextBoxModifyByte5":
-                case "TextBoxModifyByte6":
-                case "TextBoxModifyByte7":
-                case "TextBoxModifyByte8":
-                    can_jam_data.ByteValues = TextBoxModifyByte1.Text + " " + TextBoxModifyByte2.Text
-                        + " " + TextBoxModifyByte3.Text + " " + TextBoxModifyByte4.Text
-                        + " " + TextBoxModifyByte5.Text + " " + TextBoxModifyByte6.Text
-                        + " " + TextBoxModifyByte7.Text + " " + TextBoxModifyByte8.Text;
+                case "TextBoxModifyByte1":            
+                    hexValues[0] = TextBoxModifyByte1.Text;
+                    updated = true;
                     break;
+                case "TextBoxModifyByte2":
+                    hexValues[1] = TextBoxModifyByte2.Text;
+                    updated = true;
+                    break;
+                case "TextBoxModifyByte3":
+                    hexValues[2] = TextBoxModifyByte3.Text;
+                    updated = true;
+                    break;
+                case "TextBoxModifyByte4":
+                    hexValues[3] = TextBoxModifyByte4.Text;
+                    updated = true;
+                    break;
+                case "TextBoxModifyByte5":
+                    hexValues[4] = TextBoxModifyByte5.Text;
+                    updated = true;
+                    break;
+                case "TextBoxModifyByte6":
+                    hexValues[5] = TextBoxModifyByte6.Text;
+                    updated = true;
+                    break;
+                case "TextBoxModifyByte7":
+                    hexValues[6] = TextBoxModifyByte7.Text;
+                    updated = true;
+                    break;
+                case "TextBoxModifyByte8":
+                    hexValues[7] = TextBoxModifyByte8.Text;
+                    updated = true;
+                    break;
+            }
+
+            if(updated)
+            {
+                can_jam_data.ByteValues = hexValues[0] + ' ' + hexValues[1] + ' ' + hexValues[2] + ' ' + hexValues[3]
+                    + ' ' + hexValues[4] + ' ' + hexValues[5] + ' ' + hexValues[6] + ' ' + hexValues[7];
+
             }
             dataGridCAN_Jam.Items.Refresh();
         }
