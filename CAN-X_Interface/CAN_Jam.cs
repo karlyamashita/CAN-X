@@ -39,6 +39,8 @@ namespace CAN_X_CAN_Analyzer
 
         public string Node { get; set; }
 
+        public bool Jam { get; set; }
+
         public string RelayDisabled { get; set; }
 
         public string ByteToModify { get; set; }
@@ -142,7 +144,10 @@ namespace CAN_X_CAN_Analyzer
 
             bytes.Add((byte)Key); // index 4
 
-            bytes.Add((byte)Convert.ToInt32(Node, 2));
+            byte val = 0;
+            val = (byte)Convert.ToInt32(Node, 2);
+            val |= (byte)(Convert.ToInt32(Jam) << 1);
+            bytes.Add(val);
             bytes.Add((byte)Convert.ToInt32(RelayDisabled, 2));
 
             bytes.Add((byte)Convert.ToInt32(ByteToModify, 2));

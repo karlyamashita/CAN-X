@@ -477,6 +477,7 @@ namespace CAN_X_CAN_Analyzer.Components
             TextBoxKey.Text = data.Key.ToString();
             TextBoxDescription.Text = data.Description;
             TextBoxArbID.Text = data.ArbID ?? "00000000";
+            CheckBoxEnableJamming.IsChecked = data.Jam;
             ComboBoxNode.SelectedIndex = int.TryParse(data.Node, out int node) ? node : 0;
 
             TextBoxBitsToggleByte1.Text = data.BitsToToggle?.Split(' ')[0] ?? "00000000";
@@ -554,6 +555,23 @@ namespace CAN_X_CAN_Analyzer.Components
                         can_jam_data.RelayDisabled = (string)((ComboBoxItem)comboBox.SelectedItem).Content;
                         break;*/  
             }
+            dataGridCAN_Jam.Items.Refresh();
+        }
+
+        private void CheckBoxEnableJamming_Click(object sender, RoutedEventArgs e)
+        {
+            CAN_Jam data = dataGridCAN_Jam.SelectedItem as CAN_Jam; // grabs the current selected row
+            if (data == null) return;
+
+            if (CheckBoxEnableJamming.IsChecked == true)
+            {
+                data.Jam = true;
+            }
+            else
+            {
+                data.Jam = false;
+            }
+
             dataGridCAN_Jam.Items.Refresh();
         }
     }

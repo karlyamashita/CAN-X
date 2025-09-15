@@ -97,6 +97,7 @@
                         <DataGridTextColumn Header="Description" Binding="{Binding Path='Description', Mode=TwoWay}" />
                         <DataGridTextColumn Header="ArbID" Binding="{Binding Path='ArbID' , Mode=TwoWay}" />
                         <DataGridTextColumn Header="Node" Binding="{Binding Path='Node' , Mode=TwoWay}" />
+                        <DataGridCheckBoxColumn Header="Jam" Binding="{Binding Path='Jam', Mode=TwoWay}" />
                         <DataGridTextColumn Header="BitsToToggle" Binding="{Binding Path='BitsToToggle', Mode=TwoWay}" />
                         <DataGridTextColumn Header="BitsToHigh" Binding="{Binding Path='BitsToHigh', Mode=TwoWay}" />
                         <DataGridTextColumn Header="BitsToLow" Binding="{Binding Path='BitsToLow', Mode=TwoWay}" />
@@ -113,7 +114,7 @@
                         <ColumnDefinition Width="250"/>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="110"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Vertical" Margin="15,0,0,0">
@@ -135,7 +136,10 @@
                             <ComboBoxItem Content="CAN2"/>
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Column="4" Margin="20,0,0,0"/>
+                    <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="15,0,0,0" >
+                        <CheckBox x:Name="CheckBoxEnableJamming" Content="Jam" Click="CheckBoxEnableJamming_Click"  />
+                    </StackPanel>
+                    <StackPanel Grid.Column="5" Margin="20,0,0,0"/>
                 </Grid>
                 <Separator Grid.Row="3" Margin="0,1,0,1" />
                 <StackPanel x:Name="BitsToggle" Background="White" Grid.Row="4"  Orientation="Horizontal">
