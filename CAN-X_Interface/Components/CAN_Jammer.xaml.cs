@@ -59,12 +59,12 @@ namespace CAN_X_CAN_Analyzer.Components
                 if (items is CAN_Jam item)
                 {
                     int size = dataGridCAN_Jam.Items.Count;
-                    byte[] data = new byte[size * 40];
-                    item.GetBytes().CopyTo(data, item.Key * 40);
+                    byte[] data = new byte[40];
+                    item.GetBytes().CopyTo(data, 0);
                     /*
                     foreach(byte b in data)
                     {
-                        Console.Write(b.ToString("X"));
+                        Console.Write(b.ToString("X2"));
                         Console.Write(" ");
                         ++count;
                         if((count %= 40) == 0)
