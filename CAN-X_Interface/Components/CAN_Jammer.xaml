@@ -31,7 +31,7 @@
                     <!-- Separator 9 -->
                     <RowDefinition Height="5"/>
                     <!-- Bytes row 10 -->
-                    <RowDefinition Height="60"/> 
+                    <RowDefinition Height="70"/> 
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Background="White" >
                     <TextBlock Text="CAN Jammer" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0" />
@@ -258,34 +258,42 @@
                     <StackPanel Orientation="Vertical" Margin="15,0,0,0" >
                         <Label Content="BYTE1"/>
                         <TextBox x:Name="TextBoxModifyByte1" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00"  />
+                        <CheckBox x:Name="CheckBoxBytesToModify_1" Content="1" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE2"/>
                         <TextBox x:Name="TextBoxModifyByte2" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
+                        <CheckBox x:Name="CheckBoxBytesToModify_2" Content="2" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE3"/>
                         <TextBox x:Name="TextBoxModifyByte3" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
+                        <CheckBox x:Name="CheckBoxBytesToModify_3" Content="3" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE4"/>
                         <TextBox x:Name="TextBoxModifyByte4" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
+                        <CheckBox x:Name="CheckBoxBytesToModify_4" Content="4" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte5" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
+                        <CheckBox x:Name="CheckBoxBytesToModify_5" Content="5" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte6" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
+                        <CheckBox x:Name="CheckBoxBytesToModify_6" Content="6" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte7" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
+                        <CheckBox x:Name="CheckBoxBytesToModify_7" Content="7" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte8" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
+                        <CheckBox x:Name="CheckBoxBytesToModify_8" Content="8" VerticalAlignment="Center" />
                     </StackPanel>
                 </StackPanel>
             </Grid>
