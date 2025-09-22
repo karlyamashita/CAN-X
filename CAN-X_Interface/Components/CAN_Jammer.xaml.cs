@@ -639,23 +639,6 @@ namespace CAN_X_CAN_Analyzer.Components
             dataGridCAN_Jam.Items.Refresh();
         }
 
-        private void CheckBoxEnableJamming_Click(object sender, RoutedEventArgs e)
-        {
-            CAN_Jam data = dataGridCAN_Jam.SelectedItem as CAN_Jam; // grabs the current selected row
-            if (data == null) return;
-
-            if (CheckBoxEnableJamming.IsChecked == true)
-            {
-                data.Jam = true;
-            }
-            else
-            {
-                data.Jam = false;
-            }
-
-            dataGridCAN_Jam.Items.Refresh();
-        }
-
         private void CheckBoxBytesToModify_Checked(object sender, RoutedEventArgs e)
         {
             CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
@@ -845,6 +828,31 @@ namespace CAN_X_CAN_Analyzer.Components
                 + (CheckBoxBitToLow_Byte_8_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_8_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_6.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_8_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_8.IsChecked == true ? 1 : 0).ToString();
+
+            dataGridCAN_Jam.Items.Refresh();
+        }
+
+        private void CheckBoxEnableJamming_Checked(object sender, RoutedEventArgs e)
+        {
+            CAN_Jam data = dataGridCAN_Jam.SelectedItem as CAN_Jam; // grabs the current selected row
+            if (data == null) return;
+
+            if (CheckBoxEnableJamming.IsChecked == true)
+            {
+                data.Jam = true;
+                BitsToggle.IsEnabled = false;
+                BitsHigh.IsEnabled = false;
+                BitsLow.IsEnabled = false;
+                BytesToModify.IsEnabled = false;
+            }
+            else
+            {
+                data.Jam = false;
+                BitsToggle.IsEnabled = true;
+                BitsHigh.IsEnabled = true;
+                BitsLow.IsEnabled = true;
+                BytesToModify.IsEnabled = true;
+            }
 
             dataGridCAN_Jam.Items.Refresh();
         }

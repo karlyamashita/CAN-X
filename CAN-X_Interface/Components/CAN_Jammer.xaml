@@ -76,13 +76,13 @@
                     </Button>
                     <Button x:Name="Button_UpdateCANJam" Content="Update" Height="25" Width="50" Click="Button_UpdateCANJam_Click" Margin="15,0,0,0" />
                     <Button x:Name="Button_SaveCANJam" Content="Save" Height="25" Width="50" Margin="15,0,0,0" />
-                    <GroupBox x:Name="CAN1_RelayDisable" Header="CAN1 Relay Disable" Margin="15,0,0,0" >
+                    <GroupBox x:Name="CAN1_RelayDisable" Header="CAN1 Relay Disable" Margin="15,0,0,0" IsEnabled="False" >
                         <StackPanel Orientation="Horizontal">
                             <RadioButton x:Name="CAN1_RelayDisableFalse" Content="Off" IsChecked="True" Checked="RadioButton_RelayChecked"/>
                             <RadioButton x:Name="CAN1_RelayDisableTrue" Content="On" Checked="RadioButton_RelayChecked"/>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox x:Name="CAN2_RelayDisable" Header="CAN2 Relay Disable" Margin="15,0,0,0" >
+                    <GroupBox x:Name="CAN2_RelayDisable" Header="CAN2 Relay Disable" Margin="15,0,0,0" IsEnabled="False" >
                         <StackPanel Orientation="Horizontal">
                             <RadioButton x:Name="CAN2_RelayDisableFalse" Content="Off" IsChecked="True" Checked="RadioButton_RelayChecked"/>
                             <RadioButton x:Name="CAN2_RelayDisableTrue" Content="On" Checked="RadioButton_RelayChecked"/>
@@ -137,7 +137,7 @@
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="15,0,0,0" >
-                        <CheckBox x:Name="CheckBoxEnableJamming" Content="Jam" Click="CheckBoxEnableJamming_Click"  />
+                        <CheckBox x:Name="CheckBoxEnableJamming" Content="Jam" Checked="CheckBoxEnableJamming_Checked" Unchecked="CheckBoxEnableJamming_Checked"  />
                     </StackPanel>
                     <StackPanel Grid.Column="5" Margin="20,0,0,0"/>
                 </Grid>
@@ -410,6 +410,7 @@
                         </StackPanel>
                     </Border>
                 </StackPanel>
+                <Separator Grid.Row="5" Margin="0,1,0,1"/>
                 <!-- Bits to High -->
                 <StackPanel x:Name="BitsHigh" Background="White" Grid.Row="6"  Orientation="Horizontal">
                     <Label Content="Bits to High" VerticalAlignment="Center" Margin="10,0,28,0" Width="85"  />
