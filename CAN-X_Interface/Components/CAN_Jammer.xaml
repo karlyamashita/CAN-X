@@ -253,47 +253,54 @@
                 <StackPanel x:Name="BytesToModify" Grid.Row="10" Orientation="Horizontal" Background="White" Margin="0,0,0,0" >
                     <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="Bytes to Modify"/>
-                        <TextBox x:Name="TextBoxBytesToModify" Height="25" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" MaxLength="8" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />
+                        <!--<TextBox x:Name="TextBoxBytesToModify" Height="25" PreviewTextInput="TextBoxBytesToModify_PreviewTextInput" MaxLength="8" TextChanged="TextBox_TextChanged_IsBinary" Text="00000000" />-->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="1"/>
+                            <CheckBox x:Name="CheckBoxBytesToModify_1" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_2" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_3" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_4" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_5" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_6" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_7" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_8" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
+                            <TextBlock Text="8"/>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Vertical" Margin="15,0,0,0" >
+                    <StackPanel Orientation="Horizontal" Margin="25,0,0,0" >
+                        <TextBlock Text="Byte Values:" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="5,0,0,0" >
                         <Label Content="BYTE1"/>
                         <TextBox x:Name="TextBoxModifyByte1" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00"  />
-                        <CheckBox x:Name="CheckBoxBytesToModify_1" Content="1" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE2"/>
                         <TextBox x:Name="TextBoxModifyByte2" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
-                        <CheckBox x:Name="CheckBoxBytesToModify_2" Content="2" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE3"/>
                         <TextBox x:Name="TextBoxModifyByte3" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
-                        <CheckBox x:Name="CheckBoxBytesToModify_3" Content="3" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE4"/>
                         <TextBox x:Name="TextBoxModifyByte4" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
-                        <CheckBox x:Name="CheckBoxBytesToModify_4" Content="4" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte5" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
-                        <CheckBox x:Name="CheckBoxBytesToModify_5" Content="5" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte6" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
-                        <CheckBox x:Name="CheckBoxBytesToModify_6" Content="6" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte7" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
-                        <CheckBox x:Name="CheckBoxBytesToModify_7" Content="7" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="BYTE5"/>
                         <TextBox x:Name="TextBoxModifyByte8" Width="40" Height="25" MaxLength="2" CharacterCasing="Upper" TextChanged="TextBox_TextChanged_IsHex" Text="00" />
-                        <CheckBox x:Name="CheckBoxBytesToModify_8" Content="8" VerticalAlignment="Center" />
                     </StackPanel>
                 </StackPanel>
             </Grid>

@@ -170,9 +170,6 @@ namespace CAN_X_CAN_Analyzer.Components
             //todo - figure out which text box is changing then edit the correct one below
             switch (senderName)
             {
-                case "TextBoxBytesToModify":
-                    can_jam_data.ByteToModify = TextBoxBytesToModify.Text;
-                    break;
                 // toggle bits
                 case "TextBoxBitsToggleByte1":
                     bitsToToggleValues[0] = TextBoxBitsToggleByte1.Text;
@@ -516,7 +513,15 @@ namespace CAN_X_CAN_Analyzer.Components
             TextBoxModifyByte7.Text = data.ByteValues?.Split(' ')[6] ?? "00";
             TextBoxModifyByte8.Text = data.ByteValues?.Split(' ')[7] ?? "00";
 
-            TextBoxBytesToModify.Text = data.ByteToModify ?? "00000000";
+            int result = Convert.ToInt32(data.ByteToModify, 2);
+            CheckBoxBytesToModify_1.IsChecked = (result & 0b10000000) == 0b10000000 ? true : false;
+            CheckBoxBytesToModify_2.IsChecked = (result & 0b01000000) == 0b01000000 ? true : false;
+            CheckBoxBytesToModify_3.IsChecked = (result & 0b00100000) == 0b00100000 ? true : false;
+            CheckBoxBytesToModify_4.IsChecked = (result & 0b00010000) == 0b00010000 ? true : false;
+            CheckBoxBytesToModify_5.IsChecked = (result & 0b00001000) == 0b00001000 ? true : false;
+            CheckBoxBytesToModify_6.IsChecked = (result & 0b00000100) == 0b00000100 ? true : false;
+            CheckBoxBytesToModify_7.IsChecked = (result & 0b00000010) == 0b00000010 ? true : false;
+            CheckBoxBytesToModify_8.IsChecked = (result & 0b00000001) == 0b00000001 ? true : false;
         }
 
         private void Button_UpdateCANJam_Click(object sender, RoutedEventArgs e)
@@ -571,6 +576,28 @@ namespace CAN_X_CAN_Analyzer.Components
             {
                 data.Jam = false;
             }
+
+            dataGridCAN_Jam.Items.Refresh();
+        }
+
+        private void CheckBoxBytesToModify_Checked(object sender, RoutedEventArgs e)
+        {
+            CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+
+            if (can_jam_data == null)
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "You need to select a row" });
+                return;
+            }
+            else
+            {
+                //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
+            }
+
+            can_jam_data.ByteToModify = (CheckBoxBytesToModify_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_2.IsChecked == true ? 1 : 0).ToString()
+                + (CheckBoxBytesToModify_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_4.IsChecked == true ? 1 : 0).ToString()
+                + (CheckBoxBytesToModify_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_6.IsChecked == true ? 1 : 0).ToString()
+                + (CheckBoxBytesToModify_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_8.IsChecked == true ? 1 : 0).ToString();
 
             dataGridCAN_Jam.Items.Refresh();
         }
