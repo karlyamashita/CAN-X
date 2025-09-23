@@ -132,7 +132,7 @@ namespace CAN_X_CAN_Analyzer
         public byte[] GetBytes()
         {
             List<byte> bytes = new List<byte>();
-
+            byte reverseValue;
             
 
             UInt32 hex = Convert.ToUInt32(ArbID, 16);
@@ -150,7 +150,8 @@ namespace CAN_X_CAN_Analyzer
             bytes.Add(val);
             bytes.Add((byte)Convert.ToInt32(RelayDisabled, 2));
 
-            bytes.Add((byte)Convert.ToInt32(ByteToModify, 2));
+            reverseValue = ReverseBits((byte)Convert.ToInt32(ByteToModify, 2));
+            bytes.Add(reverseValue);
 
             bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[0] ?? "00000000", 2));
             bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[1] ?? "00000000", 2));
@@ -189,6 +190,27 @@ namespace CAN_X_CAN_Analyzer
             bytes.Add((byte)Convert.ToInt32(ByteValues?.Split(' ')[7] ?? "00", 16));
 
             return bytes.ToArray();
+        }
+
+        private byte ReverseBits(byte num)
+        {
+            byte reversedNum = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                // Shift the reversed number to the left to make space for the next bit
+                reversedNum <<= 1;
+
+                // Check the least significant bit of the original number
+                // If it's 1, set the rightmost bit of the reversed number
+                if ((num & 1) == 1)
+                {
+                    reversedNum |= 1;
+                }
+
+                // Shift the original number to the right to process the next bit
+                num >>= 1;
+            }
+            return reversedNum;
         }
 
     }

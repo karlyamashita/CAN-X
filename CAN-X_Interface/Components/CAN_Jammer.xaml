@@ -75,14 +75,15 @@
                         </Button.ToolTip>
                     </Button>
                     <Button x:Name="Button_UpdateCANJam" Content="Update" Height="25" Width="50" Click="Button_UpdateCANJam_Click" Margin="15,0,0,0" />
-                    <Button x:Name="Button_SaveCANJam" Content="Save" Height="25" Width="50" Margin="15,0,0,0" />
-                    <GroupBox x:Name="CAN1_RelayDisable" Header="CAN1 Relay Disable" Margin="15,0,0,0" IsEnabled="False" >
+                    <Button x:Name="Button_SaveCANJam" Content="Save" Height="25" Width="50" Margin="15,0,0,0" IsEnabled="False" />
+                    <Button x:Name="Button_LoadCANJam" Content="Load" Height="25" Width="50" Margin="15,0,0,0" IsEnabled="False" />
+                    <GroupBox x:Name="CAN1_RelayDisable" Header="CAN1 Relay Disable" Margin="15,0,0,0" >
                         <StackPanel Orientation="Horizontal">
                             <RadioButton x:Name="CAN1_RelayDisableFalse" Content="Off" IsChecked="True" Checked="RadioButton_RelayChecked"/>
                             <RadioButton x:Name="CAN1_RelayDisableTrue" Content="On" Checked="RadioButton_RelayChecked"/>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox x:Name="CAN2_RelayDisable" Header="CAN2 Relay Disable" Margin="15,0,0,0" IsEnabled="False" >
+                    <GroupBox x:Name="CAN2_RelayDisable" Header="CAN2 Relay Disable" Margin="15,0,0,0" >
                         <StackPanel Orientation="Horizontal">
                             <RadioButton x:Name="CAN2_RelayDisableFalse" Content="Off" IsChecked="True" Checked="RadioButton_RelayChecked"/>
                             <RadioButton x:Name="CAN2_RelayDisableTrue" Content="On" Checked="RadioButton_RelayChecked"/>
@@ -123,7 +124,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0" >
                         <Label Content="Description" />
-                        <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0"/>
+                        <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0" IsEnabled="False"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="ArbID"/>
@@ -137,7 +138,7 @@
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="15,0,0,0" >
-                        <CheckBox x:Name="CheckBoxEnableJamming" Content="Jam" Checked="CheckBoxEnableJamming_Checked" Unchecked="CheckBoxEnableJamming_Checked"  />
+                        <CheckBox x:Name="CheckBoxEnableJamming" Content="Jam" Checked="CheckBoxEnableJamming_Checked" Unchecked="CheckBoxEnableJamming_Checked" IsEnabled="False"  />
                     </StackPanel>
                     <StackPanel Grid.Column="5" Margin="20,0,0,0"/>
                 </Grid>
@@ -149,7 +150,7 @@
                         <StackPanel Orientation="Vertical" >
                             <Label Content="Byte 1" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_1_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -174,7 +175,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_1_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -182,7 +183,7 @@
                         <StackPanel Orientation="Vertical" >
                             <Label Content="Byte 2" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_2_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -207,7 +208,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_2_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -215,7 +216,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 3" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_3_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -240,7 +241,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_3_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -248,7 +249,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 4" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_4_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -273,7 +274,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_4_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -281,7 +282,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 5" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_5_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -306,7 +307,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_5_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -314,7 +315,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 6" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_6_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -339,7 +340,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_6_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -347,7 +348,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 7" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_7_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -372,7 +373,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_7_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -380,7 +381,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 8" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_8_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
@@ -405,7 +406,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToToggle_Byte_8_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToToggle_Checked" Unchecked="CheckBoxBitsToToggle_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -418,7 +419,7 @@
                         <StackPanel Orientation="Vertical" >
                             <Label Content="Byte 1" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_1_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -443,7 +444,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_1_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -451,7 +452,7 @@
                         <StackPanel Orientation="Vertical" >
                             <Label Content="Byte 2" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_2_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -476,7 +477,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_2_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -484,7 +485,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 3" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_3_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -509,7 +510,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_3_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -517,7 +518,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 4" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_4_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -542,7 +543,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_4_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -550,7 +551,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 5" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_5_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -575,7 +576,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_5_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -583,7 +584,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 6" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_6_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -608,7 +609,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_6_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -616,7 +617,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 7" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_7_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -641,7 +642,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_7_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -649,7 +650,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 8" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_8_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
@@ -674,7 +675,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToHigh_Byte_8_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToHigh_Checked" Unchecked="CheckBoxBitsToHigh_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -687,7 +688,7 @@
                         <StackPanel Orientation="Vertical" >
                             <Label Content="Byte 1" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_1_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -712,7 +713,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_1_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -720,7 +721,7 @@
                         <StackPanel Orientation="Vertical" >
                             <Label Content="Byte 2" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_2_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -745,7 +746,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_2_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -753,7 +754,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 3" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_3_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -778,7 +779,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_3_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -786,7 +787,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 4" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_4_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -811,7 +812,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_4_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -819,7 +820,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 5" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_5_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -844,7 +845,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_5_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -852,7 +853,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 6" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_6_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -877,7 +878,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_6_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -885,7 +886,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 7" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_7_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -910,7 +911,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_7_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -918,7 +919,7 @@
                         <StackPanel Orientation="Vertical">
                             <Label Content="Byte 8" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="8"/>
+                                <TextBlock Text="7"/>
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_8_Bit_1" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
@@ -943,7 +944,7 @@
                                 <Viewbox Width="11" Height="11">
                                     <CheckBox x:Name="CheckBoxBitToLow_Byte_8_Bit_8" VerticalAlignment="Center" Checked="CheckBoxBitsToLow_Checked" Unchecked="CheckBoxBitsToLow_Checked" />
                                 </Viewbox>
-                                <TextBlock Text="1"/>
+                                <TextBlock Text="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -960,7 +961,7 @@
                             <CheckBox x:Name="CheckBoxBytesToModify_4" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
                             <CheckBox x:Name="CheckBoxBytesToModify_5" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
                             <CheckBox x:Name="CheckBoxBytesToModify_6" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
-                            <CheckBox x:Name="CheckBoxBytesToModify_7" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" BorderThickness="1,1,1,1" />
+                            <CheckBox x:Name="CheckBoxBytesToModify_7" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
                             <CheckBox x:Name="CheckBoxBytesToModify_8" VerticalAlignment="Center" Checked="CheckBoxBytesToModify_Checked" Unchecked="CheckBoxBytesToModify_Checked" />
                             <TextBlock Text="8"/>
                         </StackPanel>
