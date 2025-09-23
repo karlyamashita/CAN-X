@@ -150,35 +150,35 @@ namespace CAN_X_CAN_Analyzer
             bytes.Add(val);
             bytes.Add((byte)Convert.ToInt32(RelayDisabled, 2));
 
-            reverseValue = ReverseBits((byte)Convert.ToInt32(ByteToModify, 2));
+            reverseValue = ReverseBits((byte)Convert.ToInt32(ByteToModify?? "00", 16));
             bytes.Add(reverseValue);
 
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[0] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[1] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[2] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[3] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[4] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[5] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[6] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[7] ?? "00000000", 2));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[0] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[1] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[2] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[3] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[4] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[5] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[6] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToToggle?.Split(' ')[7] ?? "00", 16));
 
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[0] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[1] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[2] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[3] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[4] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[5] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[6] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[7] ?? "00000000", 2));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[0] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[1] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[2] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[3] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[4] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[5] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[6] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToHigh?.Split(' ')[7] ?? "00", 16));
 
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[0] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[1] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[2] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[3] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[4] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[5] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[6] ?? "00000000", 2));
-            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[7] ?? "00000000", 2));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[0] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[1] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[2] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[3] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[4] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[5] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[6] ?? "00", 16));
+            bytes.Add((byte)Convert.ToInt32(BitsToLow?.Split(' ')[7] ?? "00", 16));
 
             bytes.Add((byte)Convert.ToInt32(ByteValues?.Split(' ')[0] ?? "00", 16));
             bytes.Add((byte)Convert.ToInt32(ByteValues?.Split(' ')[1] ?? "00", 16));

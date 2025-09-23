@@ -313,8 +313,8 @@ namespace CAN_X_CAN_Analyzer.Components
             ComboBoxNode.SelectedIndex = int.TryParse(data.Node, out int node) ? node : 0;
 
             // bits to toggle
-            value = data.BitsToToggle?.Split(' ')[0] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[0] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_1_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_1_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_1_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -324,8 +324,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_1_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToToggle_Byte_1_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToToggle?.Split(' ')[1] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[1] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_2_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_2_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_2_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -335,8 +335,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_2_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToToggle_Byte_2_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToToggle?.Split(' ')[2] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[2] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_3_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_3_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_3_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -346,8 +346,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_3_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToToggle_Byte_3_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToToggle?.Split(' ')[3] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[3] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_4_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_4_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_4_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -357,8 +357,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_4_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToToggle_Byte_4_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToToggle?.Split(' ')[4] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[4] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_5_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_5_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_5_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -368,8 +368,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_5_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToToggle_Byte_5_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToToggle?.Split(' ')[5] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[5] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_6_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_6_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_6_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -379,8 +379,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_6_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToToggle_Byte_6_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToToggle?.Split(' ')[6] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[6] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_7_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_7_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_7_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -390,8 +390,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_7_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToToggle_Byte_7_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToToggle?.Split(' ')[7] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToToggle?.Split(' ')[7] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToToggle_Byte_8_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToToggle_Byte_8_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToToggle_Byte_8_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -402,8 +402,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToToggle_Byte_8_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
             // bits to high
-            value = data.BitsToHigh?.Split(' ')[0] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[0] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_1_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_1_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_1_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -413,8 +413,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_1_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToHigh_Byte_1_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToHigh?.Split(' ')[1] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[1] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_2_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_2_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_2_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -424,8 +424,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_2_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToHigh_Byte_2_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToHigh?.Split(' ')[2] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[2] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_3_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_3_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_3_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -435,8 +435,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_3_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToHigh_Byte_3_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToHigh?.Split(' ')[3] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[3] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_4_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_4_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_4_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -446,8 +446,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_4_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToHigh_Byte_4_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToHigh?.Split(' ')[4] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[4] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_5_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_5_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_5_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -457,8 +457,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_5_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToHigh_Byte_5_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToHigh?.Split(' ')[5] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[5] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_6_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_6_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_6_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -468,8 +468,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_6_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToHigh_Byte_6_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToHigh?.Split(' ')[6] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[6] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_7_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_7_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_7_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -479,8 +479,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_7_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToHigh_Byte_7_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToHigh?.Split(' ')[7] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToHigh?.Split(' ')[7] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToHigh_Byte_8_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToHigh_Byte_8_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToHigh_Byte_8_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -491,8 +491,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToHigh_Byte_8_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
             // bits to low
-            value = data.BitsToLow?.Split(' ')[0] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[0] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_1_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_1_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_1_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -502,8 +502,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToLow_Byte_1_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToLow_Byte_1_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToLow?.Split(' ')[1] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[1] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_2_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_2_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_2_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -513,8 +513,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToLow_Byte_2_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToLow_Byte_2_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToLow?.Split(' ')[2] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[2] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_3_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_3_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_3_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -524,8 +524,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToLow_Byte_3_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToLow_Byte_3_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToLow?.Split(' ')[3] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[3] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_4_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_4_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_4_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -535,8 +535,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToLow_Byte_4_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToLow_Byte_4_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToLow?.Split(' ')[4] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[4] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_5_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_5_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_5_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -546,8 +546,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToLow_Byte_5_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToLow_Byte_5_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToLow?.Split(' ')[5] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[5] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_6_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_6_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_6_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -557,8 +557,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToLow_Byte_6_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToLow_Byte_6_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToLow?.Split(' ')[6] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[6] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_7_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_7_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_7_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -568,8 +568,8 @@ namespace CAN_X_CAN_Analyzer.Components
             CheckBoxBitToLow_Byte_7_Bit_7.IsChecked = (result & 0x02) == 0x02 ? true : false;
             CheckBoxBitToLow_Byte_7_Bit_8.IsChecked = (result & 0x01) == 0x01 ? true : false;
 
-            value = data.BitsToLow?.Split(' ')[7] ?? "00000000";
-            result = Convert.ToInt32(value, 2);
+            value = data.BitsToLow?.Split(' ')[7] ?? "00";
+            result = Convert.ToInt32(value, 16);
             CheckBoxBitToLow_Byte_8_Bit_1.IsChecked = (result & 0x80) == 0x80 ? true : false;
             CheckBoxBitToLow_Byte_8_Bit_2.IsChecked = (result & 0x40) == 0x40 ? true : false;
             CheckBoxBitToLow_Byte_8_Bit_3.IsChecked = (result & 0x20) == 0x20 ? true : false;
@@ -589,7 +589,7 @@ namespace CAN_X_CAN_Analyzer.Components
             TextBoxModifyByte7.Text = data.ByteValues?.Split(' ')[6] ?? "00";
             TextBoxModifyByte8.Text = data.ByteValues?.Split(' ')[7] ?? "00";
 
-            result = Convert.ToInt32(data.ByteToModify, 2);
+            result = Convert.ToInt32(data.ByteToModify, 16);
             CheckBoxBytesToModify_1.IsChecked = (result & 0b10000000) == 0b10000000 ? true : false;
             CheckBoxBytesToModify_2.IsChecked = (result & 0b01000000) == 0b01000000 ? true : false;
             CheckBoxBytesToModify_3.IsChecked = (result & 0b00100000) == 0b00100000 ? true : false;
@@ -642,6 +642,7 @@ namespace CAN_X_CAN_Analyzer.Components
         private void CheckBoxBytesToModify_Checked(object sender, RoutedEventArgs e)
         {
             CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+            string hexString = string.Empty;
 
             if (can_jam_data == null)
             {
@@ -653,10 +654,13 @@ namespace CAN_X_CAN_Analyzer.Components
                 //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
             }
 
-            can_jam_data.ByteToModify = (CheckBoxBytesToModify_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_2.IsChecked == true ? 1 : 0).ToString()
+            Int32 decimalValue = Convert.ToInt32((CheckBoxBytesToModify_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBytesToModify_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBytesToModify_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBytesToModify_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_8.IsChecked == true ? 1 : 0).ToString();
+                + (CheckBoxBytesToModify_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBytesToModify_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString = decimalValue.ToString("X2");
+
+            can_jam_data.ByteToModify = hexString;
 
             dataGridCAN_Jam.Items.Refresh();
         }
@@ -664,6 +668,7 @@ namespace CAN_X_CAN_Analyzer.Components
         private void CheckBoxBitsToToggle_Checked(object sender, RoutedEventArgs e)
         {
             CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+            string[] hexString = new string[8];
 
             if (can_jam_data == null)
             {
@@ -675,45 +680,58 @@ namespace CAN_X_CAN_Analyzer.Components
                 //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
             }
 
-            can_jam_data.BitsToToggle = (CheckBoxBitToToggle_Byte_1_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_1_Bit_2.IsChecked == true ? 1 : 0).ToString()
+
+            Int32 decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_1_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_1_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_1_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_1_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_1_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_1_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_1_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_1_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToToggle_Byte_1_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_1_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[0] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToToggle_Byte_2_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_2_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_2_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_2_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_2_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_2_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_2_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_2_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_2_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_2_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToToggle_Byte_2_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_2_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[1] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToToggle_Byte_3_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_3_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_3_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_3_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_3_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_3_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_3_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_3_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_3_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_3_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToToggle_Byte_3_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_3_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[2] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToToggle_Byte_4_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_4_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_4_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_4_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_4_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_4_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_4_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_4_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_4_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_4_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToToggle_Byte_4_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_4_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[3] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToToggle_Byte_5_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_5_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_5_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_5_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_5_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_5_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_5_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_5_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_5_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_5_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToToggle_Byte_5_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_5_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[4] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToToggle_Byte_6_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_6_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_6_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_6_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_6_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_6_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_6_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_6_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_6_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_6_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToToggle_Byte_6_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_6_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[5] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToToggle_Byte_7_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_7_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_7_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_7_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_7_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_7_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_7_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_7_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_7_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_7_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToToggle_Byte_7_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_7_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[6] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToToggle_Byte_8_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_8_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToToggle_Byte_8_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_8_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_8_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_8_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToToggle_Byte_8_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_8_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToToggle_Byte_8_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_8_Bit_8.IsChecked == true ? 1 : 0).ToString();
+                + (CheckBoxBitToToggle_Byte_8_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToToggle_Byte_8_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[7] = decimalValue.ToString("X2");
+
+            can_jam_data.BitsToToggle = hexString[0] + " " + hexString[1] + " " + hexString[2] + " " + hexString[3] + " " + hexString[4] + " " + hexString[5] + " " + hexString[6] + " " + hexString[7];
+
+               
 
             dataGridCAN_Jam.Items.Refresh();
         }
@@ -721,6 +739,7 @@ namespace CAN_X_CAN_Analyzer.Components
         private void CheckBoxBitsToHigh_Checked(object sender, RoutedEventArgs e)
         {
             CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+            string[] hexString = new string[8];
 
             if (can_jam_data == null)
             {
@@ -732,45 +751,55 @@ namespace CAN_X_CAN_Analyzer.Components
                 //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
             }
 
-            can_jam_data.BitsToHigh = (CheckBoxBitToHigh_Byte_1_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_1_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            Int32 decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_1_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_1_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_1_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_1_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_1_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_1_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_1_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_1_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToHigh_Byte_1_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_1_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[0] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToHigh_Byte_2_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_2_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_2_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_2_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_2_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_2_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_2_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_2_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_2_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_2_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToHigh_Byte_2_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_2_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[1] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToHigh_Byte_3_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_3_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_3_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_3_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_3_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_3_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_3_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_3_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_3_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_3_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToHigh_Byte_3_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_3_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[2] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToHigh_Byte_4_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_4_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_4_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_4_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_4_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_4_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_4_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_4_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_4_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_4_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToHigh_Byte_4_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_4_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[3] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToHigh_Byte_5_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_5_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_5_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_5_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_5_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_5_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_5_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_5_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_5_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_5_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToHigh_Byte_5_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_5_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[4] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToHigh_Byte_6_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_6_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_6_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_6_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_6_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_6_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_6_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_6_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_6_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_6_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToHigh_Byte_6_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_6_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[5] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToHigh_Byte_7_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_7_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_7_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_7_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_7_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_7_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_7_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_7_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_7_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_7_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToHigh_Byte_7_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_7_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[6] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToHigh_Byte_8_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_8_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToHigh_Byte_8_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_8_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_8_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_8_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToHigh_Byte_8_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_8_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToHigh_Byte_8_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_8_Bit_8.IsChecked == true ? 1 : 0).ToString();
+                + (CheckBoxBitToHigh_Byte_8_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToHigh_Byte_8_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[7] = decimalValue.ToString("X2");
+
+            can_jam_data.BitsToHigh = hexString[0] + " " + hexString[1] + " " + hexString[2] + " " + hexString[3] + " " + hexString[4] + " " + hexString[5] + " " + hexString[6] + " " + hexString[7];
 
             dataGridCAN_Jam.Items.Refresh();
         }
@@ -778,6 +807,7 @@ namespace CAN_X_CAN_Analyzer.Components
         private void CheckBoxBitsToLow_Checked(object sender, RoutedEventArgs e)
         {
             CAN_Jam can_jam_data = (CAN_Jam)dataGridCAN_Jam.SelectedItem;
+            string[] hexString = new string[8];
 
             if (can_jam_data == null)
             {
@@ -789,45 +819,55 @@ namespace CAN_X_CAN_Analyzer.Components
                 //OnMyCustomEvent(new EditTxMessagesEventArgs { EventType = "" });
             }
 
-            can_jam_data.BitsToLow = (CheckBoxBitToLow_Byte_1_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_1_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            Int32 decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_1_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_1_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_1_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_1_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_1_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_1_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_1_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_1_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToLow_Byte_1_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_1_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[0] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToLow_Byte_2_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_2_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_2_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_2_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_2_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_2_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_2_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_2_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_2_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_2_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToLow_Byte_2_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_2_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[1] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToLow_Byte_3_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_3_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_3_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_3_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_3_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_3_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_3_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_3_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_3_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_3_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToLow_Byte_3_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_3_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[2] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToLow_Byte_4_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_4_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_4_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_4_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_4_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_4_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_4_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_4_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_4_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_4_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToLow_Byte_4_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_4_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[3] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToLow_Byte_5_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_5_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_5_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_5_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_5_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_5_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_5_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_5_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_5_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_5_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToLow_Byte_5_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_5_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[4] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToLow_Byte_6_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_6_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_6_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_6_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_6_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_6_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_6_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_6_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_6_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_6_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToLow_Byte_6_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_6_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[5] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToLow_Byte_7_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_7_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_7_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_7_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_7_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_7_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_7_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_7_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_7_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_7_Bit_8.IsChecked == true ? 1 : 0).ToString() + " "
+                + (CheckBoxBitToLow_Byte_7_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_7_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[6] = decimalValue.ToString("X2");
 
-                + (CheckBoxBitToLow_Byte_8_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_2.IsChecked == true ? 1 : 0).ToString()
+            decimalValue = Convert.ToInt32((CheckBoxBitToLow_Byte_8_Bit_1.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_2.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_8_Bit_3.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_4.IsChecked == true ? 1 : 0).ToString()
                 + (CheckBoxBitToLow_Byte_8_Bit_5.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_6.IsChecked == true ? 1 : 0).ToString()
-                + (CheckBoxBitToLow_Byte_8_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_8.IsChecked == true ? 1 : 0).ToString();
+                + (CheckBoxBitToLow_Byte_8_Bit_7.IsChecked == true ? 1 : 0).ToString() + (CheckBoxBitToLow_Byte_8_Bit_8.IsChecked == true ? 1 : 0).ToString(), 2);
+            hexString[7] = decimalValue.ToString("X2");
+
+            can_jam_data.BitsToLow = hexString[0] + " " + hexString[1] + " " + hexString[2] + " " + hexString[3] + " " + hexString[4] + " " + hexString[5] + " " + hexString[6] + " " + hexString[7];
 
             dataGridCAN_Jam.Items.Refresh();
         }
