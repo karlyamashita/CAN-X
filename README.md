@@ -12,3 +12,5 @@ Check out the wiki for more information https://github.com/karlyamashita/CAN-X/w
 ### Message Editor Transmit
 <img width="877" height="545" alt="Image" src="https://github.com/user-attachments/assets/066a612b-4ee7-419b-bc3f-806a48b9bd1e" />
 
+### CAN Jammer 
+<img alt="Image" src="https://github.com/user-attachments/assets/4e5a880e-99f8-4b31-a96d-a88da3804681" />
