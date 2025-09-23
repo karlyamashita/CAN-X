@@ -193,11 +193,11 @@ namespace CAN_X_CAN_Analyzer
                 int size = e.Data.Length;
                 byte[] usbPacket = new byte[size + 4];// add 4 for command, reserved bytes, size
 
-                if (e.Data[5] == 0) // index 5 is the CAN bus number
+                if ((e.Data[5] & 0x01) == 0) // index 5 is the CAN bus number
                 {
                     usbPacket[0] = COMMAND_CAN1_ADD_MOD; // command
                 }
-                else if (e.Data[5] == 1)
+                else if ((e.Data[5] & 0x01) == 1)
                 {
                     usbPacket[0] = COMMAND_CAN2_ADD_MOD; // command
                 }

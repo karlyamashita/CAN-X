@@ -138,7 +138,7 @@
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="15,0,0,0" >
-                        <CheckBox x:Name="CheckBoxEnableJamming" Content="Jam" Checked="CheckBoxEnableJamming_Checked" Unchecked="CheckBoxEnableJamming_Checked" IsEnabled="False"  />
+                        <CheckBox x:Name="CheckBoxEnableJamming" Content="Jam" Checked="CheckBoxEnableJamming_Checked" Unchecked="CheckBoxEnableJamming_Checked"  />
                     </StackPanel>
                     <StackPanel Grid.Column="5" Margin="20,0,0,0"/>
                 </Grid>
