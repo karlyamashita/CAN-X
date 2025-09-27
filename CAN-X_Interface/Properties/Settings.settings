@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="USB_CAN_Interface.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CAN_X_CAN_Analyzer.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="lastFilePath" Type="System.String" Scope="User">
@@ -21,7 +21,7 @@
       <Value Profile="(Default)">(c) 2019-2025 Karl Yamashita</Value>
     </Setting>
     <Setting Name="version" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Version 3.0.2</Value>
+      <Value Profile="(Default)">Version 3.0.4</Value>
     </Setting>
   </Settings>
 </SettingsFile>
