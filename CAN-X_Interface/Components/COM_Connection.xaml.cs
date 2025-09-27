@@ -95,10 +95,5 @@ namespace CAN_X_CAN_Analyzer.Components
             CAN_X_CAN_Analyzer.Properties.Settings.Default.Save();
             OnMyCustomEvent(new COM_ConnectionEventArgs { EventType = "FormatDataGridColumns" });
         }
-
-        private void ButtonClose_Click(object sender, RoutedEventArgs e)
-        {
-            this.Visibility = Visibility.Collapsed;
-        }
     }
 }

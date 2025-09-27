@@ -156,10 +156,6 @@ namespace CAN_X_CAN_Analyzer
             {
                 transmitMessages.Visibility = Visibility.Visible;
             }
-            else if (e.EventType == "MenuItemCOM_Panel")
-            {
-                com_connection.Visibility = Visibility.Visible;
-            }
             else if (e.EventType == "MenuItemNew")
             {
                 MenuItemNew_Clicked();
@@ -282,10 +278,6 @@ namespace CAN_X_CAN_Analyzer
             else if(e.EventType == "ResizeDataGridRx")
             {
                 ResizeDataGridRx();
-            }
-            else if(e.EventType == "FormatDataGridColumns")
-            {
-                FormatDataGridColumns();
             }
             else if(e.EventType == "FormatDataGridColumns")
             {

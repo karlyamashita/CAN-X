@@ -144,7 +144,9 @@
             <!-- MenuBar -->
             <components:MenuBar x:Name="menuBar" DockPanel.Dock="Top"/>
             <!-- COM_Connection -->
-            <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="0,25,0,0"  />
+            <Expander IsExpanded="True" DockPanel.Dock="Right" VerticalAlignment="Top" ExpandDirection="Left" Background="#FFEEEEEE">
+                <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="0,25,0,0"  />
+            </Expander>
             <!-- TabControl Main -->
             <TabControl x:Name="TabControlMain" ><!-- Should fill the remaining DockPanel area -->
                 <TabItem Header="Messages Monitor" Template="{StaticResource TableColor1}">

@@ -74,10 +74,5 @@ namespace CAN_X_CAN_Analyzer.Components
         {
             OnMyCustomEvent(new MenuBarEventArgs("MenuItemTxPanel"));
         }
-
-        private void MenuItemCOM_Panel_Click(object sender, RoutedEventArgs e)
-        {
-            OnMyCustomEvent(new MenuBarEventArgs("MenuItemCOM_Panel"));
-        }
     }
 }
