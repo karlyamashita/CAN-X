@@ -59,51 +59,45 @@ namespace CAN_X_CAN_Analyzer.Components
             OnTransmitMessagesEvent(new TransmitMessagesEventArgs("CheckBoxAutoTx_Unchecked"));
         }
 
-        private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            /*
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragDrop.DoDragDrop(this, this, DragDropEffects.Move);
-            }
-            */
-        }
-
-        private void UserControl_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(typeof(TransmitMessages)))
-            {
-                if (e.Data.GetData(typeof(TransmitMessages)) is TransmitMessages draggedControl)
-                {
-                    if (draggedControl.Parent is Panel parentPanel)
-                    {
-                        parentPanel.Children.Remove(draggedControl);
-                    }
-
-                    Window newWindow = new Window
-                    {
-                        Content = draggedControl,
-                        Width = draggedControl.ActualWidth + 20,
-                        Height = draggedControl.ActualHeight + 20,
-                        Title = "Transmit Messages",
-                    //    Owner = Window.GetWindow(this) // Set owner if possible
-                    };
-                    newWindow.Show();
-                    newWindow.Closed += (s, args) =>
-                    {
-                        // Optionally, you can add the control back to its original parent when the window is closed
-                        if (this.Parent is Panel originalParent)
-                        {
-                            originalParent.Children.Add(draggedControl);
-                        }
-                    };
-                }
-            }
-        }
-
         private void ToggleButtonAutoTx_Click(object sender, RoutedEventArgs e)
         {
             OnTransmitMessagesEvent(new TransmitMessagesEventArgs("ToggleButtonAutoTx_Clicked"));
+        }
+
+        private void ButtonDetachDataGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var parentContainer = this.Parent as ContentControl; // Or Grid, StackPanel, etc.
+
+            if (parentContainer != null)
+            {
+                var width = parentContainer.ActualWidth;
+                var height = parentContainer.ActualHeight;
+
+                // Detach UserControl from parent
+                parentContainer.Content = null;
+
+                // Create new window
+                Window newWindow = new Window
+                {
+                    Title = "UserControl in New Window",
+                    Content = this, // Assign UserControl to new window
+                    Width = width + 20,
+                    Height = height + 20,
+                    ResizeMode = ResizeMode.CanResizeWithGrip, 
+                };
+
+                // Handle closing event to return UserControl to parent
+                newWindow.Closing += (s, args) =>
+                {
+                    if (parentContainer != null)
+                    {
+                        parentContainer.Content = this; // Re-attach UserControl to parent
+                        ButtonDetachDataGrid.Visibility = Visibility.Visible;
+                    }
+                };
+                ButtonDetachDataGrid.Visibility = Visibility.Collapsed;
+                newWindow.Show(); // Or newWindow.ShowDialog();
+            }
         }
     }
 }

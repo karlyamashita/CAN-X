@@ -196,8 +196,10 @@
                         <!-- GridSplitter -->
                         <GridSplitter x:Name="GridSplitter" Grid.Row="2" Background="#FF80B3FD" HorizontalAlignment="Stretch" Margin="0" />
                         <!-- TransmitMessages -->
-                        <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages" />
-                      
+                        <ContentControl x:Name="TransmitMessagesContentControl" Grid.Row="3" >
+                            <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages" />
+                        </ContentControl>
+
                     </Grid>
                 </TabItem>
                 <!-- Messages Editor Tab -->

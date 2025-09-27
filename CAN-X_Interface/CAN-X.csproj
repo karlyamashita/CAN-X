@@ -249,5 +249,8 @@
   <ItemGroup>
     <Resource Include="Resources\can-x_sync.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\can-x_detach.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
