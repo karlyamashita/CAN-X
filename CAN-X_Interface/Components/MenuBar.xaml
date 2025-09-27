@@ -7,7 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <StackPanel x:Name="Menu_Bar" Height="25" Margin="0" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="Menu_Bar" Grid.Row="0" Height="25" Margin="0" >
             <Menu Height="21" VerticalAlignment="Top" Margin="0,0,0,10">
                 <MenuItem x:Name="MenuItemFile" Header="File">
                     <MenuItem x:Name="MenuItemNew" Header="New" Click="MenuItemNew_Click"/>
@@ -21,6 +25,52 @@
                 </MenuItem>
                 <MenuItem x:Name="MenuItemAbout" Header="About" Click="MenuItemAbout_Click"/>
             </Menu>
+        </StackPanel>
+        <StackPanel x:Name="ToolBar" Grid.Row="1">
+            <ToolBarPanel >
+                <ToolBar Height="30" Background="LightGray">
+                    <Button x:Name="ButtonNewProject" Click="MenuItemNew_Click" Margin="2,0">
+                        <Image Source="/Resources/can-x_new.png" Stretch="Uniform"/>
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14">
+                                    New
+                                </TextBlock>
+                                <TextBlock>
+                                    New empty project.
+                                </TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="ButtonOpenProject" Click="MenuItemOpenProject_Click" Margin="2,0">
+                        <Image Source="/Resources/can-x_open.png" Stretch="Uniform"/>
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14">
+                                Open
+                                </TextBlock>
+                                <TextBlock>
+                                Open an existing project file.
+                                </TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="ButtonSaveProject" Click="MenuItemSaveProject_Click" Margin="2,0">
+                        <Image Source="/Resources/can-x_save.png" Stretch="Uniform"/>
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14">
+                                Save
+                                </TextBlock>
+                                <TextBlock>
+                                Save the current project.
+                                </TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
+                    <Separator/>
+                </ToolBar>
+            </ToolBarPanel>
         </StackPanel>
     </Grid>
 </UserControl>

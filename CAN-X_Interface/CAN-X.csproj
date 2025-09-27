@@ -239,5 +239,12 @@
   <ItemGroup>
     <Resource Include="Resources\icons8-copy-64.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\can-x_open.png" />
+    <Resource Include="Resources\can-x_save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\can-x_new.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
