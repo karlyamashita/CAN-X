@@ -20,9 +20,6 @@
                     <Separator/>
                     <MenuItem x:Name="MenuItemExit" Header="Exit" Click="MenuItemExit_Click"/>
                 </MenuItem>
-                <MenuItem x:Name="MenuItemPanels" Header="Panels">
-                    <MenuItem x:Name="MenuItemTxPanel" Header="Tx Panel" Command="{Binding MenuItemTxPanel_Clicked}" Click="MenuItemTxPanel_Click" />
-                </MenuItem>
                 <MenuItem x:Name="MenuItemAbout" Header="About" Click="MenuItemAbout_Click"/>
             </Menu>
         </StackPanel>

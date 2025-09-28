@@ -79,7 +79,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 // Create new window
                 Window newWindow = new Window
                 {
-                    Title = "UserControl in New Window",
+                    Title = "Transmit Messages",
                     Content = this, // Assign UserControl to new window
                     Width = width + 20,
                     Height = height + 20,
