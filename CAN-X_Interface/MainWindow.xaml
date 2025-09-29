@@ -65,9 +65,6 @@
                 <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
             </Border>
             <ControlTemplate.Triggers>
-                <!--<Trigger Property="IsDefaulted" Value="True">
-                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                </Trigger>-->
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
                     <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
@@ -126,8 +123,6 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
     </Window.Resources>
-
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -145,21 +140,24 @@
             <components:MenuBar x:Name="menuBar" DockPanel.Dock="Top"/>
             <!-- COM_Connection -->
             <Expander IsExpanded="True" DockPanel.Dock="Right" VerticalAlignment="Top" ExpandDirection="Left" Background="#FFEEEEEE">
-                <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="0,25,0,0"  />
+                <components:COM_Connection x:Name="com_connection" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="5,25,0,0"  />
+                <Expander.ToolTip>
+                    <TextBlock Text="COM Connection Panel. Expand or Collaspe."/>
+                </Expander.ToolTip>
             </Expander>
             <!-- TabControl Main -->
             <TabControl x:Name="TabControlMain" ><!-- Should fill the remaining DockPanel area -->
                 <TabItem Header="Messages Monitor" Template="{StaticResource TableColor1}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
                             <!-- Buttons -->
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="35"/>
                             <!-- Receive -->
-                            <RowDefinition Height="5"/>
-                            <!-- grid splitter -->
                             <RowDefinition Height="*"/>
+                            <!-- grid splitter -->
+                            <RowDefinition Height="5"/>
                             <!-- Transmit -->
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel x:Name="Buttons" Grid.Row="0" Orientation="Horizontal" Margin="20,0,0,0" RenderTransformOrigin="0.492,1.483" Grid.ColumnSpan="2">
                             <Button x:Name="ButtonClear" Content="Clear" Width="75" Margin="0,0,10,0" Click="ButtonClear_Click" Height="20" Template="{StaticResource RoundedButtonTemplate}"/>
@@ -175,7 +173,6 @@
                                     </StackPanel>
                                 </Button.ToolTip>
                             </Button>
-                            <!--<Button x:Name="ButtonLoadMessages" Content="Load Messages" Margin="10,0,0,0" Height="20" MinWidth="100" />-->
                             <ToggleButton x:Name="ButtonPauseMessages" Content="Pause" Margin="10,0,0,0" Click="ButtonPauseMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}" IsEnabled="False">
                                 <ToggleButton.ToolTip>
                                     <StackPanel>
@@ -188,7 +185,6 @@
                                     </StackPanel>
                                 </ToggleButton.ToolTip>
                             </ToggleButton>
-
                             <ToggleButton x:Name="ButtonScrollMessages" Content="Scroll" Margin="10,0,0,0" Click="ButtonScrollMessages_Click" Height="20" MinWidth="70" Template="{StaticResource RoundedToggleButtonTemplate}"/>
                         </StackPanel>
                         <!-- MessageMonitor -->
@@ -199,7 +195,6 @@
                         <ContentControl x:Name="TransmitMessagesContentControl" Grid.Row="3" >
                             <components:TransmitMessages Grid.Row="3" x:Name="transmitMessages" />
                         </ContentControl>
-
                     </Grid>
                 </TabItem>
                 <!-- Messages Editor Tab -->
@@ -222,7 +217,7 @@
                         </TabControl>
                     </Grid>
                 </TabItem>
-                <TabItem Header="CAN Jammer" Template="{StaticResource TableColor1}" >
+                <TabItem x:Name="TabItem_CAN_Jammer" Header="CAN Jammer" Template="{StaticResource TableColor1}" >
                     <components:CAN_Jammer x:Name="canJammer"/>
                 </TabItem>
             </TabControl>

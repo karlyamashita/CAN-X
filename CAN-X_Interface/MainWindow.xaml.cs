@@ -152,11 +152,7 @@ namespace CAN_X_CAN_Analyzer
         #region UserControl_MenuBarEvent
         private void UserControl_MenuBarEvent(object sender, MenuBar.MenuBarEventArgs e)
         {
-            if (e.EventType == "MenuItemTxPanel")
-            {
-                transmitMessages.Visibility = Visibility.Visible;
-            }
-            else if (e.EventType == "MenuItemNew")
+            if (e.EventType == "MenuItemNew")
             {
                 MenuItemNew_Clicked();
             }
@@ -182,7 +178,20 @@ namespace CAN_X_CAN_Analyzer
         #region UserControl_CAN_JammerEvent
         private void UserControl_CAN_JammerEvent(object sender, CAN_Jammer.CAN_JammerEventArgs e)
         {
-            if(comPort == null || !comPort.IsOpen) return;
+
+            if (e.EventType == "CAN_Jam_Detach")
+            {
+                if (e.Data[0] == 0)
+                {
+                    TabItem_CAN_Jammer.Visibility = Visibility.Collapsed;
+                }
+                else if (e.Data[0] == 1)
+                {
+                    TabItem_CAN_Jammer.Visibility = Visibility.Visible;
+                }
+            }
+
+            if (comPort == null || !comPort.IsOpen) return;
 
             if (e.EventType == "CAN_Jam_Parameters")
             {

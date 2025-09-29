@@ -896,5 +896,46 @@ namespace CAN_X_CAN_Analyzer.Components
 
             dataGridCAN_Jam.Items.Refresh();
         }
+
+        private void ButtonDetachDataGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var parentContainer = this.Parent as ContentControl; // Or Grid, StackPanel, etc.
+            byte[] data = new byte[1];
+
+            if (parentContainer != null)
+            {
+                // Detach UserControl from parent
+                parentContainer.Content = null;
+
+                // Create new window
+                Window newWindow = new Window
+                {
+                    Title = "CAN Jammer",
+                    Content = this, // Assign UserControl to new window
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                };
+
+                // Handle closing event to return UserControl to parent
+                newWindow.Closing += (s, args) =>
+                {
+                    if (parentContainer != null)
+                    {
+                        parentContainer.Content = this; // Re-attach UserControl to parent
+                        ButtonDetachDataGrid.Visibility = Visibility.Visible;
+
+                        data[0] = 1; // show tab
+                        OnMyCustomEvent(new CAN_JammerEventArgs { EventType = "CAN_Jam_Detach", Data = data });
+                    }
+                };
+                ButtonDetachDataGrid.Visibility = Visibility.Collapsed;
+                data[0] = 0; // don't show tab
+                OnMyCustomEvent(new CAN_JammerEventArgs { EventType = "CAN_Jam_Detach", Data = data });
+
+                newWindow.Show(); // Or newWindow.ShowDialog();
+
+                
+            }
+        }
     }
 }

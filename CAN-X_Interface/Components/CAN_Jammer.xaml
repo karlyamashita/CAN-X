@@ -34,7 +34,10 @@
                     <RowDefinition Height="70"/> 
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Background="White" >
-                    <TextBlock Text="CAN Jammer Filters" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0" />
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="*** CAN Jammer Device Only ***" VerticalAlignment="Center" Margin="5,0,0,0"  />
+                        <TextBlock Text="CAN Jammer Filters" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0" />
+                    </StackPanel>
                     <Button x:Name="ButtonAddCAN_JamRow" Width="25" Height="25"  Margin="20,0,0,0" FontSize="18" FontWeight="Bold" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonAddCAN_JamRow_Click">
                         <Image Source="../Resources/icons8-plus-64.png" />
                         <Button.ToolTip>
@@ -101,8 +104,19 @@
                             <RadioButton x:Name="CAN2_RelayDisableTrue" Content="On" Checked="RadioButton_RelayChecked"/>
                         </StackPanel>
                     </GroupBox>
-
-                    <Label Content="For use with CAN Jammer Device Only. * In Development *" VerticalAlignment="Center" Margin="25,0,0,0"  />
+                    <Button x:Name="ButtonDetachDataGrid" Width="25" Height="25" Margin="25,0,5,0" Background="{x:Null}" BorderThickness="0" Click="ButtonDetachDataGrid_Click" HorizontalAlignment="Right">
+                        <Image Source="/Resources/can-x_detach.png" Stretch="Uniform"/>
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14">
+                                    Detach
+                                </TextBlock>
+                                <TextBlock>
+                                    Detach CAN Jammer
+                                </TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
                 </StackPanel>
                 <DataGrid x:Name="dataGridCAN_Jam" Grid.Row="1" Background="White" IsReadOnly="True" PreviewMouseLeftButtonDown="dataGridCAN_Jam_PreviewMouseLeftButtonDown" MouseLeftButtonUp="dataGridCAN_Jam_MouseLeftButtonUp" >
                     <DataGrid.Columns>

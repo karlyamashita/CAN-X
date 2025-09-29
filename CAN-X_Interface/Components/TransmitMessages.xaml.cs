@@ -70,9 +70,6 @@ namespace CAN_X_CAN_Analyzer.Components
 
             if (parentContainer != null)
             {
-                var width = parentContainer.ActualWidth;
-                var height = parentContainer.ActualHeight;
-
                 // Detach UserControl from parent
                 parentContainer.Content = null;
 
@@ -81,8 +78,7 @@ namespace CAN_X_CAN_Analyzer.Components
                 {
                     Title = "Transmit Messages",
                     Content = this, // Assign UserControl to new window
-                    Width = width + 20,
-                    Height = height + 20,
+                    SizeToContent = SizeToContent.WidthAndHeight,
                     ResizeMode = ResizeMode.CanResizeWithGrip, 
                 };
 

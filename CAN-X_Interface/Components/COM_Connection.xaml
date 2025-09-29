@@ -90,10 +90,10 @@
                     <Label x:Name="LabelConnectionStatus" FontSize="14" FontFamily="Arial Rounded MT Bold" Content="Press Connect Button"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,10 " HorizontalAlignment="Center">
-                    <Button x:Name="ButtonConnect" Margin="0,0,10,0" Click="ButtonConnect_Click" Template="{StaticResource RoundedButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <Button x:Name="ButtonConnect" Margin="0,0,10,0" Click="ButtonConnect_Click" Background="{x:Null}" BorderBrush="{x:Null}">
                         <Image Source="../Resources/connect.png" Width="25" IsEnabled="False" />
                     </Button>
-                    <Button x:Name="ButtonDisconnect" Margin="10,0,0,0" Click="ButtonDisconnect_Click" Template="{StaticResource RoundedButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}" IsEnabled="False">
+                    <Button x:Name="ButtonDisconnect" Margin="10,0,0,0" Click="ButtonDisconnect_Click" Background="{x:Null}" BorderBrush="{x:Null}" IsEnabled="False">
                         <Image Source="../Resources/disconnect.png" Width="25" />
                     </Button>
                 </StackPanel>
