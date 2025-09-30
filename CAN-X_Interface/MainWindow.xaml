@@ -147,7 +147,7 @@
             </Expander>
             <!-- TabControl Main -->
             <TabControl x:Name="TabControlMain" ><!-- Should fill the remaining DockPanel area -->
-                <TabItem Header="Messages Monitor" Template="{StaticResource TableColor1}">
+                <TabItem x:Name="TabItemMessageMonitor" Header="Messages Monitor" Template="{StaticResource TableColor1}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <!-- Buttons -->

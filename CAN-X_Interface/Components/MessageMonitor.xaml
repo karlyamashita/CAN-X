@@ -6,24 +6,7 @@
              xmlns:components="clr-namespace:CAN_X_CAN_Analyzer.Components"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="White">
-    <!--<UserControl.Resources>
-        <Style TargetType="{x:Type TextBlock}" x:Key="FlashByteStyle">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <SolidColorBrush Color="Transparent"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                    <BeginStoryboard HandoffBehavior="Compose">
-                        <Storyboard TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)">
-                            <ColorAnimation Duration="0:0:0.3" To="LightGreen" AutoReverse="True"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>-->
+
     <UserControl.Resources>
         <QuadraticEase x:Key="SmoothEase" EasingMode="EaseInOut"/>
     </UserControl.Resources>
@@ -152,30 +135,20 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-                <!--<DataGridTextColumn Header="Byte1" Binding="{Binding Byte1, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                <DataGridTextColumn Header="Byte2" Binding="{Binding Byte2, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                <DataGridTextColumn Header="Byte3" Binding="{Binding Byte3, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                <DataGridTextColumn Header="Byte4" Binding="{Binding Byte4, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                <DataGridTextColumn Header="Byte5" Binding="{Binding Byte5, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                <DataGridTextColumn Header="Byte6" Binding="{Binding Byte6, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                <DataGridTextColumn Header="Byte7" Binding="{Binding Byte7, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                <DataGridTextColumn Header="Byte8" Binding="{Binding Byte8, Mode=OneWay, NotifyOnTargetUpdated=True}" ElementStyle="{StaticResource FlashByteStyle}" />
-                -->
                 
                 <DataGridTextColumn Header="Node" Binding="{Binding Node, Mode=OneWay}" />
                 <DataGridTextColumn Header="ASCII" Binding="{Binding ASCII, Mode=OneWay}" />
                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=OneWay}" />
             </DataGrid.Columns>
             
-            <!--<DataGrid.RowDetailsTemplate>
+            <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding HexDump}"
                                FontFamily="Consolas"
                                Margin="20,4,4,4"
                                TextWrapping="Wrap"/>
                 </DataTemplate>
-            </DataGrid.RowDetailsTemplate>-->
+            </DataGrid.RowDetailsTemplate>
             
         </DataGrid>
     </Grid>

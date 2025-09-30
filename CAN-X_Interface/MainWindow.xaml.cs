@@ -184,6 +184,7 @@ namespace CAN_X_CAN_Analyzer
                 if (e.Data[0] == 0)
                 {
                     TabItem_CAN_Jammer.Visibility = Visibility.Collapsed;
+                    TabItemMessageMonitor.IsSelected = true;
                 }
                 else if (e.Data[0] == 1)
                 {
