@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,12 +12,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+//using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
 
 namespace CAN_X_CAN_Analyzer.Components
 {
@@ -935,6 +939,167 @@ namespace CAN_X_CAN_Analyzer.Components
                 newWindow.Show(); // Or newWindow.ShowDialog();
 
                 
+            }
+        }
+
+        private void Button_SaveCANJam_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog
+            {
+                DefaultExt = ".canj",
+                Filter = "CAN-Jammer Filter (.canj)|*.canj"
+            };
+
+            var status = saveFile.ShowDialog();
+            if (status == true)
+            {
+                if (!File.Exists(saveFile.FileName))
+                {
+                    File.Create(saveFile.FileName).Dispose();// create the file then dispose in order to open for writing
+                    SaveProjectFiles(saveFile.FileName);
+                }
+                else
+                {
+                    SaveProjectFiles(saveFile.FileName);
+                }
+            }
+        }
+
+        private void SaveProjectFiles(string saveFile)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = false;
+
+            XmlWriter xmlWriter = XmlWriter.Create(saveFile, settings);
+
+            xmlWriter.WriteStartDocument();
+
+            xmlWriter.WriteStartElement("CAN-Jammer");
+            xmlWriter.WriteElementString("Created_by", "CAN-X software by Karl Yamashita. (github.com/karlyamashita/CAN-X)");
+            xmlWriter.WriteElementString("Project_Filename", System.IO.Path.GetFileName(saveFile));
+
+            foreach (var item in dataGridCAN_Jam.Items.OfType<CAN_Jam>())
+            {
+                xmlWriter.WriteStartElement("filters");
+                xmlWriter.WriteElementString("Key", item.Key.ToString());
+                xmlWriter.WriteElementString("Description", item.Description);
+                xmlWriter.WriteElementString("ArbID", item.ArbID ?? "0");
+                xmlWriter.WriteElementString("Node", item.Node ?? "0");
+                xmlWriter.WriteElementString("Jam", item.Jam.ToString());
+
+                xmlWriter.WriteElementString("BitsToToggle", item.BitsToToggle ?? "00 00 00 00 00 00 00 00");
+                xmlWriter.WriteElementString("BitsToHigh", item.BitsToHigh ?? "00 00 00 00 00 00 00 00");
+                xmlWriter.WriteElementString("BitsToLow", item.BitsToLow ?? "00 00 00 00 00 00 00 00");
+
+                xmlWriter.WriteElementString("BytesToModify", item.ByteToModify ?? "00");
+                xmlWriter.WriteElementString("ByteValues", item.ByteValues ?? "00 00 00 00 00 00 00 00");
+
+                xmlWriter.WriteEndElement();
+            }
+
+            xmlWriter.WriteEndDocument();
+
+
+            xmlWriter.Close();
+        }
+
+        private void Button_LoadCANJam_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog()
+            {
+                DefaultExt = ".canj",
+                Filter = "CAN-X Project (.canj)|*.canj"
+            };
+
+            var status = openFile.ShowDialog();
+            if (status == true)
+            {
+                if (!File.Exists(openFile.FileName))
+                {
+                   // statusBar.StatusBarStatus.Text = "File does not exist!";
+                }
+                else
+                {
+                    ReadXml(openFile.FileName);
+                }
+            }
+        }
+
+        private void ReadXml(string openFile)
+        {
+            XmlReader xmlReader = XmlReader.Create(openFile);
+            CAN_Jam canJamData = new CAN_Jam();
+
+            var regex = new Regex(@"\r\n?|\n|\t", RegexOptions.Compiled);
+            string result = "";
+
+            while (xmlReader.Read())
+            {
+                // Only detect start elements.
+                if (xmlReader.IsStartElement())
+                {
+                    // Get element name and switch on it.
+                    switch (xmlReader.Name)
+                    {
+                        case "CAN-Jammer":
+                            // Detect this element.
+                            Console.WriteLine("Start CAN-Jammer element.");
+                            // clear the datagrid
+                            while (dataGridCAN_Jam.Items.Count != 0)
+                            {
+                                dataGridCAN_Jam.Items.RemoveAt(0);
+                            }
+                            break;
+                        case "Key":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            canJamData.Key = Convert.ToUInt32(result);
+                            break;
+                        case "Description":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            canJamData.Description = result;
+                            break;
+                        case "ArbID":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            canJamData.ArbID = result;
+                            break;
+                        case "Node":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            canJamData.Node = result;
+                            break;
+                        case "Jam":
+                            xmlReader.Read();
+                            result = regex.Replace(xmlReader.Value, String.Empty).Replace(" ", "");
+                            canJamData.Jam = Convert.ToBoolean(result);
+                            break;
+                        case "BitsToToggle":
+                            xmlReader.Read();
+                            canJamData.BitsToToggle = xmlReader.Value;
+                            break;
+                        case "BitsToHigh":
+                            xmlReader.Read();
+                            canJamData.BitsToHigh = xmlReader.Value;
+                            break;
+                        case "BitsToLow":
+                            xmlReader.Read();
+                            canJamData.BitsToLow = xmlReader.Value;
+                            break;
+                        case "BytesToModify":
+                            xmlReader.Read();
+                            canJamData.ByteToModify = xmlReader.Value;
+                            break;
+                        case "ByteValues": // last entry so add to datagrid and reset object
+                            xmlReader.Read();
+                            canJamData.ByteValues = xmlReader.Value;
+                            dataGridCAN_Jam.Items.Add(canJamData);
+                            canJamData = new CAN_Jam();
+                            break;
+                    }
+                }
             }
         }
     }

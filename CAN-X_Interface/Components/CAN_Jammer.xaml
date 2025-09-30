@@ -90,8 +90,8 @@
                             </StackPanel>
                         </Button.ToolTip>
                     </Button>
-                    <Button x:Name="Button_SaveCANJam" Content="Save" Height="25" Width="50" Margin="15,0,0,0" IsEnabled="False" />
-                    <Button x:Name="Button_LoadCANJam" Content="Load" Height="25" Width="50" Margin="15,0,0,0" IsEnabled="False" />
+                    <Button x:Name="Button_SaveCANJam" Content="Save" Height="25" Width="50" Margin="15,0,0,0" Click="Button_SaveCANJam_Click" />
+                    <Button x:Name="Button_LoadCANJam" Content="Load" Height="25" Width="50" Margin="15,0,0,0" Click="Button_LoadCANJam_Click" />
                     <GroupBox x:Name="CAN1_RelayDisable" Header="CAN1 Relay Disable" Margin="15,0,0,0" >
                         <StackPanel Orientation="Horizontal">
                             <RadioButton x:Name="CAN1_RelayDisableFalse" Content="Off" IsChecked="True" Checked="RadioButton_RelayChecked"/>
@@ -150,7 +150,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0" >
                         <Label Content="Description" />
-                        <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0" IsEnabled="False"/>
+                        <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="ArbID"/>
