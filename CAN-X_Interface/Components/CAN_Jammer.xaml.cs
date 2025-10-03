@@ -1102,5 +1102,14 @@ namespace CAN_X_CAN_Analyzer.Components
                 }
             }
         }
+
+        private void TextBoxDescription_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CAN_Jam data = dataGridCAN_Jam.SelectedItem as CAN_Jam; // grabs the current selected row
+            if (data == null) return;
+
+            data.Description = TextBoxDescription.Text;
+            dataGridCAN_Jam.Items.Refresh();
+        }
     }
 }

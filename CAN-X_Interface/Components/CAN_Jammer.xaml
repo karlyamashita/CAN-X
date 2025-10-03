@@ -150,7 +150,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0" >
                         <Label Content="Description" />
-                        <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0"/>
+                        <TextBox x:Name="TextBoxDescription" MaxLength="32" Height="25" Margin="0" TextChanged="TextBoxDescription_TextChanged"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Orientation="Vertical" Margin="10,0,0,0">
                         <Label Content="ArbID"/>
