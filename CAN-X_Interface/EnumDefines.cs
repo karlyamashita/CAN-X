@@ -12,15 +12,8 @@ namespace CAN_X_CAN_Analyzer
         {
             CAN1,
             CAN2,
-            CANFD1,
-            CANFD2,
-            ETH1,            
-            LIN1,
-            LIN2,
-            LSFTCAN1,          
-            LSFTCAN2,
-            SWCAN1,
-            SWCAN2,
+            CAN3,
+            CAN4
         }
 
         public enum TxRate
@@ -46,6 +39,13 @@ namespace CAN_X_CAN_Analyzer
             Hex,
             Binary,
             Decimal,
+        }
+
+        public enum CAN_Mode
+        {
+            Normal,
+            Loopback,
+            Silent
         }
 
         public enum APB1_Freq

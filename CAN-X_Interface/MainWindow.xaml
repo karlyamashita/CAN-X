@@ -220,6 +220,9 @@
                 <TabItem x:Name="TabItem_CAN_Jammer" Header="CAN Jammer" Template="{StaticResource TableColor1}" >
                     <components:CAN_Jammer x:Name="canJammer"/>
                 </TabItem>
+                <TabItem x:Name="TabItem_Devices" Header="CANable Devies" Template="{StaticResource TableColor1}" >
+                    <components:CANable_Devices x:Name="Devices" />
+                </TabItem>
             </TabControl>
             
         </DockPanel>

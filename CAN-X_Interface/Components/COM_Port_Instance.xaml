@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="CAN_X_CAN_Analyzer.Components.COM_Port_Instance"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CAN_X_CAN_Analyzer.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="120" d:DesignWidth="300" Background="White">
+    <Grid>
+        <StackPanel Margin="5">
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <TextBlock Text="COM:" Margin="0,0,0,0"/>
+                <ComboBox x:Name="ComPortComboBox" Margin="0,0,0,5" Width="250" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <TextBlock Text="Node:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ComboBox_CAN_Node" Width="80" SelectedIndex="0" SelectionChanged="ComboBox_CAN_Node_SelectionChanged">
+                    <ComboBoxItem Content="CAN 1" />
+                    <ComboBoxItem Content="CAN 2" />
+                    <ComboBoxItem Content="CAN 3" />
+                    <ComboBoxItem Content="CAN 4" />
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Button x:Name="ConnectButton" Content="Connect" Click="ConnectButton_Click" Margin="0,0,0,0" Width="100" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="StatusTextBlock" Text="Disconnected" Margin="10,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

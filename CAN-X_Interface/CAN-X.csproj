@@ -87,11 +87,17 @@
     <Compile Include="CAN_BaudRate.cs" />
     <Compile Include="CAN_Jam.cs" />
     <Compile Include="Clock.cs" />
+    <Compile Include="Components\CANable_Devices.xaml.cs">
+      <DependentUpon>CANable_Devices.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\CAN_Jammer.xaml.cs">
       <DependentUpon>CAN_Jammer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\COM_Connection.xaml.cs">
       <DependentUpon>COM_Connection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\COM_Port_Instance.xaml.cs">
+      <DependentUpon>COM_Port_Instance.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\EditRxMessages.xaml.cs">
       <DependentUpon>EditRxMessages.xaml</DependentUpon>
@@ -121,11 +127,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Components\CANable_Devices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Components\CAN_Jammer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\COM_Connection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\COM_Port_Instance.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
