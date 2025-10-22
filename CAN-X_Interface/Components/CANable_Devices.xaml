@@ -12,13 +12,55 @@
             <RowDefinition Height="300"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="75"/>
-            <RowDefinition Height="75"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="75"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
-            
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" >
+            <StackPanel.Background>
+                <ImageBrush/>
+            </StackPanel.Background>
+            <TextBlock Text="CANable Devices" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0" />
+            <Button x:Name="ButtonAddEditRxRow" Width="25" Height="25" Margin="20,0,0,0" Click="ButtonAddDevice_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                <Image Source="../Resources/icons8-plus-64.png"/>
+                <Button.ToolTip>
+                    <StackPanel>
+                        <TextBlock FontWeight="Bold" FontSize="14">
+             Add Message
+                        </TextBlock>
+                        <TextBlock>
+                 Adds a new message row
+                        </TextBlock>
+                    </StackPanel>
+                </Button.ToolTip>
+            </Button>
+            <Button x:Name="ButtonDeleteEditRxRow" Width="25" Height="25" Margin="5,0,0,0" Click="ButtonDeleteDevices_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                <Button.ToolTip>
+                    <StackPanel>
+                        <TextBlock FontWeight="Bold" FontSize="14">
+             Delete Message
+                        </TextBlock>
+                        <TextBlock>
+             Select an ArbID to Delete
+                        </TextBlock>
+                    </StackPanel>
+                </Button.ToolTip>
+                <Image Source="../Resources/icons8-minus-64.png" />
+            </Button>
+            <Button x:Name="ButtonCopyEditRxRow" Width="25" Height="25" Margin="5,0,0,0" Click="ButtonCopyDevices_Click" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" >
+                <Button.ToolTip>
+                    <StackPanel>
+                        <TextBlock FontWeight="Bold" FontSize="14">
+             Copy Message
+                        </TextBlock>
+                        <TextBlock>
+             Select an ArbID to Delete
+                        </TextBlock>
+                    </StackPanel>
+                </Button.ToolTip>
+                <Image Source="../Resources/icons8-copy-64.png" />
+            </Button>
         </StackPanel>
-        <DataGrid x:Name="dataGridEditRxMessages" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridDevices_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridDevices_PreviewMouseLeftButtonDown" Margin="0,0,0,0" >
+        <DataGrid x:Name="dataGridCANableDevices" Grid.Row="1" Background="White" MouseLeftButtonUp="DataGridDevices_MouseLeftButtonUp" PreviewMouseLeftButtonDown="DataGridDevices_PreviewMouseLeftButtonDown" Margin="0,0,0,0" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Key" Binding="{Binding Path='Key', Mode=OneWay}" />
                 <DataGridTemplateColumn Header="Connect" >
@@ -37,7 +79,7 @@
                 <DataGridTextColumn Header="Status" Binding="{Binding Path='Connected_Status', Mode=OneWay}" />
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Row="3" Margin="5,0,0,0" >
+        <Grid Grid.Row="3" Margin="5" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="250"/>
@@ -56,13 +98,16 @@
                 <ComboBox />
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="4" Margin="5,0,0,0" >
+        <StackPanel Grid.Row="4">
+            <Separator Margin="5,0,5,0" />
+        </StackPanel>
+        <Grid Grid.Row="5" Margin="5,0,0,0" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Grid.Column="0">
                 <Label Content="APB1 Clock" />
@@ -84,14 +129,8 @@
                 <Label Content="Status" />
                 <TextBox MaxLength="32" Height="22" IsEnabled="False" Text="Disconnected"/>
             </StackPanel>
-        </Grid>
-        <Grid Grid.Row="5" Margin="5,0,0,0" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Column="0" >
-                <Label Content="Update" />
-                <Button x:Name="ButtonUpdate" Height="22" Content="Send" IsEnabled="False" />
+            <StackPanel Orientation="Vertical" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,25,0" >
+                <Button x:Name="ButtonUpdate" Height="22" Content="Update" IsEnabled="False" />
             </StackPanel>
         </Grid>
     </Grid>

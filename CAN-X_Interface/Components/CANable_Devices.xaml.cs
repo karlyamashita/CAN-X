@@ -20,6 +20,8 @@ namespace CAN_X_CAN_Analyzer.Components
     /// </summary>
     public partial class CANable_Devices : UserControl
     {
+        int rowIndexDevices = 0;
+
         public CANable_Devices()
         {
             InitializeComponent();
@@ -39,5 +41,53 @@ namespace CAN_X_CAN_Analyzer.Components
         {
 
         }
+
+        private void ButtonAddDevice_Click(object sender, RoutedEventArgs e)
+        {
+            var matchFound = true;
+            UInt32 newIndex = 0;
+
+            // check for available key number
+            while (matchFound)
+            {
+                matchFound = false;
+                foreach (var item in dataGridCANableDevices.Items)
+                {
+                    /*
+                    var it = item as CanRxData;
+                    if (it.Key == newIndex)
+                    {
+                        matchFound = true;
+                    }
+                    */
+                }
+                if (matchFound)
+                {
+                    newIndex += 1;
+                }
+                else
+                {
+                    matchFound = false;
+                }
+            }
+            // canRxData.Key = newIndex;
+            // dataGridCANableDevices.Items.Add(canRxData);
+        }
+
+        private void ButtonDeleteDevices_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCANableDevices.SelectedItem != null)
+            {
+                // TODO - need to find solution to delete selected row, for now using index
+                dataGridCANableDevices.Items.RemoveAt(rowIndexDevices);
+            }
+        }
+
+        private void ButtonCopyDevices_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
     }
 }
