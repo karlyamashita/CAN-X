@@ -66,7 +66,7 @@
                 <DataGridTemplateColumn Header="Connect" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Name="buttonConnect" Content="Send" Click="ButtonConnect_Click"/>
+                            <Button Name="buttonConnect" Content="Connect" Click="ButtonConnect_Click"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -87,7 +87,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Grid.Column="0">
                 <Label Content="Description" />
-                <TextBox x:Name="TextBoxTxDescription" MaxLength="32" Height="22" Margin="0" />
+                <TextBox x:Name="TextBoxDeviceDescription" MaxLength="32" Height="22" Margin="0" TextChanged="TextBoxDevice_TextChanged" />
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,0,0,0" >
                 <Label Content="COM Port" />

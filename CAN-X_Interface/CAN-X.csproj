@@ -121,6 +121,7 @@
       <DependentUpon>TransmitMessages.xaml</DependentUpon>
     </Compile>
     <Compile Include="COM_PortDrv.cs" />
+    <Compile Include="Devices_Data.cs" />
     <Compile Include="EnumDefines.cs" />
     <Compile Include="HighResolutionTimer.cs" />
     <Page Include="About.xaml">
