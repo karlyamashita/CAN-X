@@ -50,13 +50,15 @@ namespace CAN_X_CAN_Analyzer
 
         public enum APB1_Freq
         {
-            APB1_48mHz,
-            APB1_42mHz,
-            APB1_36mHz
+            APB1_96MHz,
+            APB1_48MHz,
+            APB1_42MHz,
+            APB1_36MHz
         }
 
         public enum Frequency
         {
+            _96000000,
             _48000000,
             _42000000,
             _36000000

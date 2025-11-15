@@ -1121,7 +1121,7 @@ namespace CAN_X_CAN_Analyzer
         private void InitPopulateBaudRateListBox()
         {
             // todo - allow use to select frequency to adjust CAN_BTR value for that frequency
-            CAN_BaudRate can_baudRate = new CAN_BaudRate("APB1_48mHz");
+            CAN_BaudRate can_baudRate = new CAN_BaudRate("APB1_48MHz");
 
             foreach (var item in can_baudRate.baudList)
             {
@@ -1130,7 +1130,7 @@ namespace CAN_X_CAN_Analyzer
             com_connection.ComboBoxBaudRate.SelectedIndex = 1;
 
             com_connection.ComboBoxAPB1.ItemsSource = Enum.GetNames(typeof(EnumDefines.APB1_Freq));
-            com_connection.ComboBoxAPB1.SelectedIndex = 0;
+            com_connection.ComboBoxAPB1.SelectedIndex = 1;
         }
 
         public void CalculateBTR()
